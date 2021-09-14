@@ -1,12 +1,14 @@
 "use strict";
 
+// Modules
 const Express = require("express"),
-	db = require("./db.js"),
 	bp = require("body-parser"),
 	cparse = require('cookie-parser'),
 	b = require("bcrypt"),
 	path = require("path"),
-	ejs = require("ejs");
+	ejs = require("ejs")
+	// Local Modules
+	db = require("./db.js");
 
 // CONSTANTS
 const port = 3000,
