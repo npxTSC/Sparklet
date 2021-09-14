@@ -1,16 +1,11 @@
-// MYSQL IS TRASH, DOESN'T WORK
-const sql = require("sqlite3");
-const db = new sql.Database("./db/db.sqlite3");
+0  // MYSQL IS TRASH, DOESN'T WORK
+const db = require("better-sqlite3")("./db/db.sqlite3");
 
-db.serialize(() => {
-	db.run(`
-		DROP TABLE IF EXISTS businesses;
-	`).run(`
-		CREATE TABLE businesses(
+db.prepare(`
+		CREATE TABLE users(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL
 		);
-	`);
-});
+	`).run();
 
 module.exports = db;

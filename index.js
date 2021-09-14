@@ -1,3 +1,5 @@
+"use strict";
+
 const Express = require("express"),
 	db = require("./db.js"),
 	bp = require("body-parser"),
