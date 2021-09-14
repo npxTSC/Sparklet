@@ -6,7 +6,7 @@ const Express = require("express"),
 	cparse = require('cookie-parser'),
 	b = require("bcrypt"),
 	path = require("path"),
-	ejs = require("ejs")
+	ejs = require("ejs"),
 	// Local Modules
 	db = require("./db.js");
 

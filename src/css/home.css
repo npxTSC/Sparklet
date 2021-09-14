@@ -7,6 +7,10 @@ body {
 	background-position-x: center;
 }
 
+h1.bigtitle {
+	font-family: "Kaisei Tokumin", Arial, Helvetica, sans-serif;
+}
+
 div.backbar {
 	width: 100%;
 	margin: 0;
