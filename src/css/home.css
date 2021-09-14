@@ -9,6 +9,9 @@ body {
 
 h1.bigtitle {
 	font-family: "Kaisei Tokumin", Arial, Helvetica, sans-serif;
+	font-size: 15vw;
+	text-align: center;
+	text-shadow: 1vw 1vw 1vw #ababab;
 }
 
 div.backbar {
