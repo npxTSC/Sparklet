@@ -21,7 +21,8 @@ app.use(Express.static(path.join(__dirname, src)));
 app.set("view engine", "ejs");
 
 app.get('/', (req, res) => {
-	res.render("main");
+	db.prepare("").get();
+	res.render("main", data);
 });
 
 app.listen(port, () => {
