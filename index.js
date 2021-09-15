@@ -29,7 +29,7 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/news/:PostID", (req, res) => {
-	let postId = parseInt(req.param("PostID"));
+	let postId = parseInt(req.params["PostID"]);
 	let post
 	if (typeof postId === "number") {
 		post = db.prepare(`
