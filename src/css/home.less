@@ -80,6 +80,7 @@ ul#topbar {
 	top: 0;
 	width: 100%;
 	background-image: linear-gradient(#000, @col-goldenrod);
+	border: 0 solid black;
 
 	& > * a {
 		// A tags inside the navbar
@@ -129,18 +130,22 @@ ul#topbar {
 		font-size: 4vh;
 	}
 
-	ul#topbar > * {
-		float: left;
+	ul#topbar {
+		border-bottom-width: 1vh;
+		
+		& > * {
+			float: left;
 
-		a {
-			display: inline-block;
-			padding: 3vh;
-			font-size: 5vh;
-			font-weight: 500;
+			a {
+				display: inline-block;
+				padding: 3vh;
+				font-size: 5vh;
+				font-weight: 500;
 
-			&#tbarname {
-				margin-right: 3vw;
-				font-size: 3.8vh;
+				&#tbarname {
+					margin-right: 3vw;
+					font-size: 3.8vh;
+				}
 			}
 		}
 	}
@@ -168,6 +173,7 @@ ul#topbar {
 		// flexbox design for mobile
 		display: inline-flex;
 		justify-content: space-between;
+		border-bottom-width: 1vw;
 
 		& > * a {
 			display: block;
