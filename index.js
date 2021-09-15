@@ -30,7 +30,8 @@ app.get("/about", (req, res) => {
 
 app.get("/news", (req, res) => {
 	let posts = db.prepare("SELECT title, author FROM news WHERE visible = 1").get();
-	//
+
+	// Data passed to the render engine
 	let passData = {
 		posts: posts
 	}
@@ -42,3 +43,4 @@ app.listen(port, () => {
 	console.log("Listening on port " + port);
 });
 
+//

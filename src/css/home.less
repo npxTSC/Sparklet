@@ -3,6 +3,7 @@
 // Constants
 @mobile-max-width: 768px;
 @col-goldenrod: #ffe600;
+@col-turmeric: @col-goldenrod; //#fdc029;
 
 body {
 	background-image: url("/img/city.jpg");
@@ -22,7 +23,7 @@ h1.bigtitle {
 	.kaiseiTokumin();
 	font-size: 15vw;
 	text-shadow: 0.8vw 0.8vw 0.8vw #000;
-	-webkit-text-stroke: 0.2vw yellow;
+	-webkit-text-stroke: 0.2vw @col-turmeric;
 	margin: 5vh 0;
 }
 
@@ -31,7 +32,7 @@ h1.title {
 	.kaiseiTokumin();
 	font-size: 8vw;
 	text-shadow: 0.8vw 0.8vw 0.8vw #000;
-	-webkit-text-stroke: 0.05vw yellow;
+	-webkit-text-stroke: 0.1vw @col-turmeric;
 	margin-top: 6vh;
 	margin-bottom: 0;
 }
@@ -91,9 +92,8 @@ ul#topbar {
 		
 		&#tbarname {
 			background-image: linear-gradient(#333, #666);
-			border-color: yellow;
-			border-style: solid;
-			border-width: 0.3vh;
+			border: 0.7vh solid @col-goldenrod;
+			box-sizing: content-box;
 			.kaiseiTokumin();
 
 			&:hover {
@@ -125,11 +125,11 @@ ul#topbar {
 	}
 
 	h2.header {
-		font-size: 5vh;
+		font-size: 7vh;
 	}
 
 	article > p {
-		font-size: 3vh;
+		font-size: 4vh;
 	}
 
 	ul#topbar > * {
@@ -160,11 +160,11 @@ ul#topbar {
 	}
 
 	h2.header {
-		font-size: 5vw;
+		font-size: 7vw;
 	}
 	
 	article > p {
-		font-size: 3vw;
+		font-size: 4vw;
 	}
 
 	ul#topbar {
