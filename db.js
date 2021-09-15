@@ -27,19 +27,19 @@ db.prepare(`
 		title TEXT NOT NULL,
 		author TEXT NOT NULL,
 		content TEXT NOT NULL,
-		visible BOOLEAN NOT NULL CHECK (visible IN (0, 1))
+		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
+		date DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
 
 db.prepare(`
-	INSERT INTO news
+	INSERT INTO news(title, author, content)
 	VALUES (
 		'Test Article',
 		'Dexie',
-		'This was written to test SQL queries',
-		1
-	)
-`);
+		'This was written to test SQL queries'
+	);
+`).run();
 
 
 module.exports = db;

@@ -29,14 +29,16 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-	let posts = db.prepare("SELECT title, author FROM news WHERE visible = 1").get();
+	let qposts = db.prepare("SELECT title, author, date FROM news WHERE visible = 1").all();
 
 	// Data passed to the render engine
-	let passData = {
-		posts: posts
+	let passed = {
+		// Quick Posts: Doesn't include content, just enough
+		// stuff to display an interesting link.
+		qposts: qposts
 	}
 
-	res.render("news", passData);
+	res.render("news", passed);
 });
 
 app.listen(port, () => {

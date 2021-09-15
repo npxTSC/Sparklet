@@ -15,7 +15,7 @@ body {
 
 // Font used in title
 .kaiseiTokumin {
-	font-family: "Kaisei Tokumin", serif;
+	font-family: "Kaisei Tokumin", Georgia, serif;
 }
 
 h1.bigtitle {
@@ -27,11 +27,8 @@ h1.bigtitle {
 	margin: 5vh 0;
 }
 
-h1.title {
-	color: black;
-	.kaiseiTokumin();
+h1.title:extend(h1.bigtitle) {
 	font-size: 8vw;
-	text-shadow: 0.8vw 0.8vw 0.8vw #000;
 	-webkit-text-stroke: 0.1vw @col-turmeric;
 	margin-top: 6vh;
 	margin-bottom: 0;
