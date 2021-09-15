@@ -28,6 +28,25 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
+app.get("/news/:PostID", (req, res) => {
+	let postId = parseInt(req.param("PostID"));
+	let post
+	if (typeof postId === "number") {
+		post = db.prepare(`
+			SELECT rowid, * FROM news
+			WHERE rowid = (?) AND visible = 1
+		`).get(postId);
+	}
+
+	let passed = {
+		postId: postId,
+		postData: post,
+	}
+	
+	if (post) res.render("article", passed);
+	else res.render("404");
+});
+
 app.get("/news", (req, res) => {
 	let qposts = db.prepare("SELECT title, author, date FROM news WHERE visible = 1").all();
 

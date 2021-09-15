@@ -25,7 +25,7 @@ db.prepare(`
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS news(
 		title TEXT NOT NULL,
-		author TEXT NOT NULL,
+		author TEXT NOT NULL DEFAULT 'Anonymous',
 		content TEXT NOT NULL,
 		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -38,6 +38,14 @@ db.prepare(`
 		'Test Article',
 		'Dexie',
 		'This was written to test SQL queries'
+	);
+`).run();
+
+db.prepare(`
+	INSERT INTO news(title, content)
+	VALUES (
+		'Test Article 2',
+		'This was written to test CSS with multiple articles.'
 	);
 `).run();
 

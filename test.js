@@ -6,6 +6,6 @@ class Test {
 	}
 }
 
-module.exports = {
+module.exports = [
 	Test,
-};
+];
