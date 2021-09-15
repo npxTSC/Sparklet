@@ -20,9 +20,18 @@ app.use(bp.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, src)));
 app.set("view engine", "ejs");
 
-app.get('/', (req, res) => {
-	db.prepare("").get();
-	res.render("main", data);
+app.get("/", (req, res) => {
+	res.render("home");
+});
+
+app.get("/news", (req, res) => {
+	let posts = db.prepare("SELECT title, author FROM news WHERE visible = 1").get();
+	//
+	let passData = {
+		posts: posts
+	}
+
+	res.render("news", passData);
 });
 
 app.listen(port, () => {
