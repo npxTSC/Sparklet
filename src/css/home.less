@@ -2,16 +2,24 @@
 
 // Constants
 @mobile-max-width: 768px;
+@col-goldenrod: #ffe600;
 
 body {
 	background-image: url("/img/city.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position-x: center;
+	background-attachment: fixed;
+}
+
+// Font used in title
+.kaiseiTokumin {
+	font-family: "Kaisei Tokumin", serif;
 }
 
 h1.bigtitle {
-	font-family: "Kaisei Tokumin", serif;
+	color: black;
+	.kaiseiTokumin();
 	font-size: 15vw;
 	text-shadow: 0.8vw 0.8vw 0.8vw #000;
 	-webkit-text-stroke: 0.2vw yellow;
@@ -19,7 +27,8 @@ h1.bigtitle {
 }
 
 h1.title {
-	font-family: "Kaisei Tokumin", serif;
+	color: black;
+	.kaiseiTokumin();
 	font-size: 8vw;
 	text-shadow: 0.8vw 0.8vw 0.8vw #000;
 	-webkit-text-stroke: 0.05vw yellow;
@@ -28,11 +37,26 @@ h1.title {
 }
 
 h2.bigsubtitle {
-	font-family: "Kaisei Tokumin", serif;
+	.kaiseiTokumin();
 	font-size: 4vw;
 	color: white;
 	text-shadow: 0.5vw 0.5vw 0.5vw #000;
 }
+
+h2.header {
+	.kaiseiTokumin();
+	color: white;
+	text-shadow: 0.1vw 0.1vw 0.5vw #000;
+}
+
+article > p {
+	//
+	color: white;
+}
+
+
+
+
 
 // Gray thing behind text to cover up the background image
 div.backbar {
@@ -40,7 +64,11 @@ div.backbar {
 	margin: 0;
 	&.type1 {
 		background-image: linear-gradient(#666, #333);
-		padding: 4vh 0;
+		padding: 5vh 0;
+	}
+
+	& > * {
+		margin: 0 7%;
 	}
 }
 
@@ -53,29 +81,32 @@ ul#topbar {
 	position: fixed;
 	top: 0;
 	width: 100%;
-	background-image: linear-gradient(#000, rgb(255, 230, 0));
+	background-image: linear-gradient(#000, @col-goldenrod);
 
 	& > * a {
 		// A tags inside the navbar
 		color: white;
 		text-align: center;
 		text-decoration: none;
+		
+		&#tbarname {
+			background-image: linear-gradient(#333, #666);
+			border-color: yellow;
+			border-style: solid;
+			border-width: 0.3vh;
+			.kaiseiTokumin();
 
-		&:hover {
-			background-image: linear-gradient(#0c0c0c, rgb(255, 230, 0));
-			text-shadow: 0 0.4vh #000;
+			&:hover {
+				background-image: linear-gradient(#222, #555);
+			}
 		}
 
-		&#tbarname {
-			font-family: "Kaisei Tokumin", serif;
+		&:hover {
+			background-image: linear-gradient(#0c0c0c, @col-goldenrod);
+			text-shadow: 0 0.4vh #000;
 		}
 	}
 }
-
-
-
-
-
 
 
 
@@ -91,6 +122,14 @@ ul#topbar {
 
 	h2.bigsubtitle {
 		margin-bottom: 20vh;
+	}
+
+	h2.header {
+		font-size: 5vh;
+	}
+
+	article > p {
+		font-size: 3vh;
 	}
 
 	ul#topbar > * {
@@ -120,19 +159,28 @@ ul#topbar {
 		margin-bottom: 35vh;
 	}
 
-	ul#topbar {
-		display: inline-flex;
-		justify-content: space-between;
+	h2.header {
+		font-size: 5vw;
+	}
+	
+	article > p {
+		font-size: 3vw;
 	}
 
-	ul#topbar > * a {
-		display: block;
-		padding: 4vw;
-		font-size: 4vw;
-		font-weight: 400;
+	ul#topbar {
+		// flexbox design for mobile
+		display: inline-flex;
+		justify-content: space-between;
 
-		&#tbarname {
-			font-size: 3vw;
+		& > * a {
+			display: block;
+			padding: 4vw;
+			font-size: 4vw;
+			font-weight: 400;
+
+			&#tbarname {
+				font-size: 3vw;
+			}
 		}
 	}
 }
