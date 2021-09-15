@@ -24,6 +24,10 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/about", (req, res) => {
+	res.render("about");
+});
+
 app.get("/news", (req, res) => {
 	let posts = db.prepare("SELECT title, author FROM news WHERE visible = 1").get();
 	//
