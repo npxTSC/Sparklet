@@ -11,20 +11,13 @@
 	<%- include("parts/topbar") %>
 	<div class="bb1" style="margin-bottom: 5%;">
 		<h1 class="title center">Sparklet News</h1>
-		<h2 class="bigsubtitle center">Article from <%= post.date.toLocaleDateString() %></h2>
+		<h2 class="bigsubtitle center italic">"<%= post.title %>"</h2>
 	</div>
 
 	<div class="bb1">
-		<a href="/news/<%= post.rowid %>" class="nodec"><div class="qpostBox">
-				<h2 class="title" style="font-style: italic;">
-					"<%= post.title %>"
-				</h2>
-				<h3 class="title">
-					from <%= post.author %>.<br>
-					Posted on <%= post.date.toLocaleDateString() %> at
-					<%= post.date.toLocaleTimeString(undefined, {timeZone: 'America/New_York'}) %>
-				</h3>
-			</div></a>
+		<article>
+			<%- post.content %>
+		</article>
 	</div>
 
 	<%- include("parts/endbody") %>

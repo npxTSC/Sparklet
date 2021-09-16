@@ -9,7 +9,7 @@
 
 <body>
 	<%- include("parts/topbar") %>
-	<div class="bb1" style="margin-bottom: 20%; padding-bottom: 5%;">
+	<div class="bb1" style="margin-bottom: 12%; padding-bottom: 5%;">
 		<h1 class="title center">Sparklet News</h1>
 		<h2 class="bigsubtitle center">Most recent posts</h2>
 	</div>
@@ -17,11 +17,11 @@
 	<div class="bb1">
 		<% for (qpost of qposts) { %>
 			<a href="/news/<%= qpost.rowid %>" class="nodec"><div class="qpostBox">
-				<h2 class="title" style="font-style: italic;">
+				<h2 class="newstitle" style="font-style: italic;">
 					"<%= qpost.title %>"
 				</h2>
-				<h3 class="title">
-					from <%= qpost.author %>.<br>
+				<h3 class="newsdescription">
+					from <%= qpost.author %>.<br><br>
 					Posted on <%= qpost.date.toLocaleDateString() %> at
 					<%= qpost.date.toLocaleTimeString(undefined, {timeZone: 'America/New_York'}) %>
 				</h3>

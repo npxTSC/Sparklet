@@ -12,7 +12,8 @@ try {
 const db = bsqlite3("./db/db.sqlite3");
 
 // WAL mode, improves performance
-db.pragma('journal_mode = WAL');
+db.pragma("journal_mode = WAL");
+
 
 // Make tables
 db.prepare(`
@@ -33,21 +34,18 @@ db.prepare(`
 `).run();
 
 db.prepare(`
-	INSERT INTO news(title, author, content)
-	VALUES (
+	INSERT INTO news(title, author, content) VALUES (
 		'Test Article',
 		'Dexie',
-		'This was written to test SQL queries'
+		'<p>This was written to test SQL queries.</p>'
 	);
 `).run();
 
 db.prepare(`
-	INSERT INTO news(title, content)
-	VALUES (
+	INSERT INTO news(title, content) VALUES (
 		'Test Article 2',
-		'This was written to test CSS with multiple articles.'
+		'<p>This was written to test CSS with multiple articles.</p>'
 	);
 `).run();
-
 
 module.exports = db;

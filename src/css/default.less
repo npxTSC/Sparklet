@@ -17,6 +17,10 @@ html, body {
 	text-align: center;
 }
 
+.italic {
+	font-style: italic;
+}
+
 .nodec, .nodec > * {
 	color: inherit;
 	text-decoration: inherit;
@@ -77,8 +81,9 @@ article > p {
 div.backbar {
 	width: 100%;
 	margin: 0;
+	border: 0 solid black;
 	
-	& > * {
+	& * {
 		margin: 0 7%;
 	}
 }
@@ -87,7 +92,7 @@ div.bb1:extend(div.backbar) {
 	background-image: linear-gradient(#666, #333);
 	padding: 5vh 0;
 
-	& > * {
+	& * {
 		margin: 0 7%;
 	}
 }
@@ -98,11 +103,20 @@ div.qpostBox {
 	background-color: black;
 	width: 75%;
 	text-align: center;
+	border: 1vh solid white;
 	border-radius: 10%;
 	transition: border-radius 100ms linear;
 	//cursor: pointer;
 	&:hover {
 		border-radius: 20%;
+	}
+
+	& > .newstitle {
+		font-size: 4.5vw;
+	}
+
+	& > .newsdescription {
+		font-size: 2vw;
 	}
 }
 
@@ -185,6 +199,10 @@ ul#topbar {
 			}
 		}
 	}
+
+	div.backbar {
+		border-width: 1vh 0;
+	}
 }
 
 /* Mobile-friendly CSS */
@@ -221,5 +239,9 @@ ul#topbar {
 				font-size: 3vw;
 			}
 		}
+	}
+
+	div.backbar {
+		border-width: 1vw 0;
 	}
 }
