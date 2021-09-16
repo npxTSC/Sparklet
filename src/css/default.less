@@ -86,10 +86,14 @@ div.backbar {
 div.bb1:extend(div.backbar) {
 	background-image: linear-gradient(#666, #333);
 	padding: 5vh 0;
+
+	& > * {
+		margin: 0 7%;
+	}
 }
 
 div.qpostBox {
-	margin: 5% auto;
+	margin: 2% auto;
 	padding: 2% 0 4% 0;
 	background-color: black;
 	width: 75%;

@@ -28,7 +28,7 @@ db.prepare(`
 		author TEXT NOT NULL DEFAULT 'Anonymous',
 		content TEXT NOT NULL,
 		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
-		date DATETIME DEFAULT CURRENT_TIMESTAMP
+		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
 

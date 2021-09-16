@@ -30,25 +30,33 @@ app.get("/about", (req, res) => {
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
-	let post
-	if (typeof postId === "number") {
-		post = db.prepare(`
-			SELECT rowid, * FROM news
-			WHERE rowid = (?) AND visible = 1
-		`).get(postId);
-	}
-
-	let passed = {
-		postId: postId,
-		postData: post,
-	}
+	if (typeof postId !== "number") {res.end(); return}
 	
-	if (post) res.render("article", passed);
-	else res.render("404");
+	let post = db.prepare(`
+		SELECT rowid, * FROM news
+		WHERE rowid = (?) AND visible = 1
+	`).get(postId);
+
+	if (!post) {res.render("404"); return}
+	else {
+		post.date = new Date(post.date);
+
+		let passed = {
+			postId: postId,
+			post: post,
+		}
+		
+		res.render("article", passed);
+	}
 });
 
 app.get("/news", (req, res) => {
-	let qposts = db.prepare("SELECT title, author, date FROM news WHERE visible = 1").all();
+	let qposts = db.prepare(`SELECT title, author, date, rowid
+		FROM news WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
+
+	for (const i in qposts) {
+		qposts[i].date = new Date(qposts[i].date);
+	}
 
 	// Data passed to the render engine
 	let passed = {
