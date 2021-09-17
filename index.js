@@ -54,9 +54,7 @@ app.get("/news", (req, res) => {
 	let qposts = db.prepare(`SELECT title, author, date, rowid
 		FROM news WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
 
-	for (const i in qposts) {
-		qposts[i].date = new Date(qposts[i].date);
-	}
+	for (const i in qposts) qposts[i].date = new Date(qposts[i].date);
 
 	// Data passed to the render engine
 	let passed = {
