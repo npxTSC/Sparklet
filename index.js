@@ -30,14 +30,14 @@ app.get("/about", (req, res) => {
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
-	if (typeof postId !== "number") {res.end(); return}
-	
+	if (typeof postId !== "number") { res.end(); return }
+
 	let post = db.prepare(`
 		SELECT rowid, * FROM news
 		WHERE rowid = (?) AND visible = 1
 	`).get(postId);
 
-	if (!post) {res.render("404"); return}
+	if (!post) { res.render("404"); return }
 	else {
 		post.date = new Date(post.date);
 
@@ -45,7 +45,7 @@ app.get("/news/:PostID", (req, res) => {
 			postId: postId,
 			post: post,
 		}
-		
+
 		res.render("article", passed);
 	}
 });
@@ -65,6 +65,22 @@ app.get("/news", (req, res) => {
 
 	res.render("news", passed);
 });
+
+/*app.get("/games", (req, res) => {
+	let qposts = db.prepare(`SELECT rowid, *
+		FROM games WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
+
+	for (const i in qposts) qposts[i].date = new Date(qposts[i].date);
+
+	// Data passed to the render engine
+	let passed = {
+		// Quick Posts: Doesn't include content, just enough
+		// stuff to display an interesting link.
+		qposts: qposts
+	}
+
+	res.render("games", passed);
+});*/
 
 app.listen(port, () => {
 	console.log("Listening on port " + port);

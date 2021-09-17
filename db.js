@@ -18,8 +18,8 @@ db.pragma("journal_mode = WAL");
 // Make tables
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL
+		name TEXT NOT NULL,
+		passHash TEXT NOT NULL,
 	);
 `).run();
 
@@ -28,6 +28,16 @@ db.prepare(`
 		title TEXT NOT NULL,
 		author TEXT NOT NULL DEFAULT 'Anonymous',
 		content TEXT NOT NULL,
+		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
+		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+`).run();
+
+db.prepare(`
+	CREATE TABLE IF NOT EXISTS games(
+		title TEXT NOT NULL,
+		creator TEXT NOT NULL DEFAULT 'Anonymous',
+		requirements TEXT NOT NULL,
 		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
@@ -47,5 +57,13 @@ db.prepare(`
 		'<p>This was written to test CSS with multiple articles.</p>'
 	);
 `).run();
+
+db.prepare(`
+	INSERT INTO games(title, creator, requirements) VALUES (
+		'Test Game',
+		'Dexie',
+		'(?)'
+	);
+`).run(JSON.stringify(/**/));
 
 module.exports = db;
