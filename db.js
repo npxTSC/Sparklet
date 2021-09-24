@@ -19,7 +19,7 @@ db.pragma("journal_mode = WAL");
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
 		name TEXT NOT NULL,
-		passHash TEXT NOT NULL,
+		passHash TEXT NOT NULL
 	);
 `).run();
 
@@ -37,8 +37,10 @@ db.prepare(`
 	CREATE TABLE IF NOT EXISTS games(
 		title TEXT NOT NULL,
 		creator TEXT NOT NULL DEFAULT 'Anonymous',
+		description TEXT NOT NULL DEFAULT 'No description given... :(',
 		requirements TEXT NOT NULL,
 		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
+		embedded BOOLEAN NOT NULL DEFAULT 0 CHECK (visible IN (0, 1)),
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
@@ -62,8 +64,14 @@ db.prepare(`
 	INSERT INTO games(title, creator, requirements) VALUES (
 		'Test Game',
 		'Dexie',
-		'(?)'
+		(?)
 	);
-`).run(JSON.stringify(/**/));
+`).run(JSON.stringify({
+	js: [
+		"game1.js"
+	], css: [
+		"game1.css"
+	]
+}));
 
 module.exports = db;

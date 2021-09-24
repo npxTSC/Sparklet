@@ -28,9 +28,13 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
+
+
+
+
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
-	if (typeof postId !== "number") { res.end(); return }
+	if (typeof postId !== "number") { res.render("404"); return }
 
 	let post = db.prepare(`
 		SELECT rowid, * FROM news
@@ -66,7 +70,33 @@ app.get("/news", (req, res) => {
 	res.render("news", passed);
 });
 
-/*app.get("/games", (req, res) => {
+
+
+
+
+app.get("/games/:GameID", (req, res) => {
+	let postId = parseInt(req.params["GameID"]);
+	if (typeof postId !== "number") { res.render("404"); return }
+
+	let post = db.prepare(`
+		SELECT rowid, * FROM games
+		WHERE rowid = (?) AND visible = 1
+	`).get(postId);
+
+	if (!post) { res.render("404"); return }
+	else {
+		post.date = new Date(post.date);
+
+		let passed = {
+			postId: postId,
+			post: post,
+		}
+
+		res.render("game", passed);
+	}
+});
+
+app.get("/games", (req, res) => {
 	let qposts = db.prepare(`SELECT rowid, *
 		FROM games WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
 
@@ -79,8 +109,8 @@ app.get("/news", (req, res) => {
 		qposts: qposts
 	}
 
-	res.render("games", passed);
-});*/
+	res.render("catalog", passed);
+});
 
 app.listen(port, () => {
 	console.log("Listening on port " + port);

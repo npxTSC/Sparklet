@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%- include("parts/head") %>
+	<%- include("parts/afterhead") %>
+</head>
+
+<body>
+	<%- include("parts/topbar") %>
+	<div class="bb1" style="margin-bottom: 12%; padding-bottom: 5%;">
+		<h1 class="title center">Spark Catalog</h1>
+		<h2 class="bigsubtitle center">Most recent games</h2>
+	</div>
+
+	<div class="bb1">
+		<% for (qpost of qposts) { %>
+			<a href="/games/<%= qpost.rowid %>" class="nodec"><div class="qpostBox">
+				<h2 class="newstitle" style="font-style: italic;">
+					"<%= qpost.title %>"
+				</h2>
+				<h3 class="newsdescription">
+					from <%= qpost.author %>.<br><br>
+					Posted on <%= qpost.date.toLocaleDateString() %> at
+					<%= qpost.date.toLocaleTimeString(undefined, {timeZone: 'America/New_York'}) %>
+				</h3>
+			</div></a>
+		<% } %>
+	</div>
+
+	<%- include("parts/endbody") %>
+</body>
+
+</html>
