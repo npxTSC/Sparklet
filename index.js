@@ -35,7 +35,7 @@ app.get("/ip", (req, res) => {
 		req.socket.remoteAddress ||
 		null;
 	console.log(ip);
-	res.send(ip);
+	res.send("User Tested IP: " + ip);
 });
 
 app.get("/news/:PostID", (req, res) => {
