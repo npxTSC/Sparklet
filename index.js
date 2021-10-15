@@ -30,7 +30,13 @@ app.get("/about", (req, res) => {
 
 
 
-
+app.get("/ip", (req, res) => {
+	const ip = req.headers['x-forwarded-for'] ||
+		req.socket.remoteAddress ||
+		null;
+	console.log(ip);
+	res.send(ip);
+});
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
@@ -112,8 +118,29 @@ app.get("/games", (req, res) => {
 	res.render("catalog", passed);
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => {
 	console.log("Listening on port " + port);
 });
 
-//
+// Functions
+
+function getIp(req) {
+    //return req.headers['x-forwarded-for'].split(',').shift()
+    //|| req.socket.remoteAddress;
+	return req.socket.remoteAddress;
+}
+
