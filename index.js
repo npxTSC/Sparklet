@@ -15,8 +15,9 @@ const port = 3000,
 	src = "src";
 
 const app = Express();
-app.use(bp.json());
-app.use(bp.urlencoded({ extended: true }));
+//app.use(bp.json());
+//app.use(bp.urlencoded({ extended: true }));
+app.use(Express.json())
 app.use(Express.static(path.join(__dirname, src)));
 app.set("view engine", "ejs");
 
@@ -75,6 +76,39 @@ app.get("/news", (req, res) => {
 
 	res.render("news", passed);
 });
+
+
+// Javascript-Engine Sparklet System (aka JESS):
+// Browser-based OS you can run on Sparklet
+
+// JESS About/Login page
+app.get("/jess", (req, res) => {
+	res.render("jesslogin");
+});
+
+// JESS OS (Once login provided)
+app.post("/jess", (req, res) => {
+	const machineId = parseInt(req.body["mID"]);
+	if (typeof postId !== "number") { res.render("404"); return }
+
+	let post = db.prepare(`
+		SELECT rowid, * FROM news
+		WHERE rowid = (?) AND visible = 1
+	`).get(postId);
+
+	if (!post) { res.render("404"); return }
+	else {
+		post.date = new Date(post.date);
+
+		let passed = {
+			postId: postId,
+			post: post,
+		}
+
+		res.render("jess", passed);
+	}
+});
+
 
 
 
