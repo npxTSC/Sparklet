@@ -40,8 +40,17 @@ db.prepare(`
 		description TEXT NOT NULL DEFAULT 'No description given... :(',
 		requirements TEXT NOT NULL,
 		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
-		embedded BOOLEAN NOT NULL DEFAULT 0 CHECK (visible IN (0, 1)),
+		embedded BOOLEAN NOT NULL DEFAULT 0 CHECK (embedded IN (0, 1)),
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+`).run();
+
+db.prepare(`
+	CREATE TABLE IF NOT EXISTS jess_conductors(
+		name TEXT NOT NULL,
+		accesskey TEXT,
+		doubleauth BOOLEAN NOT NULL DEFAULT 0 CHECK (doubleauth IN (0, 1)),
+		dateMade DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
 
