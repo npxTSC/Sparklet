@@ -114,16 +114,17 @@ app.post("/jess", (req, res) => {
 		}
 	} else { // If client requests an existing VM
 		if (conductor) {
+			// If VM active, attempt to start it
 			if (conductor.active) {
 				let passed = {
 					test: test,
 				}
 
 				res.render("jess", passed);
-			} else {
+			} else { // Otherwise, tell the user the VM is dormant
 				res.render("jesslogin", {jessLoginError: "Dormant Login Attempt"});
 			}
-		} else {
+		} else { // If VM not found
 			res.render("jesslogin", {jessLoginError: "Login 404"});
 		}
 	}
