@@ -19,13 +19,13 @@
 				<span class="formLine">
 					<label for="CID">Conductor ID</label>
 					<input name="CID" type="text"
-					<% if (typeof failed !== "undefined" && failed === "username") { %>
+					<% if (typeof jessLoginError !== "undefined" && jessLoginError === "Login 404") { %>
 						style="background: red;"<% } %> >
 				</span>
 				<span class="formLine">
 					<label for="Password">Password</label>
 					<input name="Password" autocomplete="off" type="password"
-					<% if (typeof failed !== "undefined" && failed === "password") { %>
+					<% if (typeof jessLoginError !== "undefined" && jessLoginError === "Login Password Failed") { %>
 						style="background: red;"<% } %> >
 				</span>
 			</div>

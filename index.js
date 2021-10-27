@@ -79,6 +79,9 @@ app.get("/news", (req, res) => {
 // Javascript-Engine Sparklet System (aka JESS):
 // Browser-based OS you can run on Sparklet
 
+// Calling it a VM is like calling a Chromebook a laptop.
+// It's technically true, but... come on!
+
 // JESS About/Login page
 app.get("/jess", (req, res) => {
 	res.render("jesslogin");
@@ -87,24 +90,42 @@ app.get("/jess", (req, res) => {
 // JESS OS (Once login provided)
 app.post("/jess", (req, res) => {
 	const data = req.body;
-	if (typeof data.CID !== "string") { return res.render("404"); }
+	if (typeof data.CID !== "string") { return res.render("jesslogin", {jessLoginError: "Login 404"}); }
 
+	// Get conductor if exists
 	let conductor = db.prepare(`
 		SELECT rowid, * FROM conductors
-		WHERE name = (?) AND active = 1
+		WHERE name = (?)
 	`).get(data.CID);
 
-	if (conductor) {
-		post.date = new Date(post.date);
-
-		let passed = {
-			postId: postId,
-			post: post,
+	// If client requests a new VM
+	if (data.makeNew) {
+		// If Conductor ID already taken
+		if (conductor) {
+			// Render login page again, show error
+			res.render("jesslogin", {jessLoginError: "VM Name Taken"});
+		} else {
+			// Make new VM
+			db.prepare(`
+				INSERT INTO conductors(name, keyhash, doubleauth, active) VALUES (
+					(?), (?), (?), 1
+				)
+			`).run();
 		}
+	} else { // If client requests an existing VM
+		if (conductor) {
+			if (conductor.active) {
+				let passed = {
+					test: test,
+				}
 
-		res.render("jess", passed);
-	} else {
-		res.render("jesslogin", {failed: "username"});
+				res.render("jess", passed);
+			} else {
+				res.render("jesslogin", {jessLoginError: "Dormant Login Attempt"});
+			}
+		} else {
+			res.render("jesslogin", {jessLoginError: "Login 404"});
+		}
 	}
 });
 
