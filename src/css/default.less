@@ -6,6 +6,7 @@
 @col-turmeric: @col-goldenrod; //#fdc029;
 
 @import url('https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@1,700&display=swap');
 
 body {
 	height: 100%;
@@ -153,7 +154,55 @@ ul#topbar {
 	}
 }
 
+#jessLoginBB {
+	//margin: inherit 5%;
+	& > form {
+		background-color: black;
+		border-style: solid;
+		border-width: 0.5vw;
+		border-color: white;
+		border-radius: 5%;
+		padding: 5% 10% 10% 10%;
 
+		& > div#formContent {
+			display: flex;
+			margin: 0 0 1vw 0;
+			padding: 0;
+
+			& > span.formLine {
+				.center();
+				margin: 0;
+				
+				& > label {
+					font-family: 'Andada Pro', serif;
+					font-size: 4vw;
+					margin: 0 auto;
+				}
+
+				& > input[type="text"], & > input[type="password"] {
+					height: 4vw;
+					padding: 0.1vw;
+					width: 30vw;
+					font-size: 4vw;
+					margin: 0 auto;
+					font-family: 'Andada Pro', serif;
+					font-weight: 100;
+				}
+			}
+		}
+
+		& > input[type="submit"] {
+			display: block;
+			margin: 0 auto;
+			width: 20vw;
+			height: 15vh;
+
+			font-size: 3vw;
+			font-family: 'Andada Pro', serif;
+			text-align: center;
+		}
+	}
+}
 
 
 
@@ -175,6 +224,7 @@ ul#topbar {
 
 	article > p {
 		font-size: 4vh;
+		margin-bottom: 2vh;
 	}
 
 	ul#topbar {
@@ -202,6 +252,8 @@ ul#topbar {
 	}
 }
 
+
+
 /* Mobile-friendly CSS */
 @media only screen and (max-width: @mobile-max-width) {
 	body {
@@ -218,6 +270,7 @@ ul#topbar {
 	
 	article > p {
 		font-size: 4vw;
+		margin-bottom: 2vw;
 	}
 
 	ul#topbar {
@@ -228,9 +281,9 @@ ul#topbar {
 
 		& > * a {
 			display: block;
-			padding: 4vw;
-			font-size: 4vw;
-			font-weight: 400;
+			padding: 2.3vw;
+			font-size: 4.5vw;
+			font-weight: 600;
 
 			&#tbarname {
 				font-size: 3vw;

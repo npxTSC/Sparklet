@@ -2,7 +2,6 @@
 
 // Modules
 const Express = require("express"),
-	//bp = require("body-parser"),
 	cparse = require('cookie-parser'),
 	b = require("bcrypt"),
 	path = require("path"),
@@ -15,9 +14,8 @@ const port = 3000,
 	src = "src";
 
 const app = Express();
-//app.use(bp.json());
-//app.use(bp.urlencoded({ extended: true }));
 app.use(Express.json());
+app.use(Express.urlencoded());
 app.use(Express.static(path.join(__dirname, src)));
 app.set("view engine", "ejs");
 
@@ -88,16 +86,15 @@ app.get("/jess", (req, res) => {
 
 // JESS OS (Once login provided)
 app.post("/jess", (req, res) => {
-	const mID = req.body["mID"];
-	if (typeof mID !== "string") { return res.render("404"); }
+	const data = req.body;
+	if (typeof data.CID !== "string") { return res.render("404"); }
 
-	let post = db.prepare(`
-		SELECT rowid, * FROM news
-		WHERE rowid = (?) AND visible = 1
-	`).get(postId);
+	let conductor = db.prepare(`
+		SELECT rowid, * FROM conductors
+		WHERE name = (?) AND active = 1
+	`).get(data.CID);
 
-	if (!post) { return res.render("404"); }
-	else {
+	if (conductor) {
 		post.date = new Date(post.date);
 
 		let passed = {
@@ -106,6 +103,8 @@ app.post("/jess", (req, res) => {
 		}
 
 		res.render("jess", passed);
+	} else {
+		res.render("jesslogin", {failed: "username"});
 	}
 });
 
