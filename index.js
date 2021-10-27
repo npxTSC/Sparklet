@@ -7,10 +7,10 @@ const Express = require("express"),
 	path = require("path"),
 	ejs = require("ejs"),
 	// Local Modules
-	db = require("./db.js");
+	db = require("./db.js"),
 
 // CONSTANTS
-const port = 3000,
+	port = 3000,
 	src = "src";
 
 const app = Express();
