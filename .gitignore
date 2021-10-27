@@ -1,4 +1,2 @@
 .breakpoints
-db/db.sqlite3
-db/db.sqlite3-shm
-db/db.sqlite3-wal
+db/
