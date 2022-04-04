@@ -1,21 +1,28 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+// MYSQL IS TRASH, DOESN'T WORK
 const bsqlite3 = require("better-sqlite3");
 const fs = require("fs");
+
+// Delete old table in debug, to get rid of old data. DISABLE IN PRODUCTION!
 try {
-    fs.unlinkSync("./db/db.sqlite3");
+	fs.unlinkSync("./db/db.sqlite3");
+} catch (e) {
+	console.error(e);
 }
-catch (e) {
-    console.error(e);
-}
+
 const db = bsqlite3("./db/db.sqlite3");
+
+// WAL mode, improves performance
 db.pragma("journal_mode = WAL");
+
+
+// Make tables
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
 		name TEXT NOT NULL,
 		passHash TEXT NOT NULL
 	);
 `).run();
+
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS news(
 		title TEXT NOT NULL,
@@ -25,6 +32,7 @@ db.prepare(`
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
+
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS games(
 		title TEXT NOT NULL,
@@ -36,6 +44,8 @@ db.prepare(`
 		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
+
+// JESS VMs
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS conductors(
 		name TEXT NOT NULL,
@@ -45,6 +55,7 @@ db.prepare(`
 		dateMade DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
+
 db.prepare(`
 	INSERT INTO news(title, author, content) VALUES (
 		'Test Article',
@@ -52,12 +63,14 @@ db.prepare(`
 		'<p>This was written to test SQL queries.</p>'
 	);
 `).run();
+
 db.prepare(`
 	INSERT INTO news(title, content) VALUES (
 		'Test Article 2',
 		'<p>This was written to test CSS with multiple articles.</p>'
 	);
 `).run();
+
 db.prepare(`
 	INSERT INTO games(title, creator, requirements) VALUES (
 		'Test Game',
@@ -65,10 +78,11 @@ db.prepare(`
 		(?)
 	);
 `).run(JSON.stringify({
-    js: [
-        "game1.js"
-    ], css: [
-        "game1.css"
-    ]
+	js: [
+		"game1.js"
+	], css: [
+		"game1.css"
+	]
 }));
-exports.default = db;
+
+export default db;

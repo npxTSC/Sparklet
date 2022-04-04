@@ -1,22 +1,23 @@
 "use strict";
 
 // Modules
-const Express = require("express"),
-	cparse = require('cookie-parser'),
-	b = require("bcrypt"),
-	path = require("path"),
-	ejs = require("ejs"),
-	// Local Modules
-	db = require("./db.js"),
+import Express	from "express";
+import cparse	from "cookie-parser";
+import bcrypt	from "bcrypt";
+import path		from "path";
+import ejs		from "ejs";
+
+// Local Modules
+import db		from "./db";
 
 // CONSTANTS
-	port = 3000,
-	src = "src";
+const PORT = 3000;
 
 const app = Express();
 app.use(Express.json());
 app.use(Express.urlencoded());
-app.use(Express.static(path.join(__dirname, src)));
+app.use(Express.static(path.join(__dirname, "dist")));
+app.use(Express.static(path.join(__dirname, "src/img")));
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
@@ -107,9 +108,8 @@ app.post("/jess", (req, res) => {
 		} else {
 			// Make new VM
 			db.prepare(`
-				INSERT INTO conductors(name, keyhash, doubleauth, active) VALUES (
-					(?), (?), (?), 1
-				)
+				INSERT INTO conductors(name, keyhash, doubleauth, active)
+				VALUES ( (?), (?), (?), 1 )
 			`).run();
 		}
 	} else { // If client requests an existing VM
@@ -117,12 +117,14 @@ app.post("/jess", (req, res) => {
 			// If VM active, attempt to start it
 			if (conductor.active) {
 				let passed = {
-					test: test,
+				//	test: test,
 				}
 
 				res.render("jess", passed);
 			} else { // Otherwise, tell the user the VM is dormant
-				res.render("jesslogin", {jessLoginError: "Dormant Login Attempt"});
+				res.render("jesslogin", {
+					jessLoginError: "Dormant Login Attempt"
+				});
 			}
 		} else { // If VM not found
 			res.render("jesslogin", {jessLoginError: "Login 404"});
@@ -187,13 +189,13 @@ app.get("/games", (req, res) => {
 
 
 
-let {} = app.listen(port, () => {
-	console.log("Listening on port " + port);
+let {} = app.listen(PORT, () => {
+	console.log("Listening on port " + PORT);
 });
 
 // Functions
 
-function getIp(req) {
+function getIp(req: any) {
     //return req.headers['x-forwarded-for'].split(',').shift()
     //|| req.socket.remoteAddress;
 	return req.socket.remoteAddress;
