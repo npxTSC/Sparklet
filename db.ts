@@ -45,17 +45,6 @@ db.prepare(`
 	);
 `).run();
 
-// JESS VMs
-db.prepare(`
-	CREATE TABLE IF NOT EXISTS conductors(
-		name TEXT NOT NULL,
-		keyhash TEXT,
-		doubleauth BOOLEAN NOT NULL DEFAULT 0 CHECK (doubleauth IN (0, 1)),
-		active BOOLEAN NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
-		dateMade DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-`).run();
-
 db.prepare(`
 	INSERT INTO news(title, author, content) VALUES (
 		'Test Article',
