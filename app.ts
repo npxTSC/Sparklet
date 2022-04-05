@@ -15,7 +15,7 @@ const PORT = 3000;
 
 const app = Express();
 app.use(Express.json());
-app.use(Express.urlencoded());
+app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 app.use(Express.static(path.join(__dirname, "src/img")));
 app.set("view engine", "ejs");
