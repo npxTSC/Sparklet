@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%- include("parts/head") %>
+</head>
+
+<body>
+	<%- include("parts/topbar") %>
+	<div class="bb1" style="margin-bottom: 5%;">
+		<h1 class="title center">Sparklet Login</h1>
+	</div>
+
+	<div class="bb1 container" id="jessLoginBB" style="margin-bottom: 10%; padding-bottom: 15%">
+		<form action="/login" method="post">
+			<div id="formContent container">
+				<div class="form-group mx-auto">
+					<label class="form-label" for="CID">Among Us</label>
+					<input class="form-control" name="CID" type="text">
+				</div>
+			</div>
+
+			<input type="submit" value="Start">
+		</form>
+	</div>
+</body>
+
+</html>

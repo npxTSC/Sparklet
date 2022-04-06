@@ -5,6 +5,7 @@ module.exports = {
 	mode: "development",
 	entry: [
 		path.resolve(__dirname) + "/src/js/main.ts",
+		path.resolve(__dirname) + "/src/js/quiz.ts",
 		path.resolve(__dirname) + "/src/css/main.scss",
 	],
 	module: {
@@ -45,7 +46,7 @@ module.exports = {
 	},
 	
 	output: {
-		filename: "js/packed.js",
+		filename: "js/[name].js",
 		path: path.resolve(__dirname) + "/dist",
 	},
 

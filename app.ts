@@ -6,6 +6,8 @@ import cparse	from "cookie-parser";
 import bcrypt	from "bcrypt";
 import path		from "path";
 import ejs		from "ejs";
+import http		from "http";
+import {Server}	from "socket.io";
 
 // Local Modules
 import db		from "./db";
@@ -13,7 +15,10 @@ import db		from "./db";
 // CONSTANTS
 const PORT = 3000;
 
-const app = Express();
+// App
+const app		= Express();
+const server	= http.createServer(app);
+const io		= new Server(server);
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
@@ -29,6 +34,17 @@ app.get("/about", (req, res) => {
 });
 
 
+
+app.get("/rooms/quiz", (req, res) => {
+	res.render("quizlobby");
+});
+
+app.get("/rooms/quiz/:room", (req, res) => {
+	const room = parseInt(req.params.room);
+	if (typeof room !== "number" || isNaN(room)) { return res.render("404"); }
+	
+	res.render("quizlobby");
+});
 
 app.get("/ip", (req, res) => {
 	const ip = req.headers['x-forwarded-for'] ||
