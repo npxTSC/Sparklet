@@ -15,7 +15,8 @@ $bg-dark:			0.7;
 body {
 	height: 100%;
 	color: white;
-	background-image: linear-gradient(rgba(0, 0, 0, $bg-dark), rgba(0, 0, 0, $bg-dark)),
+	background-image:	linear-gradient(rgba(0, 0, 0, $bg-dark),
+										rgba(0, 0, 0, $bg-dark)),
 						url("/city.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -107,11 +108,11 @@ div.qpostBox {
 	width: 75%;
 	text-align: center;
 	border: 1vh solid white;
-	border-radius: 10%;
+	border-radius: 3em;
 	transition: border-radius 100ms linear;
 	//cursor: pointer;
 	&:hover {
-		border-radius: 20%;
+		border-radius: 2em;
 	}
 
 	& > .newstitle {
@@ -229,4 +230,8 @@ ul#topbar {
 .nav-item:hover {
 	filter: brightness(95%);
 	transition: filter 0.2s ease-in-out;
+}
+
+.no-aa {
+	image-rendering: pixelated;
 }
