@@ -11,14 +11,21 @@ module.exports = {
 		rules: [
 			{
 				test: /\.s[ac]ss$/i,
-				use: [
+				/*use: [
 					// Creates `style` nodes from JS strings
 					"style-loader",
 					// Translates CSS into CommonJS
 					"css-loader",
 					// Compiles Sass to CSS
 					"sass-loader",
-				],
+				],*/
+				use: [
+					{
+						loader: 'file-loader',
+						options: { outputPath: 'css/', name: '[name].min.css'}
+					},
+					'sass-loader'
+				]
 			},
 			{
 				test: /\.tsx?$/,
@@ -38,8 +45,8 @@ module.exports = {
 	},
 	
 	output: {
-		filename: "packed.js",
-		path: path.resolve(__dirname) + "/dist/js",
+		filename: "js/packed.js",
+		path: path.resolve(__dirname) + "/dist",
 	},
 
 	plugins: [new CleanTerminalPlugin()]
