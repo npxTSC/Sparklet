@@ -1,7 +1,22 @@
-<ul id="topbar">
-	<li><a href="/" id="tbarname">Home</span></a></li>
-	<li><a href="/games">Games</a></li>
-	<li><a href="/rooms">Rooms</a></li>
-	<li><a href="/about">About</a></li>
-	<li><a href="/news">News</a></li>
-</ul>
+<nav class="navbar navbar-expand-lg bg-primary">
+	<div class="container-fluid"><div class="collapse navbar-collapse">
+		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			<li class="nav-item"><a class="nav-link active text-black" href="/">Home</a></li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown"
+					role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Rooms
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<li><a class="dropdown-item" href="/rooms/breakout">Breakout</a></li>
+					<li><a class="dropdown-item" href="/rooms/quiz">Quiz</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="/rooms/chat">Just Chat</a></li>
+				</ul>
+			</li>
+			<li class="nav-item"><a class="nav-link active text-black" href="/games">Games</a></li>
+			<li class="nav-item"><a class="nav-link active text-black" href="/news">News</a></li>
+			<li class="nav-item"><a class="nav-link active text-black" href="/about">About</a></li>
+		</ul>
+	</div></div>
+</nav>

@@ -3,7 +3,6 @@
 
 <head>
 	<%- include("parts/head") %>
-	<%- include("parts/afterhead") %>
 </head>
 
 <body>
@@ -15,17 +14,9 @@
 	<div class="bb1 container" id="jessLoginBB" style="margin-bottom: 10%; padding-bottom: 15%">
 		<form action="/login" method="post">
 			<div id="formContent container">
-				<div class="formLine col-6">
-					<label for="CID">Conductor ID</label>
-					<input name="CID" type="text"
-					<% if (typeof jessLoginError !== "undefined" && jessLoginError === "Login 404") { %>
-						style="background: red;"<% } %> >
-				</div>
-				<div class="formLine">
-					<label for="Password">Password</label>
-					<input name="Password" autocomplete="off" type="password"
-					<% if (typeof jessLoginError !== "undefined" && jessLoginError === "Login Password Failed") { %>
-						style="background: red;"<% } %> >
+				<div class="form-group mx-auto">
+					<label class="form-label" for="CID">Conductor ID</label>
+					<input class="form-control" name="CID" type="text">
 				</div>
 			</div>
 
