@@ -10,15 +10,18 @@ import http		from "http";
 import {Server}	from "socket.io";
 
 // Local Modules
+import {Room}	from "./classes";
 import db		from "./db";
 
 // CONSTANTS
 const PORT = 3000;
 
 // App
-const app		= Express();
-const server	= http.createServer(app);
-const io		= new Server(server);
+const app					= Express();
+const server				= http.createServer(app);
+const io					= new Server(server);
+const activeRooms: Room[]	= [];
+
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
@@ -36,14 +39,14 @@ app.get("/about", (req, res) => {
 
 
 app.get("/rooms/quiz", (req, res) => {
-	res.render("quizlobby");
+	res.render("quiz");
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
 	const room = parseInt(req.params.room);
 	if (typeof room !== "number" || isNaN(room)) { return res.render("404"); }
 	
-	res.render("quizlobby");
+	res.render("quiz");
 });
 
 app.get("/ip", (req, res) => {
@@ -137,19 +140,38 @@ app.get("/login", (req, res) => {
 
 
 
+io.on("connection", (socket) => {
+	console.log("connection");
+
+	socket.on("queryRoom", (id) => {
+		const receivedId = parseInt(
+			filterStrings(id, [" ", ",", "."]),
+		10);
+
+		if (isNaN(receivedId)) {
+			socket.send("quiz code invalid");
+			console.log("NaN quiz code");
+		}
+
+		const searched = activeRooms.filter((v) => v.joinHash === receivedId);
+
+		if (searched.length === 0) {
+			// No quiz found
+			socket.send("quiz not found");
+			console.log("Invalid quiz " + receivedId);
+		} else {
+			// Quiz join successful
+			socket.send("quiz found");
+			console.log("Successful quiz");
+		}
+	});
+});
 
 
 
 
 
-
-
-
-
-
-
-
-let {} = app.listen(PORT, () => {
+let {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
@@ -159,4 +181,13 @@ function getIp(req: any) {
     //return req.headers['x-forwarded-for'].split(',').shift()
     //|| req.socket.remoteAddress;
 	return req.socket.remoteAddress;
+}
+
+function filterStrings(str: string, filtered: string[]) {
+	let res = str;
+	filtered.forEach((v) => {
+		res = res.replaceAll(v, "");
+	});
+
+	return res;
 }

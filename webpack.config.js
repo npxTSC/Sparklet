@@ -3,27 +3,23 @@ const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 module.exports = {
 	mode: "development",
-	entry: [
-		path.resolve(__dirname) + "/src/js/main.ts",
-		path.resolve(__dirname) + "/src/js/quiz.ts",
-		path.resolve(__dirname) + "/src/css/main.scss",
-	],
+	entry: {
+		"main": path.resolve(__dirname) + "/src/js/main.ts",
+		"quiz": path.resolve(__dirname) + "/src/js/quiz.ts",
+		"sass": path.resolve(__dirname) + "/src/css/main.scss",
+	},
+	
 	module: {
 		rules: [
 			{
 				test: /\.s[ac]ss$/i,
-				/*use: [
-					// Creates `style` nodes from JS strings
-					"style-loader",
-					// Translates CSS into CommonJS
-					"css-loader",
-					// Compiles Sass to CSS
-					"sass-loader",
-				],*/
 				use: [
 					{
 						loader: 'file-loader',
-						options: { outputPath: 'css/', name: '[name].min.css'}
+						options: {
+							outputPath: 'css/',
+							name: '[name].min.css'
+						}
 					},
 					'sass-loader'
 				]
@@ -42,7 +38,7 @@ module.exports = {
 	},
 
 	resolve: {
-		extensions: ["scss", ".tsx", ".ts", ".js"],
+		extensions: [".scss", ".tsx", ".ts", ".js"],
 	},
 	
 	output: {
