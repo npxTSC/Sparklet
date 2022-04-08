@@ -149,46 +149,45 @@ app.get("/login", (req, res) => {
 
 
 
-
-
-// SOCKET.IO CODE
-
 io.on("connection", (socket) => {
 	console.log("User Connected");
-
 	socket.on("disconnect", () => {
 		console.log("User Disconnected");
 	});
 
-	socket.on("queryQuizRoom", (id) => {
-		console.log("Received request for quiz...");
+	socket.on("queryRoom", (id) => {
 		const receivedId = parseInt(
 			filterStrings(id, [" ", ",", "."]),
 		10);
 
-		// Invalid format (aka not numbers)
-		if (isNaN(receivedId)) throwInvalid();
+		if (isNaN(receivedId)) {
+			throwInvalid();
+			return;
+		}
 
 		const searched = activeRooms.filter(
 			(v) => v.joinHash === receivedId
 		);
 
 		if (searched.length === 0) {
-			// Quiz not found, or not active
+			// No quiz found
 			throwInvalid();
 		} else {
 			// Quiz join successful
-			io.emit("quizFound");
+			socket.send("quizFound");
 			console.log("Successful quiz");
 		}
 
 		function throwInvalid() {
-			// No quiz found
-			io.emit("quizNotFound");
+			socket.send("quizNotFound");
 			console.log("Invalid quiz " + receivedId);
 		}
 	});
 });
+
+
+
+
 
 let {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);

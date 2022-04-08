@@ -1,5 +1,5 @@
 import {filterStringE,
-		shakeElement}	from "../../util";
+	   shakeElement}	from "../../util";
 import {io}				from "socket.io-client";
 const socket = io();
 
@@ -10,8 +10,7 @@ const RIDElement	=
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 	if (RIDElement.value) {
-		socket.send("queryQuizRoom", RIDElement.value);
-		console.log("Emitted " + RIDElement.value);
+		socket.emit("queryRoom", RIDElement.value);
 	}
 });
 
@@ -22,13 +21,13 @@ RIDElement.addEventListener("input", () => {
 	);
 });
 
-socket.on("quizNotFound", (e) => {
+socket.on("quizNotFound", () => {
 	console.log("NF");
 	alert("not found");
 	shakeElement(RIDElement, 50, 10);
 });
 
-socket.on("quizFound", (e) => {
+socket.on("quizFound", () => {
 	console.log("F");
 	alert("found");
 //	shakeElement(RIDElement, 50, 10);
