@@ -21,7 +21,15 @@ const PORT = 3000;
 const app					= Express();
 const server				= http.createServer(app);
 const io					= new Server(server);
-const activeRooms: Room[]	= [];
+const activeRooms: Room[]	= [
+	{	// Debug Room #79
+		joinHash:	79,
+		ownerAccId:	0,
+		quizId:		0,
+		currentQ:	0,
+		players:	[]
+	}
+];
 
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
@@ -141,39 +149,45 @@ app.get("/login", (req, res) => {
 
 
 
-io.on("connection", (socket) => {
-	console.log("connection");
 
-	socket.on("queryRoom", (id) => {
+
+// SOCKET.IO CODE
+
+io.on("connection", (socket) => {
+	console.log("User Connected");
+
+	socket.on("disconnect", () => {
+		console.log("User Disconnected");
+	});
+
+	socket.on("query room", (id) => {
 		const receivedId = parseInt(
 			filterStrings(id, [" ", ",", "."]),
 		10);
 
-		if (isNaN(receivedId)) {
-			socket.send("quiz code invalid");
-			console.log("NaN quiz code");
-			return;
-		}
+		// Invalid format (aka not numbers)
+		if (isNaN(receivedId)) throwInvalid();
 
 		const searched = activeRooms.filter(
 			(v) => v.joinHash === receivedId
 		);
 
 		if (searched.length === 0) {
-			// No quiz found
-			socket.send("quiz not found");
-			console.log("Invalid quiz " + receivedId);
+			// Quiz not found, or not active
+			throwInvalid();
 		} else {
 			// Quiz join successful
 			socket.send("quiz found");
 			console.log("Successful quiz");
 		}
+
+		function throwInvalid() {
+			// No quiz found
+			socket.send("quiz not found");
+			console.log("Invalid quiz " + receivedId);
+		}
 	});
 });
-
-
-
-
 
 let {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
