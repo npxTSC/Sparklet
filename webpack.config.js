@@ -4,9 +4,10 @@ const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 module.exports = {
 	mode: "development",
 	entry: {
-		"main": path.resolve(__dirname) + "/src/js/main.ts",
-		"quiz": path.resolve(__dirname) + "/src/js/quiz.ts",
-		"sass": path.resolve(__dirname) + "/src/css/main.scss",
+		"main":				path.resolve(__dirname) + "/src/js/main.ts",
+		"quiz":				path.resolve(__dirname) + "/src/js/quiz.ts",
+		"bootstrap.min":	path.resolve(__dirname) + "/src/js/bootstrap.min.js",
+		"sass":				path.resolve(__dirname) + "/src/css/main.scss",
 	},
 	
 	module: {
