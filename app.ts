@@ -174,12 +174,12 @@ io.on("connection", (socket) => {
 			throwInvalid();
 		} else {
 			// Quiz join successful
-			socket.send("quizFound");
+			socket.emit("quizFound");
 			console.log("Successful quiz");
 		}
 
 		function throwInvalid() {
-			socket.send("quizNotFound");
+			socket.emit("quizNotFound");
 			console.log("Invalid quiz " + receivedId);
 		}
 	});
