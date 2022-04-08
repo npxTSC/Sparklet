@@ -10,8 +10,8 @@ const RIDElement	=
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 	if (RIDElement.value) {
-		socket.send("query room", RIDElement.value);
-		console.log("Emitted");
+		socket.send("queryQuizRoom", RIDElement.value);
+		console.log("Emitted " + RIDElement.value);
 	}
 });
 
@@ -22,13 +22,13 @@ RIDElement.addEventListener("input", () => {
 	);
 });
 
-socket.on("quiz not found", () => {
+socket.on("quizNotFound", (e) => {
 	console.log("NF");
 	alert("not found");
 	shakeElement(RIDElement, 50, 10);
 });
 
-socket.on("quiz found", () => {
+socket.on("quizFound", (e) => {
 	console.log("F");
 	alert("found");
 //	shakeElement(RIDElement, 50, 10);

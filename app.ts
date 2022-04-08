@@ -160,7 +160,8 @@ io.on("connection", (socket) => {
 		console.log("User Disconnected");
 	});
 
-	socket.on("query room", (id) => {
+	socket.on("queryQuizRoom", (id) => {
+		console.log("Received request for quiz...");
 		const receivedId = parseInt(
 			filterStrings(id, [" ", ",", "."]),
 		10);
@@ -177,13 +178,13 @@ io.on("connection", (socket) => {
 			throwInvalid();
 		} else {
 			// Quiz join successful
-			socket.send("quiz found");
+			io.emit("quizFound");
 			console.log("Successful quiz");
 		}
 
 		function throwInvalid() {
 			// No quiz found
-			socket.send("quiz not found");
+			io.emit("quizNotFound");
 			console.log("Invalid quiz " + receivedId);
 		}
 	});
