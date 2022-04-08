@@ -28,7 +28,9 @@ export function shakeElement(	element:		HTMLElement,
 								coefficient:	number ) {
 	element.style.transition = "0.1s";
 
-	setInterval(() => {
+	const oldTransform = element.style.transform;
+
+	const inter = setInterval(() => {
 		const [r1, r2, r3] = [
 			randInt(1, 4),
 			randInt(1, 4),
@@ -50,5 +52,10 @@ export function shakeElement(	element:		HTMLElement,
 
 		element.style.transform =
 			`translate(${transitionX},${transitionY}) rotate(${rotate})`;  
+	}, 100);
+
+	setTimeout(() => {
+		element.style.transform = oldTransform;  
+		clearInterval(inter);
 	}, time);
 } 

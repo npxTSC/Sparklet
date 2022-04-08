@@ -1,11 +1,17 @@
+// Quiz page code
+"use strict";
+
 import {filterStringE,
 	   shakeElement}	from "../../util";
 import {io}				from "socket.io-client";
+import {Modal}			from "bootstrap";
 const socket = io();
 
 const loginForm		= document.getElementById("quizLoginForm");
 const RIDElement	=
 	<HTMLInputElement> document.getElementById("RID-input");
+const errorModalE	= document.getElementById("errorModal");
+const errorModal	= new Modal(errorModalE);
 
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -22,9 +28,18 @@ RIDElement.addEventListener("input", () => {
 });
 
 socket.on("quizNotFound", () => {
-	console.log("NF");
-	alert("not found");
-	shakeElement(RIDElement, 50, 10);
+	errorModal.show();
+	errorModalE.addEventListener("hidden.bs.modal",
+		function shakeAfterClose() {
+			
+			errorModalE.removeEventListener(
+				"hidden.bs.modal",
+				shakeAfterClose
+			);
+
+			shakeElement(RIDElement, 500, 10);
+		}
+	);
 });
 
 socket.on("quizFound", () => {
