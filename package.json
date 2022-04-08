@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node17 app.js",
+    "start": "node app.js",
     "pack": "npx webpack",
     "packwatch": "npx webpack --watch",
-    "tsc": "npx tsc -w"
+    "tsc": "tsc -w"
   },
   "keywords": [],
   "author": "dex",

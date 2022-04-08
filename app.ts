@@ -1,17 +1,18 @@
 "use strict";
 
 // Modules
-import Express	from "express";
-import cparse	from "cookie-parser";
-import bcrypt	from "bcrypt";
-import path		from "path";
-import ejs		from "ejs";
-import http		from "http";
-import {Server}	from "socket.io";
+import Express				from "express";
+import cparse				from "cookie-parser";
+import bcrypt				from "bcrypt";
+import path					from "path";
+import ejs					from "ejs";
+import http					from "http";
+import {Server}				from "socket.io";
 
 // Local Modules
-import {Room}	from "./classes";
-import db		from "./db";
+import {Room}				from "./classes";
+import {filterStrings}		from "./util";
+import db					from "./db";
 
 // CONSTANTS
 const PORT = 3000;
@@ -151,9 +152,12 @@ io.on("connection", (socket) => {
 		if (isNaN(receivedId)) {
 			socket.send("quiz code invalid");
 			console.log("NaN quiz code");
+			return;
 		}
 
-		const searched = activeRooms.filter((v) => v.joinHash === receivedId);
+		const searched = activeRooms.filter(
+			(v) => v.joinHash === receivedId
+		);
 
 		if (searched.length === 0) {
 			// No quiz found
@@ -181,13 +185,4 @@ function getIp(req: any) {
     //return req.headers['x-forwarded-for'].split(',').shift()
     //|| req.socket.remoteAddress;
 	return req.socket.remoteAddress;
-}
-
-function filterStrings(str: string, filtered: string[]) {
-	let res = str;
-	filtered.forEach((v) => {
-		res = res.replaceAll(v, "");
-	});
-
-	return res;
 }

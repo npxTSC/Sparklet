@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"module": "esnext",
 		"moduleResolution": "node",
-		"target": "es5",
+		"target": "esnext",
 		"removeComments": true,
 		"noImplicitAny": true,
 		"sourceMap": false,
