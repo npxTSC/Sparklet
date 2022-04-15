@@ -10,8 +10,8 @@ const socket = io();
 const loginForm		= document.getElementById("quizLoginForm");
 const RIDElement	=
 	<HTMLInputElement> document.getElementById("RID-input");
-const errorModalE	= document.getElementById("errorModal");
-const errorModal	= new Modal(errorModalE);
+const joinModalE	= document.getElementById("joinModal");
+const joinModal		= new Modal(joinModalE);
 
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -28,22 +28,21 @@ RIDElement.addEventListener("input", () => {
 });
 
 socket.on("quizNotFound", () => {
-	errorModal.show();
-	errorModalE.addEventListener("hidden.bs.modal",
+	joinModal.show();
+	joinModalE.addEventListener("hidden.bs.modal",
 		function shakeAfterClose() {
 			
-			errorModalE.removeEventListener(
+			joinModalE.removeEventListener(
 				"hidden.bs.modal",
 				shakeAfterClose
 			);
 
-			shakeElement(RIDElement, 500, 10);
+			shakeElement(RIDElement, 750, 5);
 		}
 	);
 });
 
 socket.on("quizFound", () => {
-	console.log("F");
 	alert("found");
 //	shakeElement(RIDElement, 50, 10);
 });

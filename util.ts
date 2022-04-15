@@ -52,7 +52,7 @@ export function shakeElement(	element:		HTMLElement,
 
 		element.style.transform =
 			`translate(${transitionX},${transitionY}) rotate(${rotate})`;  
-	}, 100);
+	}, 70);
 
 	setTimeout(() => {
 		element.style.transform = oldTransform;  
