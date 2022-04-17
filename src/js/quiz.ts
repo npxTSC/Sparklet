@@ -2,16 +2,22 @@
 "use strict";
 
 import {filterStringE,
-	   shakeElement}	from "../../util";
-import {io}				from "socket.io-client";
-import {Modal}			from "bootstrap";
+	   shakeElement}		from "../../util";
+import {io}					from "socket.io-client";
+import {Modal, Carousel}	from "bootstrap";
 const socket = io();
 
 const loginForm		= document.getElementById("quizLoginForm");
 const RIDElement	=
 	<HTMLInputElement> document.getElementById("RID-input");
+
 const joinModalE	= document.getElementById("joinModal");
 const joinModal		= new Modal(joinModalE);
+
+const joinCarouselE	= document.getElementById("joinCarousel");
+const joinCarousel	= new Carousel(joinCarouselE);
+
+const joinCodeSlide	= document.getElementById("joinCodeSlide");
 
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -31,7 +37,6 @@ socket.on("quizNotFound", () => {
 	joinModal.show();
 	joinModalE.addEventListener("hidden.bs.modal",
 		function shakeAfterClose() {
-			
 			joinModalE.removeEventListener(
 				"hidden.bs.modal",
 				shakeAfterClose
@@ -43,6 +48,8 @@ socket.on("quizNotFound", () => {
 });
 
 socket.on("quizFound", () => {
-	alert("found");
-//	shakeElement(RIDElement, 50, 10);
+	joinCodeSlide.style.animation = "fadeOut 500ms normal forwards";
+	setTimeout(() => {
+		joinCarousel.to(1);
+	}, 500);
 });

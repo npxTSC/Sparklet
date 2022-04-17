@@ -156,35 +156,40 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("queryRoom", (id) => {
-		const receivedId = parseInt(
-			filterStrings(id, [" ", ",", "."]),
-		10);
-
-		if (isNaN(receivedId)) {
-			throwInvalid();
-			return;
+		const res = checkRoomExists(id);
+		
+		switch (res) {
+			case "NaN":
+			case "Not Found":
+				socket.emit("quizNotFound");
+				console.log("Invalid quiz " + id);
+				break;
+			case "Found":
+				socket.emit("quizFound");
+				console.log("Successful quiz " + id);
+				break;
 		}
+	});
 
-		const searched = activeRooms.filter(
-			(v) => v.joinHash === receivedId
-		);
-
-		if (searched.length === 0) {
-			// No quiz found
-			throwInvalid();
-		} else {
-			// Quiz join successful
-			socket.emit("quizFound");
-			console.log("Successful quiz");
-		}
-
-		function throwInvalid() {
-			socket.emit("quizNotFound");
-			console.log("Invalid quiz " + receivedId);
-		}
+	socket.on("joinRoom", (id) => {
+		//
 	});
 });
 
+function checkRoomExists(id: string) {
+	const receivedId = parseInt(
+		filterStrings(id, [" ", ",", "."]),
+	10);
+
+	if (isNaN(receivedId)) return "NaN";
+
+	const searched = activeRooms.filter(
+		(v) => v.joinHash === receivedId
+	);
+
+	if (searched.length === 0)	return "Not Found";
+	else						return "Found";
+}
 
 
 

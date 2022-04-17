@@ -14,19 +14,21 @@
 
 	<div class="bb1 container">
 		<form onsubmit="return false;" id="quizLoginForm">
-			<div id="joinCarousel" class="carousel slide pb-2" data-ride="carousel">
+			<div id="joinCarousel" class="carousel slide pb-2"
+				data-bs-touch="false" data-bs-interval="false"
+				data-ride="carousel">
 				<div class="carousel-inner">
-					<div class="carousel-item active">
-						<div class="form-group mx-auto p-5">
+					<div id="joinCodeSlide" class="carousel-item active">
+						<div class="form-group mx-auto py-5">
 							<label class="form-label text-white" for="RID">
 								Room ID</label>
-							<input class="form-control mt-2" name="RID"
+							<input class="form-control" name="RID"
 								id="RID-input" type="text">
 						</div>
 					</div>
 					
 					<div class="carousel-item">
-						<div class="form-group mx-auto">
+						<div class="form-group mx-auto py-5">
 							<label class="form-label text-white" for="username">
 								Username</label>
 							<input class="form-control" name="username"
@@ -41,11 +43,7 @@
 		</form>
 	</div>
 
-
-
-
-
-
+		
 
 	<!-- Modal -->
 	<div class="modal fade" id="joinModal" tabindex="-1">

@@ -226,3 +226,13 @@ ul#topbar {
 .no-aa {
 	image-rendering: pixelated;
 }
+
+@keyframes fadeOut {
+	0% {
+		opacity: 100%;
+	}
+	
+	100% {
+		opacity: 0%;
+	}
+}
