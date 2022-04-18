@@ -34,7 +34,6 @@ loginForm.addEventListener("submit", (e) => {
 			if (RIDElement.value) {
 				lastEnteredRID = RIDElement.value;
 				socket.emit("queryRoom", lastEnteredRID);
-				phase = "entering username";
 			}
 			break;
 
@@ -64,6 +63,7 @@ socket.on("quizFound", () => {
 	setTimeout(() => {
 		joinCarousel.to(1);
 	}, 500);
+	phase = "entering username";
 });
 
 socket.on("quizNotFound on step 2", () => errorModalHandler(RIDElement));
