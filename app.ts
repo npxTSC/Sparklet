@@ -10,7 +10,7 @@ import http					from "http";
 import {Server}				from "socket.io";
 
 // Local Modules
-import {Room}				from "./classes";
+import {Room, Keyable}		from "./classes";
 import {filterStrings}		from "./util";
 import db					from "./db";
 
@@ -68,8 +68,11 @@ app.get("/ip", (req, res) => {
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
-	if (typeof postId !== "number" || isNaN(postId)) { return res.render("404"); }
+	if (typeof postId !== "number" || isNaN(postId))
+		return res.render("404");
 
+
+	
 	let post = db.prepare(`
 		SELECT rowid, * FROM news
 		WHERE rowid = (?) AND visible = 1
@@ -92,7 +95,8 @@ app.get("/news", (req, res) => {
 	let qposts = db.prepare(`SELECT title, author, date, rowid
 		FROM news WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
 
-	for (const i in qposts) qposts[i].date = new Date(qposts[i].date);
+	for (const i in qposts)
+		qposts[i].date = new Date(qposts[i].date);
 
 	// Data passed to the render engine
 	let passed = {
@@ -171,8 +175,18 @@ io.on("connection", (socket) => {
 		}
 	});
 
-	socket.on("joinRoom", (id) => {
-		//
+	socket.on("joinRoom", (jsoni) => {
+		const inp: Keyable<string> = JSON.parse(jsoni);
+		
+		// If quiz invalid
+		if (checkRoomExists(inp.roomcode) !== "Found") {
+			console.log("Attempt to join finished quiz :P");
+			socket.emit("quizNotFound on step 2");
+			return;
+		}
+
+		// Add user to quiz
+		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
 	});
 });
 

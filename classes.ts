@@ -14,3 +14,7 @@ export interface Player {
 	accountId:	number | null;
 	correctQs:	number;
 }
+
+export interface Keyable<T> {
+	[key: string]: T;
+}
