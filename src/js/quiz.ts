@@ -84,7 +84,6 @@ socket.on("quizFound", () => {
 });
 
 socket.on("joinRoomSuccess", (data) => {
-	alert("Success!");
 	window.location.href = "/rooms/quiz/" + lastEnteredRID;
 });
 

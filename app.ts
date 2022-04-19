@@ -57,7 +57,7 @@ app.get("/rooms/quiz/:room", (req, res) => {
 	// Guard clause for invalid inputs
 	if (typeof room !== "number"	||
 		isNaN(room)					||
-		checkRoomExists(room.toString())) return res.render("404");
+		checkRoomExists(room.toString()) !== "Found") return res.render("404");
 	
 	res.render("quizplay");
 });
