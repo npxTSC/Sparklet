@@ -52,17 +52,21 @@ app.get("/rooms/quiz", (req, res) => {
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
-	const room = parseInt(req.params.room);
-	if (typeof room !== "number" || isNaN(room)) { return res.render("404"); }
+	const room = parseInt(req.params.room, 10);
+
+	// Guard clause for invalid inputs
+	if (typeof room !== "number"	||
+		isNaN(room)					||
+		checkRoomExists(room.toString())) return res.render("404");
 	
-	res.render("quiz");
+	res.render("quizplay");
 });
 
 
 
 
 app.get("/news/:PostID", (req, res) => {
-	let postId = parseInt(req.params["PostID"]);
+	let postId = parseInt(req.params["PostID"], 10);
 	if (typeof postId !== "number" || isNaN(postId))
 		return res.render("404");
 	
@@ -102,7 +106,7 @@ app.get("/news", (req, res) => {
 });
 
 app.get("/games/:GameID", (req, res) => {
-	let postId = parseInt(req.params["GameID"]);
+	let postId = parseInt(req.params["GameID"], 10);
 	if (typeof postId !== "number" || isNaN(postId)) { return res.render("404"); }
 
 	let post = db.prepare(`

@@ -9,5 +9,11 @@
 
 <script src="/js/bootstrap.min.js"></script>
 
+<% if (typeof jsData !== "undefined") { %>
+	<script>
+		const EJS = <%= JSON.stringify(jsData) %>;
+	</script>
+<% } %>
+
 <script src="/js/main.js" defer></script>
 <link rel="stylesheet" href="/css/main.min.css">
