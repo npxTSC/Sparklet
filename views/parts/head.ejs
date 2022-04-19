@@ -11,7 +11,7 @@
 
 <% if (typeof jsData !== "undefined") { %>
 	<script>
-		const EJS = <%= JSON.stringify(jsData) %>;
+		window.EJS = <%= JSON.stringify(jsData) %>;
 	</script>
 <% } %>
 
