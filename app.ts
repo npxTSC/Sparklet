@@ -57,7 +57,10 @@ app.get("/rooms/quiz/:room", (req, res) => {
 	// Guard clause for invalid inputs
 	if (typeof room !== "number"	||
 		isNaN(room)					||
-		checkRoomExists(room.toString()) !== "Found") return res.render("404");
+		checkRoomExists(room.toString()) !== "Found") {
+	
+		return res.render("404");
+	}
 	
 	res.render("quizplay");
 });
@@ -89,8 +92,12 @@ app.get("/news/:PostID", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-	let qposts = db.prepare(`SELECT title, author, date, rowid
-		FROM news WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
+	let qposts = db.prepare(`
+		SELECT title, author, date, rowid
+		FROM news WHERE visible = 1
+		ORDER BY rowid DESC
+		LIMIT 25
+	`).all();
 
 	for (const i in qposts)
 		qposts[i].date = new Date(qposts[i].date);
@@ -107,7 +114,9 @@ app.get("/news", (req, res) => {
 
 app.get("/games/:GameID", (req, res) => {
 	let postId = parseInt(req.params["GameID"], 10);
-	if (typeof postId !== "number" || isNaN(postId)) { return res.render("404"); }
+	if (typeof postId !== "number" || isNaN(postId)) {
+		return res.render("404");
+	}
 
 	let post = db.prepare(`
 		SELECT rowid, * FROM games
@@ -128,10 +137,16 @@ app.get("/games/:GameID", (req, res) => {
 });
 
 app.get("/games", (req, res) => {
-	let qposts = db.prepare(`SELECT rowid, *
-		FROM games WHERE visible = 1 ORDER BY rowid DESC LIMIT 25`).all();
+	let qposts = db.prepare(`
+		SELECT rowid, *
+		FROM games WHERE visible = 1
+		ORDER BY rowid DESC
+		LIMIT 25
+	`).all();
 
-	for (const i in qposts) qposts[i].date = new Date(qposts[i].date);
+	for (const i in qposts) {
+		qposts[i].date = new Date(qposts[i].date);
+	}
 
 	// Data passed to the render engine
 	let passed = {
