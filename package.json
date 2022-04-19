@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "pack": "npx webpack",
-    "packwatch": "npx webpack --watch",
+    "pw": "npx webpack --watch",
     "tsc": "tsc -w"
   },
   "keywords": [],
