@@ -6,13 +6,14 @@ export interface Room {
 	ownerAccId:	number;
 	quizId:		number;
 	currentQ:	number;
-	players:	Player[];
+	players:	ActiveQuizPlayer[];
 }
 
-export interface Player {
+export interface ActiveQuizPlayer {
 	username:	string;
 	accountId:	number | null;
 	correctQs:	number;
+	tempToken:	string;
 }
 
 export interface Keyable<T> {

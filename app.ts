@@ -58,20 +58,13 @@ app.get("/rooms/quiz/:room", (req, res) => {
 	res.render("quiz");
 });
 
-app.get("/ip", (req, res) => {
-	const ip = req.headers['x-forwarded-for'] ||
-		req.socket.remoteAddress ||
-		null;
-	console.log(ip);
-	res.send("User Tested IP: " + ip);
-});
+
+
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"]);
 	if (typeof postId !== "number" || isNaN(postId))
 		return res.render("404");
-
-
 	
 	let post = db.prepare(`
 		SELECT rowid, * FROM news

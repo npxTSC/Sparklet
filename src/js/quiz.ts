@@ -47,6 +47,8 @@ loginForm.addEventListener("submit", (e) => {
 				});
 				socket.emit("joinRoom", data);
 
+				phase = "loading in";
+
 				usernameSlide.style.animation = "fadeOut 500ms normal forwards";
 				submitButton.style.animation = "fadeOut 500ms normal forwards";
 				
@@ -71,6 +73,7 @@ RIDElement.addEventListener("input", () => {
 });
 
 socket.on("quizNotFound", () => errorModalHandler(RIDElement));
+socket.on("quizNotFound on step 2", () => errorModalHandler(RIDElement));
 
 socket.on("quizFound", () => {
 	joinCodeSlide.style.animation = "fadeOut 500ms normal forwards";
@@ -80,7 +83,10 @@ socket.on("quizFound", () => {
 	phase = "entering username";
 });
 
-socket.on("quizNotFound on step 2", () => errorModalHandler(RIDElement));
+socket.on("joinRoomSuccess", (data) => {
+	alert("Success!");
+	window.location.href = "/rooms/quiz/" + lastEnteredRID;
+});
 
 function errorModalHandler(shakenElement: HTMLElement) {
 	joinModal.show();
