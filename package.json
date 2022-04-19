@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "dex",
-  "license": "ISC",
+  "license": "GPLV3",
   "dependencies": {
     "@types/bootstrap": "^5.1.9",
     "bcrypt": "^5.0.1",

@@ -187,6 +187,10 @@ io.on("connection", (socket) => {
 
 		// Add user to quiz
 		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
+
+		let roomStatus = "waiting";
+		
+		socket.emit("joinRoomSuccess", {status: roomStatus});
 	});
 });
 

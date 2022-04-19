@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 
 <head>
 	<%- include("parts/head") %>
@@ -17,28 +17,43 @@
 			<div id="joinCarousel" class="carousel slide pb-2"
 				data-bs-touch="false" data-bs-interval="false"
 				data-ride="carousel">
-				<div class="carousel-inner">
+				<div class="carousel-inner py-6">
 					<div id="joinCodeSlide" class="carousel-item active">
-						<div class="form-group mx-auto py-5">
-							<label class="form-label text-white" for="RID">
+						<div class="form-group mx-auto">
+							<label class="form-label text-white" for="RID-input">
 								Room ID</label>
 							<input class="form-control" name="RID"
 								id="RID-input" type="text">
 						</div>
 					</div>
 					
-					<div class="carousel-item">
-						<div class="form-group mx-auto py-5">
-							<label class="form-label text-white" for="username">
+					<div id="usernameSlide" class="carousel-item">
+						<div class="form-group mx-auto">
+							<label class="form-label text-white" for="username-input">
 								Username</label>
 							<input class="form-control" name="username"
 								id="username-input" type="text">
 						</div>
 					</div>
+
+					<div class="carousel-item container bg-white rounded pt-4 pb-6">
+						<p class="text-center">Waiting...</p>
+						<p id="slowInternetWarning" class="text-center invisible">
+							This is taking forever!
+							If your internet speed isn't unusual,
+							try refreshing the page and joining again.
+						</p>
+						<div class="d-flex justify-content-center">
+							<div class="spinner-border mx-auto" role="status"
+								style="width: 5rem; height: 5rem;">
+								<span class="visually-hidden">Loading...</span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		
-		<input type="submit" value="Start"
+		<input id="quizJoinSubmit" type="submit" value="Start"
 			class="btn btn-primary border-black mx-auto">
 		</form>
 	</div>

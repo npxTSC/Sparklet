@@ -20,6 +20,8 @@ const joinCarouselE	= document.getElementById("joinCarousel");
 const joinCarousel	= new Carousel(joinCarouselE);
 
 const joinCodeSlide	= document.getElementById("joinCodeSlide");
+const usernameSlide	= document.getElementById("usernameSlide");
+const submitButton	= document.getElementById("quizJoinSubmit");
 
 
 
@@ -44,6 +46,18 @@ loginForm.addEventListener("submit", (e) => {
 					roomcode: lastEnteredRID,
 				});
 				socket.emit("joinRoom", data);
+
+				usernameSlide.style.animation = "fadeOut 500ms normal forwards";
+				submitButton.style.animation = "fadeOut 500ms normal forwards";
+				
+				setTimeout(() => {
+					joinCarousel.to(2);
+				}, 500);
+				
+				setTimeout(() => {
+					document.getElementById("slowInternetWarning")
+						.classList.remove("invisible");
+				}, 15000);
 			}
 			break;
 	}
