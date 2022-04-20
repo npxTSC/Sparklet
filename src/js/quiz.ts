@@ -72,8 +72,8 @@ RIDElement.addEventListener("input", () => {
 	);
 });
 
-socket.on("quizNotFound", () => errorModalHandler(RIDElement));
-socket.on("quizNotFound on step 2", () => errorModalHandler(RIDElement));
+socket.on("quizNotFound", () => errorModalHandler());
+socket.on("quizNotFound on step 2", () => errorModalHandler());
 
 socket.on("quizFound", () => {
 	joinCodeSlide.style.animation = "fadeOut 500ms normal forwards";
@@ -87,7 +87,7 @@ socket.on("joinRoomSuccess", (data) => {
 	window.location.href = "/rooms/quiz/" + lastEnteredRID;
 });
 
-function errorModalHandler(shakenElement: HTMLElement) {
+function errorModalHandler() {
 	joinModal.show();
 	joinModalE.addEventListener("hidden.bs.modal",
 		function shakeAfterClose() {
@@ -96,7 +96,7 @@ function errorModalHandler(shakenElement: HTMLElement) {
 				shakeAfterClose
 			);
 
-			shakeElement(shakenElement, 750, 5);
+			shakeElement(RIDElement, 750, 5);
 		}
 	);
 }
