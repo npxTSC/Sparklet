@@ -8,6 +8,7 @@ import path					from "path";
 import ejs					from "ejs";
 import http					from "http";
 import {Server}				from "socket.io";
+import { v4 as newUUID }	from "uuid";
 
 // Local Modules
 import {Room, Keyable}		from "./classes";
@@ -199,10 +200,14 @@ io.on("connection", (socket) => {
 
 		// Add user to quiz
 		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
-
 		let roomStatus = "waiting";
+		let quizToken = newUUID();
+		console.log(quizToken);
 		
-		socket.emit("joinRoomSuccess", {status: roomStatus});
+		socket.emit("joinRoomSuccess", {
+			roomStatus,
+			quizToken,
+		});
 	});
 });
 

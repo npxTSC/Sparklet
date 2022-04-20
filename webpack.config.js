@@ -10,9 +10,10 @@ module.exports = {
 		
 		"bootstrap.min":
 			path.resolve(__dirname) + "/src/js/bootstrap.min.js",
-		
-		"sass":
+		"sass-main":
 			path.resolve(__dirname) + "/src/css/main.scss",
+		"sass-quizplay":
+			path.resolve(__dirname) + "/src/css/quizplay.scss",
 	},
 	
 	module: {

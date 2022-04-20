@@ -58,4 +58,4 @@ export function shakeElement(	element:		HTMLElement,
 		element.style.transform = oldTransform;  
 		clearInterval(inter);
 	}, time);
-} 
+}

@@ -14,9 +14,9 @@ $bg-dark:			0.7;
 
 body {
 	height: 100%;
-	background-image:	linear-gradient(rgba(0, 0, 0, $bg-dark),
-										rgba(0, 0, 0, $bg-dark)),
-						url("/city.jpg");
+	background:	linear-gradient(rgba(0, 0, 0, $bg-dark),
+								rgba(0, 0, 0, $bg-dark)),
+					url("/city.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position-x: center;
