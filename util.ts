@@ -1,6 +1,8 @@
 // Module for both client and server
 "use strict";
 
+import {Keyable}	from "./classes";
+
 export function filterStrings(	str: string,
 								filtered: string[]) {
 	let res = str;
@@ -58,4 +60,43 @@ export function shakeElement(	element:		HTMLElement,
 		element.style.transform = oldTransform;  
 		clearInterval(inter);
 	}, time);
+}
+
+// Cookie Parser/Editor
+export namespace cmon {
+	export function assignment(key: string, val: string,
+							options?: CookieOptions) {
+		return (
+			`${key}=${val}; `+
+			`expires=${options?.expiry ?? "Fri, 31 Dec 9999 23:59:59 GMT"};`+
+			`SameSite=${options?.xorigin ?? "Lax"};`+
+			`${options?.secure ? "Secure;" : ""}`+
+			`path=${options?.path ?? "/"}`
+		);
+	}
+	
+	export function read(cstr: string, key: string): string {
+		return parse(cstr)[key];
+	}
+
+	export function parse(cstr: string): Keyable<string> {
+		const split = cstr.split(";").map((v) => v.trim());
+
+		let res: Keyable<string> = {}
+
+		split.forEach((v) => {
+			const kv: string[] = v.split("=");
+			res[kv[0]] = kv[1];
+		});
+		
+		return res;
+	}
+}
+
+interface CookieOptions {
+	secure?:		true;
+	strict?:	true;
+	xorigin?:	"Secure" | "Lax" | "None";
+	expiry?:	string;
+	path?:		string;
 }

@@ -1,14 +1,12 @@
 // Quiz page code
 "use strict";
 
-import {filterStringE,
+import {filterStringE,	cmon,
 	   shakeElement}		from "../../util";
-import {CookieMonster}		from "../../classes";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
 
 const socket = io();
-const cmon = new CookieMonster(() => document);
 
 const loginForm		= document.getElementById("quizLoginForm");
 const RIDElement	=
@@ -87,9 +85,8 @@ socket.on("quizFound", () => {
 });
 
 socket.on("joinRoomSuccess", (data) => {
-	cmon.setCookie("quiztoken", data.quizToken).then(() => {
-		window.location.href = "/rooms/quiz/" + lastEnteredRID;
-	});
+	document.cookie = cmon.assignment("quiztoken", data.quizToken);
+	window.location.href = "/rooms/quiz/" + lastEnteredRID;
 });
 
 function errorModalHandler() {
