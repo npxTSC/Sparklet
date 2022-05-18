@@ -1,4 +1,3 @@
-// MYSQL IS TRASH, DOESN'T WORK
 const bsqlite3 = require("better-sqlite3");
 const fs = require("fs");
 
@@ -19,7 +18,8 @@ db.pragma("journal_mode = WAL");
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
 		name TEXT NOT NULL,
-		passHash TEXT NOT NULL
+		passHash TEXT NOT NULL,
+		authToken TEXT NOT NULL
 	);
 `).run();
 

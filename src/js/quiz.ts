@@ -5,7 +5,6 @@ import {filterStringE,	cmon,
 	   shakeElement}		from "../../util";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
-
 const socket = io();
 
 const loginForm		= document.getElementById("quizLoginForm");
@@ -85,7 +84,8 @@ socket.on("quizFound", () => {
 });
 
 socket.on("joinRoomSuccess", (data) => {
-	document.cookie = cmon.assignment("quiztoken", data.quizToken);
+	document.cookie = cmon.assignment("quizToken", data.quizToken);
+	document.cookie = cmon.assignment("jrStatus", data.roomStatus);
 	window.location.href = "/rooms/quiz/" + lastEnteredRID;
 });
 

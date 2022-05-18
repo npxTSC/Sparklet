@@ -64,6 +64,10 @@ export function shakeElement(	element:		HTMLElement,
 
 // Cookie Parser/Editor
 export namespace cmon {
+	export function remove(key: string, cpath?: string) {
+		return `${key}=; Max-Age=-99999999; path=${cpath ?? "/"}`;
+	}
+	
 	export function assignment(key: string, val: string,
 							options?: CookieOptions) {
 		return (

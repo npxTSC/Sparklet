@@ -38,6 +38,14 @@ app.use(Express.static(path.join(__dirname, "dist")));
 app.use(Express.static(path.join(__dirname, "src/img")));
 app.set("view engine", "ejs");
 
+const wrap = (middleware) => 
+	(socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
+
 app.get("/", (req, res) => {
 	res.render("home");
 });
