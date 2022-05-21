@@ -1,7 +1,10 @@
 "use strict";
 
+import {rand}	from "libdx";
+
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
+const GUESS_DELAY	= 500; // milliseconds
 
 // Get elements as TypeScript typecasted values
 const frame		= <HTMLDivElement>
@@ -13,9 +16,12 @@ const timerE	= <HTMLHeadingElement>
 
 // Main function, as async to allow await
 (async () => {
-	const WORDS_LIST = await retrieveWords();
-	let gameRunning = false;
-	let startTime: number;
+	const WORDS_LIST:	string[]	= await retrieveWords();
+	let gameRunning					= false;
+	let lastGuessTime:	number		= 0;
+	let pastGuesses:	string[]	= [];
+	let currentWord:	string		= pickWord();
+	let startTime:		number;
 	
 	// Make each row
 	for (let i = 0; i < VISIBLE_ROWS; i++) {
@@ -68,17 +74,34 @@ const timerE	= <HTMLHeadingElement>
 		const guess = inputBox.value;
 	
 		// Don't allow guesses with less letters
-		if (guess.length !== COLUMNS) return fail("red");
+		if (guess.length !== COLUMNS) return fail("darkred");
 
 		// Don't allow guesses from made-up words
 		if (!(WORDS_LIST.includes(guess))) return fail("darkred");
+
+		// Prevent spamming guesses
+		if (Date.now() - lastGuessTime < GUESS_DELAY) return fail("aliceblue");
+
+		// Don't allow previous guesses (They won't appear as answers)
+		if (pastGuesses.includes(guess)) return fail("darkslategray");
+		
+		// If you made it here, your guess is possible. Let's try it!
+		pastGuesses.push(guess);
+		lastGuessTime = Date.now();
+		if (guess === currentWord) correctGuess();
+		else incorrectGuess();
 	
-		function fail(col: string = "red"): void {
-			inputBox.style.background = col;
-			
-			setTimeout(() => {
-				inputBox.style.background = "white";
-			}, 300);
+		function fail(col: string): void {
+			flashBox(col);
+		}
+
+		function correctGuess(): void {
+			currentWord = pickWord();
+			flashBox("#018749");
+		}
+
+		function incorrectGuess(): void {
+			flashBox("red");
 		}
 	}
 
@@ -88,6 +111,25 @@ const timerE	= <HTMLHeadingElement>
 		const dispLeft = left < 0 ? 0 : Math.ceil(left);
 		
 		timerE.innerText = dispLeft + "s";
+	}
+
+	function pickWord(): string {
+		let w;
+		
+		do {
+			w = rand.r_choice(WORDS_LIST);
+		} while (pastGuesses.includes(w));
+
+		return w;
+	}
+
+	function flashBox(	col: string = "red",
+						time: number = 300): void {
+		inputBox.style.background = col;
+		
+		setTimeout(() => {
+			inputBox.style.background = "white";
+		}, time);
 	}
 })();
 
