@@ -1,19 +1,18 @@
 const path = require("path");
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
+const cd = path.resolve(__dirname);
 
 module.exports = {
 	mode: "development",
 	entry: {
-		"main":		path.resolve(__dirname) + "/src/js/main.ts",
-		"quiz":		path.resolve(__dirname) + "/src/js/quiz.ts",
-		"quizplay":	path.resolve(__dirname) + "/src/js/quizplay.ts",
+		"main":		cd + "/src/js/main.ts",
+		"login":	cd + "/src/js/login.ts",
+		"quiz":		cd + "/src/js/quiz.ts",
+		"quizplay":	cd + "/src/js/quizplay.ts",
 		
-		"bootstrap.min":
-			path.resolve(__dirname) + "/src/js/bootstrap.min.js",
-		"sass-main":
-			path.resolve(__dirname) + "/src/css/main.scss",
-		"sass-quizplay":
-			path.resolve(__dirname) + "/src/css/quizplay.scss",
+		"bootstrap.min":	cd + "/src/js/bootstrap.min.js",
+		"sass-main":		cd + "/src/css/main.scss",
+		"sass-quizplay":	cd + "/src/css/quizplay.scss",
 	},
 	
 	module: {
@@ -50,7 +49,7 @@ module.exports = {
 	
 	output: {
 		filename: "js/[name].js",
-		path: path.resolve(__dirname) + "/dist",
+		path: cd + "/dist",
 	},
 
 	plugins: [new CleanTerminalPlugin()]

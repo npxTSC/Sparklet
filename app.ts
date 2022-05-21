@@ -80,8 +80,6 @@ app.post("/login", async (req, res) => {
 			// Opposite of login, reject if exists
 			if (row) return fail("(R) Name Already Exists");
 
-			// Otherwise, prepare for insert to db
-
 			// Get hash of password
 			const salt = await bcrypt.genSalt(10);
 			const hashed = await bcrypt.hash(pass, salt);
