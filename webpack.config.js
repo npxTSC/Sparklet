@@ -9,10 +9,12 @@ module.exports = {
 		"login":	cd + "/src/js/login.ts",
 		"quiz":		cd + "/src/js/quiz.ts",
 		"quizplay":	cd + "/src/js/quizplay.ts",
+		"wordle":	cd + "/src/js/wordle.ts",
 		
 		"bootstrap.min":	cd + "/src/js/bootstrap.min.js",
 		"sass-main":		cd + "/src/css/main.scss",
 		"sass-quizplay":	cd + "/src/css/quizplay.scss",
+		"sass-wordle":		cd + "/src/css/wordle.scss",
 	},
 	
 	module: {

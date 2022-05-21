@@ -2,6 +2,7 @@ import {qstr}		from "libdx";
 import {Keyable}	from "../../classes";
 
 const parsedQ = qstr.parseQ();
+qstr.clearQ();
 
 // Use a lookup table instead of directly sending error
 // via Qstr to prevent link-sharing vulnerabilities

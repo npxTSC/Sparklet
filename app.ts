@@ -47,6 +47,10 @@ app.get("/login", (req, res) => {
 	res.render("login");
 });
 
+app.get("/acl-hacks-2022", (req, res) => {
+	res.render("hackathon-wordle");
+});
+
 app.post("/login", async (req, res) => {
 	const user = req.body?.username;
 	const pass = req.body?.password;

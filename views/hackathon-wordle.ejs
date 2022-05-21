@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>ACL Hackathon Project (2022)</title>
+	<%- include("parts/head") %>
+	<script src="/js/wordle.js" defer></script>
+	<link rel="stylesheet" href="/css/wordle.min.css">
+</head>
+
+<body>
+	<div class="container col-10">
+		<h1 class="display-1 text-center text-white">
+			Speedrun Wordle
+		</h1>
+
+		<div class="container p-4 bg-white rounded"
+			id="gameFrame">
+			
+			<div class="container" id="cellFrame"></div>
+
+			<input type="text" id="inputBox" class="col-6"
+				placeholder="WORDLE" autocomplete="off" />
+		</div>
+	</div>
+</body>
+
+</html>
