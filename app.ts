@@ -47,7 +47,7 @@ app.get("/login", (req, res) => {
 	res.render("login");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
 	const user = req.body.username;
 	const pass = req.body.password;
 	const action = req.body.loginAction;
@@ -80,7 +80,19 @@ app.post("/login", (req, res) => {
 			// Opposite of login, reject if exists
 			if (row) return fail("(R) Name Already Exists");
 
-			// Otherwise do stuff with user data
+			// Otherwise, prepare for insert to db
+
+			// Get hash of password
+			const salt = await bcrypt.genSalt(10);
+			const hashed = await bcrypt.hash(pass, salt);
+
+			// Put in DB
+			db.prepare(`
+				INSERT INTO users(name, passHash)
+				VALUES(?, ?)
+			`).run(user, hashed);
+
+			res.redirect("/rooms/quiz");
 			
 			break;
 
@@ -90,12 +102,9 @@ app.post("/login", (req, res) => {
 			return res.send("Use the form correctly pls :)");
 	}
 
-	
-	
-
 	function fail(code: string) {
 		console.log(
-			`Failed login ${user} with password ` +
+			`Failed "${action}" on ${user} with password ` +
 			// REMOVE THIS IN PRODUCTION
 			(pass.substring(0,3) + "*".repeat(pass.length-3))
 		);

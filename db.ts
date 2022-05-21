@@ -19,7 +19,8 @@ db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
 		name TEXT NOT NULL,
 		passHash TEXT NOT NULL,
-		authToken TEXT NOT NULL
+		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		authToken TEXT
 	);
 `).run();
 
