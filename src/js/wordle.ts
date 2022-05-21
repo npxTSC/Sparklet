@@ -11,7 +11,7 @@ const inputBox	= <HTMLInputElement>
 
 // Main function, as async to allow await
 (async () => {
-	const words = await fetch("/words.txt");
+	const words = await retrieveWords();
 	
 	// Make each row
 	for (let i = 0; i < VISIBLE_ROWS; i++) {
@@ -44,7 +44,7 @@ const inputBox	= <HTMLInputElement>
 			attemptSubmit();
 		}
 	});
-});
+})();
 
 function filterInput(premod: string): string {
 	const caps = premod.toUpperCase();
@@ -68,4 +68,17 @@ function attemptSubmit() {
 			inputBox.style.background = "white";
 		}, 300);
 	}
+}
+
+async function retrieveWords() {
+	// Request data from server
+	let res =
+		await fetch("/words.txt")
+				.then(data => data.text())
+				.then(str => str.split(/\s+/));
+
+	console.log(res);
+	
+	// Parse into array
+	return res;
 }
