@@ -48,9 +48,9 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-	const user = req.body.username;
-	const pass = req.body.password;
-	const action = req.body.loginAction;
+	const user = req.body?.username;
+	const pass = req.body?.password;
+	const action = req.body?.loginAction;
 
 	// REMOVE IN PRODUCTION
 	console.log("FOR DEV PURPOSES ONLY: " + JSON.stringify(req.body));
@@ -63,14 +63,15 @@ app.post("/login", async (req, res) => {
 	switch (action) {
 		case "Log In": // Login stuff
 			// If username not found, reject early
-			if (!row) return fail("(L) Username Not Found");
+			if (!row) return fail("l-nameNotFound");
 			
 			// Compare password to hash
 			bcrypt.compare(pass, row.passHash).then((correct) => {
 				// If password is wrong, reject
-				if (!correct) return fail("(L) Incorrect Password");
+				if (!correct) return fail("l-wrongPassword");
 		
 				// Password is correct
+				console.log("CORRECT PASSWORD FOR "+ user);
 				res.redirect("/rooms/quiz");
 			});
 			
@@ -78,7 +79,10 @@ app.post("/login", async (req, res) => {
 
 		case "Register": // Register stuff
 			// Opposite of login, reject if exists
-			if (row) return fail("(R) Name Already Exists");
+			if (row) return fail("r-nameExists");
+
+			if (!pass || (pass.length === 0))
+				return fail("r-noPassword");
 
 			// Get hash of password
 			const salt = await bcrypt.genSalt(10);
@@ -90,6 +94,7 @@ app.post("/login", async (req, res) => {
 				VALUES(?, ?)
 			`).run(user, hashed);
 
+			console.log("REGISTERED USER "+ user);
 			res.redirect("/rooms/quiz");
 			
 			break;
@@ -102,9 +107,7 @@ app.post("/login", async (req, res) => {
 
 	function fail(code: string) {
 		console.log(
-			`Failed "${action}" on ${user} with password ` +
-			// REMOVE THIS IN PRODUCTION
-			(pass.substring(0,3) + "*".repeat(pass.length-3))
+			`Failed "${action}" on ${user}`
 		);
 		
 		res.redirect("/login?ecode="+code);
