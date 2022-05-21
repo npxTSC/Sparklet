@@ -13,7 +13,7 @@
 	</div>
 
 	<div class="bb1 container">
-		<form onsubmit="return false;" id="loginForm">
+		<form action="/login" method="post" id="loginForm">
 			<div class="form-group mx-auto mb-4">
 				<input class="form-control" id="conductor"
 					placeholder="Conductor ID" type="text">
@@ -21,10 +21,10 @@
 			
 			<div class="form-group mx-auto mb-5">
 				<input class="form-control" id="password"
-					placeholder="Password" type="text">
+					placeholder="Password" type="password">
 			</div>
 		
-			<input id="loginSubmit" type="submit" value="Start"
+			<input type="submit" value="Start"
 				class="btn btn-primary border-black mx-auto">
 		</form>
 	</div>
