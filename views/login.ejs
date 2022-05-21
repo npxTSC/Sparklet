@@ -15,16 +15,24 @@
 	<div class="bb1 container">
 		<form action="/login" method="post" id="loginForm">
 			<div class="form-group mx-auto mb-4">
-				<input class="form-control" id="conductor"
+				<input class="form-control" name="username"
 					placeholder="Conductor ID" type="text">
 			</div>
 			
-			<div class="form-group mx-auto mb-5">
-				<input class="form-control" id="password"
+			<div class="form-group mx-auto mb-4">
+				<input class="form-control" name="password"
 					placeholder="Password" type="password">
 			</div>
+
+			<div class="form-group mx-auto mb-5">
+				<input class="form-control" name="email"
+					placeholder="Email (if registering)" type="text">
+			</div>
 		
-			<input type="submit" value="Start"
+			<input type="submit" name="loginAction" value="Register"
+				class="btn btn-primary border-black mx-auto">
+			
+			<input type="submit" name="loginAction" value="Log In"
 				class="btn btn-primary border-black mx-auto">
 		</form>
 	</div>

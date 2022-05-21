@@ -43,11 +43,70 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/login", (req, res) => {
+	res.render("login");
+});
+
+app.post("/login", (req, res) => {
+	const user = req.body.username;
+	const pass = req.body.password;
+	const action = req.body.loginAction;
+
+	// REMOVE IN PRODUCTION
+	console.log("FOR DEV PURPOSES ONLY: " + JSON.stringify(req.body));
+
+	const row = db.prepare(`
+		SELECT * FROM users
+		WHERE name = (?)
+	`).get(user);
+
+	switch (action) {
+		case "Log In": // Login stuff
+			// If username not found, reject early
+			if (!row) return fail("(L) Username Not Found");
+			
+			// Compare password to hash
+			bcrypt.compare(pass, row.passHash).then((correct) => {
+				// If password is wrong, reject
+				if (!correct) return fail("(L) Incorrect Password");
+		
+				// Password is correct
+				res.redirect("/rooms/quiz");
+			});
+			
+			break;
+
+		case "Register": // Register stuff
+			// Opposite of login, reject if exists
+			if (row) return fail("(R) Name Already Exists");
+
+			// Otherwise do stuff with user data
+			
+			break;
+
+		default:
+			// Malformed requests should be rejected
+			res.status(400);
+			return res.send("Use the form correctly pls :)");
+	}
+
+	
+	
+
+	function fail(code: string) {
+		console.log(
+			`Failed login ${user} with password ` +
+			// REMOVE THIS IN PRODUCTION
+			(pass.substring(0,3) + "*".repeat(pass.length-3))
+		);
+		
+		res.redirect("/login?ecode="+code);
+	}
+});
+
 app.get("/about", (req, res) => {
 	res.render("about");
 });
-
-
 
 app.get("/rooms/quiz", (req, res) => {
 	res.render("quiz");
@@ -66,9 +125,6 @@ app.get("/rooms/quiz/:room", (req, res) => {
 	
 	res.render("quizplay");
 });
-
-
-
 
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"], 10);
@@ -158,11 +214,6 @@ app.get("/games", (req, res) => {
 	}
 
 	res.render("catalog", passed);
-});
-
-
-app.get("/login", (req, res) => {
-	res.render("login");
 });
 
 
