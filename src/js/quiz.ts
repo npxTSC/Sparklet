@@ -1,8 +1,7 @@
 // Quiz page code
 "use strict";
 
-import {filterStringE,	cmon,
-	   shakeElement}		from "../../util";
+import {str, cmon, elem}	from "libdx";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
 const socket = io();
@@ -66,7 +65,7 @@ loginForm.addEventListener("submit", (e) => {
 });
 
 RIDElement.addEventListener("input", () => {
-	RIDElement.value = filterStringE(
+	RIDElement.value = str.filterStringE(
 		RIDElement.value,
 		["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 	);
@@ -98,7 +97,7 @@ function errorModalHandler() {
 				shakeAfterClose
 			);
 
-			shakeElement(RIDElement, 750, 5);
+			elem.shakeElement(RIDElement, 750, 5);
 		}
 	);
 }

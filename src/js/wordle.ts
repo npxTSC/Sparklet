@@ -1,7 +1,6 @@
 "use strict";
 
-import {rand}			from "libdx";
-import {shakeElement}	from "../../util";
+import {rand, elem}		from "libdx";
 
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
@@ -68,6 +67,7 @@ const timerE	= <HTMLHeadingElement>
 	inputBox.addEventListener("keydown", (e) => {
 		if (e.key === "Enter") {
 			attemptSubmit();
+		}
 	});
 
 	function filterInput(premod: string): string {
@@ -125,7 +125,7 @@ const timerE	= <HTMLHeadingElement>
 			currentWord = pickWord();
 			lastCorrectTime = Date.now();
 			flashBox("#018749");
-			shakeElement(gframe, 700, 20);
+			elem.shakeElement(gframe, 700, 20);
 		}
 
 		function incorrectGuess(): void {

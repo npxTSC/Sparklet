@@ -9,10 +9,10 @@ import ejs					from "ejs";
 import http					from "http";
 import {Server}				from "socket.io";
 import { v4 as newUUID }	from "uuid";
+import {str}				from "libdx";
 
 // Local Modules
 import {Room, Keyable}		from "./classes";
-import {filterStrings}		from "./util";
 import db					from "./db";
 
 // CONSTANTS
@@ -279,7 +279,7 @@ io.on("connection", (socket) => {
 
 function checkRoomExists(id: string) {
 	const receivedId = parseInt(
-		filterStrings(id, [" ", ",", "."]),
+		str.filterStrings(id, [" ", ",", "."]),
 	10);
 
 	if (isNaN(receivedId)) return "NaN";

@@ -1,8 +1,7 @@
 // Actual quiz code (live game)
 "use strict";
 
-import {filterStringE,	cmon,
-	   shakeElement}		from "../../util";
+import {str, cmon, elem}	from "libdx";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
 const socket = io();
