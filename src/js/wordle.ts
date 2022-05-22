@@ -1,6 +1,7 @@
 "use strict";
 
-import {rand}	from "libdx";
+import {rand}			from "libdx";
+import {shakeElement}	from "../../util";
 
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
@@ -9,6 +10,8 @@ const GUESS_DELAY	= 500; // milliseconds
 // Get elements as TypeScript typecasted values
 const frame		= <HTMLDivElement>
 	document.getElementById("cellFrame");
+const gframe	= <HTMLDivElement>
+	document.getElementById("gameFrame");
 const inputBox	= <HTMLInputElement>
 	document.getElementById("inputBox");
 const timerE	= <HTMLHeadingElement>
@@ -16,17 +19,25 @@ const timerE	= <HTMLHeadingElement>
 
 // Main function, as async to allow await
 (async () => {
-	const WORDS_LIST:	string[]	= await retrieveWords();
+	const {WORDS_LIST, ANSWERS_LIST} = await retrieveWords();
+	
 	let gameRunning					= false;
 	let lastGuessTime:	number		= 0;
 	let pastGuesses:	string[]	= [];
 	let currentWord:	string		= pickWord();
 	let startTime:		number;
+
+	//const ROWS:			HTMLDivElement[]	= [];
+	const COLS:			HTMLDivElement[][]	= [];
+	const CTexts:		HTMLDivElement[][]	= [];
 	
 	// Make each row
 	for (let i = 0; i < VISIBLE_ROWS; i++) {
 		const row = document.createElement("div");
 		row.classList.add("row");
+		COLS.push([]);
+		CTexts.push([]);
+		//ROWS.push(row);
 	
 		// Make cells in row
 		for (let j = 0; j < COLUMNS; j++) {
@@ -39,6 +50,9 @@ const timerE	= <HTMLHeadingElement>
 			
 			cell.appendChild(cellText);
 			row.appendChild(cell);
+
+			CTexts[i].push(cellText);
+			COLS[i].push(cell);
 		}
 		
 		frame.appendChild(row);
@@ -58,7 +72,7 @@ const timerE	= <HTMLHeadingElement>
 				startTime = Date.now();
 				setInterval(timerTick, 40);
 			}
-		}
+		} else if (e.key === "Shift") alert(currentWord);
 	});
 
 	function filterInput(premod: string): string {
@@ -86,10 +100,11 @@ const timerE	= <HTMLHeadingElement>
 		if (pastGuesses.includes(guess)) return fail("darkslategray");
 		
 		// If you made it here, your guess is possible. Let's try it!
-		pastGuesses.push(guess);
+		pastGuesses.unshift(guess);
 		lastGuessTime = Date.now();
 		if (guess === currentWord) correctGuess();
 		else incorrectGuess();
+		updateHintRows();
 	
 		function fail(col: string): void {
 			flashBox(col);
@@ -98,6 +113,7 @@ const timerE	= <HTMLHeadingElement>
 		function correctGuess(): void {
 			currentWord = pickWord();
 			flashBox("#018749");
+			shakeElement(gframe, 500, 10);
 		}
 
 		function incorrectGuess(): void {
@@ -117,7 +133,7 @@ const timerE	= <HTMLHeadingElement>
 		let w;
 		
 		do {
-			w = rand.r_choice(WORDS_LIST);
+			w = rand.r_choice(ANSWERS_LIST);
 		} while (pastGuesses.includes(w));
 
 		return w;
@@ -131,11 +147,36 @@ const timerE	= <HTMLHeadingElement>
 			inputBox.style.background = "white";
 		}, time);
 	}
+
+	function updateHintRows(): void {
+		COLS.forEach((row, i) => {
+			// For each row, update its cells
+			row.forEach((cell, j) => {
+				const ctextE = CTexts[i][j];
+				const letter = pastGuesses[i]?.[j] ?? "X";
+				
+				// Set letter of CText to letter from past guess
+				ctextE.innerText = letter;
+
+				// Set color
+				ctextE.style.background = (
+					currentWord[j] === letter ? "green" :
+					currentWord.includes(letter) ? "yellow" :
+					"darkslategray"
+				);
+			});
+		});
+	}
 })();
 
 async function retrieveWords() {
 	// Request data from server
-	return	await fetch("/words.txt")
-				.then(data => data.text())
-				.then(str => str.toUpperCase().split(/\s+/));
+	return {
+		WORDS_LIST:		await fetch("/words.txt")
+							.then(data => data.text())
+							.then(str => str.toUpperCase().split(/\s+/)),
+		ANSWERS_LIST:	await fetch("/answers.txt")
+							.then(data => data.text())
+							.then(str => str.toUpperCase().split(/\s+/)),
+	}
 }
