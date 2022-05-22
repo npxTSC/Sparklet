@@ -149,8 +149,10 @@ const timerE	= <HTMLHeadingElement>
 	}
 
 	function updateHintRows(): void {
+		// For each row, update its cells
 		COLS.forEach((row, i) => {
-			// For each row, update its cells
+
+			// For each cell...
 			row.forEach((cell, j) => {
 				const ctextE = CTexts[i][j];
 				const letter = pastGuesses[i]?.[j] ?? "X";
@@ -159,15 +161,30 @@ const timerE	= <HTMLHeadingElement>
 				ctextE.innerText = letter;
 
 				// Set color
-				ctextE.style.background = (
-					currentWord[j] === letter ? "green" :
-					currentWord.includes(letter) ? "yellow" :
-					"darkslategray"
-				);
+				ctextE.style.background =
+					getLetterColor(currentWord, letter, j);
 			});
 		});
 	}
 })();
+
+function getLetterColor(word:	string,
+						letter:	string,
+						slot:	number) {
+	/*// If letter, return green. No exceptions
+	if (word[slot] === letter) return "green";
+
+	// Yellows
+	if (word.includes(letter)) {
+		return "gold";
+	}
+
+	return "lightslategray";*/
+
+	return	(word[slot] === letter) ? "green"	:
+			(word.includes(letter)) ? "gold"	:
+			"lightslategray";
+}
 
 async function retrieveWords() {
 	// Request data from server
