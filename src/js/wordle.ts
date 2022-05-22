@@ -6,7 +6,7 @@ import {shakeElement}	from "../../util";
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
 const GUESS_DELAY	= 500; // milliseconds
-const TIME_LIMIT	= 180; // seconds
+const TIME_LIMIT	= 360; // seconds
 
 // Get elements as TypeScript typecasted values
 const frame		= <HTMLDivElement>
@@ -128,7 +128,7 @@ const timerE	= <HTMLHeadingElement>
 			currentWord = pickWord();
 			lastCorrectTime = Date.now();
 			flashBox("#018749");
-			shakeElement(gframe, 700, 10);
+			shakeElement(gframe, 700, 20);
 		}
 
 		function incorrectGuess(): void {
