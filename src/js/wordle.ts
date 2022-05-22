@@ -147,14 +147,16 @@ const timerE	= <HTMLHeadingElement>
 			const hardestWord = winstats.sort((a, b) => (a.time > b.time ? 1 : -1))[0];
 			
 			alert(
-`Game over!
-Your last word was ${currentWord}
+`GAME OVER! GG+WP
+You were trying to solve "${currentWord}"
 HITS: ${Object.keys(winstats).length}
 MISSES: ${pastGuesses.length - Object.keys(winstats).length}
 ATTEMPTS: ${pastGuesses.length}
 
 YOUR HARDEST WORD: ${hardestWord.word}
-(Took you ${Math.ceil(hardestWord.time/1000)} seconds to solve!)`)
+(Took you ${Math.ceil(hardestWord.time/1000)} seconds to solve!)
+
+PRESS CTRL + W TO EXIT`)
 		}
 	}
 
