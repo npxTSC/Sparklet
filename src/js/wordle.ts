@@ -20,6 +20,7 @@ const timerE	= <HTMLHeadingElement>
 // Main function, as async to allow await
 (async () => {
 	const {WORDS_LIST, ANSWERS_LIST} = await retrieveWords();
+	document.getElementById("lagWarning").remove();
 	
 	let gameRunning					= false;
 	let lastGuessTime:	number		= 0;
@@ -171,16 +172,6 @@ const timerE	= <HTMLHeadingElement>
 function getLetterColor(word:	string,
 						letter:	string,
 						slot:	number) {
-	/*// If letter, return green. No exceptions
-	if (word[slot] === letter) return "green";
-
-	// Yellows
-	if (word.includes(letter)) {
-		return "gold";
-	}
-
-	return "lightslategray";*/
-
 	return	(word[slot] === letter) ? "green"	:
 			(word.includes(letter)) ? "gold"	:
 			"lightslategray";
