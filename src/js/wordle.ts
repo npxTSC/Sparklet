@@ -73,7 +73,7 @@ const timerE	= <HTMLHeadingElement>
 				startTime = Date.now();
 				setInterval(timerTick, 40);
 			}
-		} else if (e.key === "Shift") alert(currentWord);
+		} // else if (e.key === "Shift") alert(currentWord);
 	});
 
 	function filterInput(premod: string): string {
@@ -87,6 +87,13 @@ const timerE	= <HTMLHeadingElement>
 	
 	function attemptSubmit() {
 		const guess = inputBox.value;
+
+		// Prevent spamming guesses
+		if (Date.now() - lastGuessTime < GUESS_DELAY) return fail("aliceblue");
+
+		
+		
+		inputBox.value = "";
 	
 		// Don't allow guesses with less letters
 		if (guess.length !== COLUMNS) return fail("darkred");
@@ -94,11 +101,9 @@ const timerE	= <HTMLHeadingElement>
 		// Don't allow guesses from made-up words
 		if (!(WORDS_LIST.includes(guess))) return fail("darkred");
 
-		// Prevent spamming guesses
-		if (Date.now() - lastGuessTime < GUESS_DELAY) return fail("aliceblue");
-
 		// Don't allow previous guesses (They won't appear as answers)
 		if (pastGuesses.includes(guess)) return fail("darkslategray");
+
 		
 		// If you made it here, your guess is possible. Let's try it!
 		pastGuesses.unshift(guess);
@@ -156,10 +161,10 @@ const timerE	= <HTMLHeadingElement>
 			// For each cell...
 			row.forEach((cell, j) => {
 				const ctextE = CTexts[i][j];
-				const letter = pastGuesses[i]?.[j] ?? "X";
+				const letter = pastGuesses[i]?.[j];
 				
 				// Set letter of CText to letter from past guess
-				ctextE.innerText = letter;
+				ctextE.innerText = letter ?? "X";
 
 				// Set color
 				ctextE.style.background =
@@ -172,8 +177,9 @@ const timerE	= <HTMLHeadingElement>
 function getLetterColor(word:	string,
 						letter:	string,
 						slot:	number) {
-	return	(word[slot] === letter) ? "green"	:
-			(word.includes(letter)) ? "gold"	:
+	return	(!letter)				? "darkslategray"	:
+			(word[slot] === letter)	? "green"			:
+			(word.includes(letter))	? "gold"			:
 			"lightslategray";
 }
 
