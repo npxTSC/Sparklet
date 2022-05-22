@@ -30,8 +30,7 @@ const timerE	= <HTMLHeadingElement>
 	let currentWord:		string		= pickWord();
 	let winstats:			{word: string, time: number}[] = [];
 	let startTime:			number;
-
-	//const ROWS:			HTMLDivElement[]	= [];
+	
 	const COLS:			HTMLDivElement[][]	= [];
 	const CTexts:		HTMLDivElement[][]	= [];
 	
@@ -41,7 +40,6 @@ const timerE	= <HTMLHeadingElement>
 		row.classList.add("row");
 		COLS.push([]);
 		CTexts.push([]);
-		//ROWS.push(row);
 	
 		// Make cells in row
 		for (let j = 0; j < COLUMNS; j++) {
@@ -70,7 +68,6 @@ const timerE	= <HTMLHeadingElement>
 	inputBox.addEventListener("keydown", (e) => {
 		if (e.key === "Enter") {
 			attemptSubmit();
-		} // else if (e.key === "Shift") alert(currentWord);
 	});
 
 	function filterInput(premod: string): string {
@@ -156,7 +153,7 @@ ATTEMPTS: ${pastGuesses.length}
 YOUR HARDEST WORD: ${hardestWord.word}
 (Took you ${Math.ceil(hardestWord.time/1000)} seconds to solve!)
 
-PRESS CTRL + W TO EXIT`)
+PRESS CTRL + W TO EXIT`);
 		}
 	}
 
