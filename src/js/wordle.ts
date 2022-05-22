@@ -6,6 +6,7 @@ import {shakeElement}	from "../../util";
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
 const GUESS_DELAY	= 500; // milliseconds
+const TIME_LIMIT	= 180; // seconds
 
 // Get elements as TypeScript typecasted values
 const frame		= <HTMLDivElement>
@@ -22,11 +23,13 @@ const timerE	= <HTMLHeadingElement>
 	const {WORDS_LIST, ANSWERS_LIST} = await retrieveWords();
 	document.getElementById("lagWarning").remove();
 	
-	let gameRunning					= false;
-	let lastGuessTime:	number		= 0;
-	let pastGuesses:	string[]	= [];
-	let currentWord:	string		= pickWord();
-	let startTime:		number;
+	let gameRunning						= false;
+	let lastGuessTime:		number		= 0;
+	let lastCorrectTime:	number		= Date.now();
+	let pastGuesses:		string[]	= [];
+	let currentWord:		string		= pickWord();
+	let winstats:			{word: string, time: number}[] = [];
+	let startTime:			number;
 
 	//const ROWS:			HTMLDivElement[]	= [];
 	const COLS:			HTMLDivElement[][]	= [];
@@ -67,12 +70,6 @@ const timerE	= <HTMLHeadingElement>
 	inputBox.addEventListener("keydown", (e) => {
 		if (e.key === "Enter") {
 			attemptSubmit();
-
-			if (!gameRunning) {
-				gameRunning = true;
-				startTime = Date.now();
-				setInterval(timerTick, 40);
-			}
 		} // else if (e.key === "Shift") alert(currentWord);
 	});
 
@@ -106,6 +103,12 @@ const timerE	= <HTMLHeadingElement>
 
 		
 		// If you made it here, your guess is possible. Let's try it!
+		if (!gameRunning) {
+			gameRunning = true;
+			startTime = lastCorrectTime = Date.now();
+			setInterval(timerTick, 40);
+		}
+		
 		pastGuesses.unshift(guess);
 		lastGuessTime = Date.now();
 		if (guess === currentWord) correctGuess();
@@ -117,9 +120,15 @@ const timerE	= <HTMLHeadingElement>
 		}
 
 		function correctGuess(): void {
+			winstats.push({
+				word: currentWord,
+				time: Date.now() - lastCorrectTime,
+			});
+
 			currentWord = pickWord();
+			lastCorrectTime = Date.now();
 			flashBox("#018749");
-			shakeElement(gframe, 500, 10);
+			shakeElement(gframe, 700, 10);
 		}
 
 		function incorrectGuess(): void {
@@ -129,10 +138,24 @@ const timerE	= <HTMLHeadingElement>
 
 	async function timerTick() {
 		const elapsed = Date.now() - startTime;
-		const left = 90 - (elapsed / 1000);
+		const left = TIME_LIMIT - (elapsed / 1000);
 		const dispLeft = left < 0 ? 0 : Math.ceil(left);
 		
 		timerE.innerText = dispLeft + "s";
+
+		if (left < 0) {
+			const hardestWord = winstats.sort((a, b) => (a.time > b.time ? 1 : -1))[0];
+			
+			alert(
+`Game over!
+Your last word was ${currentWord}
+HITS: ${Object.keys(winstats).length}
+MISSES: ${pastGuesses.length - Object.keys(winstats).length}
+ATTEMPTS: ${pastGuesses.length}
+
+YOUR HARDEST WORD: ${hardestWord.word}
+(Took you ${Math.ceil(hardestWord.time/1000)} seconds to solve!)`)
+		}
 	}
 
 	function pickWord(): string {
