@@ -10,6 +10,7 @@ import http					from "http";
 import {Server}				from "socket.io";
 import { v4 as newUUID }	from "uuid";
 import {str}				from "libdx";
+import gzipCompression		from "compression";
 
 // Local Modules
 import {Room, Keyable}		from "./classes";
@@ -33,6 +34,7 @@ const activeRooms: Room[]	= [
 ];
 
 app.use(Express.json());
+app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 app.use(Express.static(path.join(__dirname, "src/img")));
