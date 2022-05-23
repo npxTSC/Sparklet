@@ -30,15 +30,18 @@ const timerE	= <HTMLHeadingElement>
 	let winstats:			{word: string, time: number}[] = [];
 	let startTime:			number;
 	
-	const COLS:			HTMLDivElement[][]	= [];
-	const CTexts:		HTMLDivElement[][]	= [];
+	const board:			RowData[]	= [];
 	
 	// Make each row
 	for (let i = 0; i < VISIBLE_ROWS; i++) {
 		const row = document.createElement("div");
 		row.classList.add("row");
-		COLS.push([]);
-		CTexts.push([]);
+		
+		board.push({
+			rowE:			row,
+			cellsE:			[],
+			ctextsE:		[],
+		});
 	
 		// Make cells in row
 		for (let j = 0; j < COLUMNS; j++) {
@@ -52,8 +55,8 @@ const timerE	= <HTMLHeadingElement>
 			cell.appendChild(cellText);
 			row.appendChild(cell);
 
-			CTexts[i].push(cellText);
-			COLS[i].push(cell);
+			board[i].ctextsE.push(cellText);
+			board[i].cellsE.push(cell);
 		}
 		
 		frame.appendChild(row);
@@ -178,7 +181,9 @@ PRESS CTRL + W TO EXIT`);
 
 	function updateHintRows(): void {
 		// For each row, update its cells
-		COLS.forEach((row, i) => {
+		board.forEach(recolorRow);
+		
+		/*COLS.forEach((row, i) => {
 
 			// For each cell...
 			row.forEach((cell, j) => {
@@ -192,7 +197,20 @@ PRESS CTRL + W TO EXIT`);
 				ctextE.style.background =
 					getLetterColor(currentWord, letter, j);
 			});
-		});
+		});*/
+	}
+
+	
+	function recolorRow(rData: RowData, rNum: number) {
+		for (let i = 0; i < rData.cellsE.length; i++) {
+			const c = rData.cellsE[i];
+			const ct = rData.ctextsE[i];
+			
+			const letter = pastGuesses[rNum]?.[i];
+	
+			ct.innerText = letter ?? "X";
+			ct.style.background = getLetterColor(currentWord, letter, i);
+		}
 	}
 })();
 
@@ -215,4 +233,10 @@ async function retrieveWords() {
 							.then(data => data.text())
 							.then(str => str.toUpperCase().split(/\s+/)),
 	}
+}
+
+interface RowData {
+	rowE:		HTMLDivElement;
+	cellsE:		HTMLDivElement[];
+	ctextsE:	HTMLDivElement[];
 }
