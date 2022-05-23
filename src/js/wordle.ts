@@ -1,6 +1,6 @@
 "use strict";
 
-import {rand, elem}		from "libdx";
+import {rand, elem, str}	from "libdx";
 
 const VISIBLE_ROWS	= 2;
 const COLUMNS		= 6;
@@ -182,46 +182,60 @@ PRESS CTRL + W TO EXIT`);
 	function updateHintRows(): void {
 		// For each row, update its cells
 		board.forEach(recolorRow);
-		
-		/*COLS.forEach((row, i) => {
-
-			// For each cell...
-			row.forEach((cell, j) => {
-				const ctextE = CTexts[i][j];
-				const letter = pastGuesses[i]?.[j];
-				
-				// Set letter of CText to letter from past guess
-				ctextE.innerText = letter ?? "X";
-
-				// Set color
-				ctextE.style.background =
-					getLetterColor(currentWord, letter, j);
-			});
-		});*/
 	}
-
 	
 	function recolorRow(rData: RowData, rNum: number) {
-		for (let i = 0; i < rData.cellsE.length; i++) {
-			const c = rData.cellsE[i];
-			const ct = rData.ctextsE[i];
+		const rowContent = pastGuesses[rNum];
+		
+		// For each letter...
+		for (let slot = 0; slot < rData.cellsE.length; slot++) {
+			const c = rData.cellsE[slot];
+			const ct = rData.ctextsE[slot];
+
+			const letter = rowContent?.[slot];
 			
-			const letter = pastGuesses[rNum]?.[i];
-	
 			ct.innerText = letter ?? "X";
-			ct.style.background = getLetterColor(currentWord, letter, i);
+	
+			ct.style.background = getLetterColor(rowContent, slot);
 		}
 	}
-})();
 
-function getLetterColor(word:	string,
-						letter:	string,
-						slot:	number) {
-	return	(!letter)				? "darkslategray"	:
-			(word[slot] === letter)	? "green"			:
-			(word.includes(letter))	? "gold"			:
-			"lightslategray";
-}
+	function getLetterColor(guess:	string,
+							slot:	number) {
+		const letter = guess[slot];
+
+		if (!letter)						return "darkslategray";
+		if ((currentWord[slot] === letter))	return "green";
+
+		// Yellow-box algorithm
+		if (currentWord.includes(letter)) {
+			return "gold";
+			
+			/*const occsInWord = str.occurrenceArray(currentWord, letter);
+			const occsInGuess = str.occurrenceArray(guess, letter);
+			
+			// If the letter in this cell occurs more
+			// than once in the correct word
+			if (occsInWord.length > 1) {
+				// If there aren't already that many greens
+				// or yellows, then make it yellow.
+				if (occsInGuess.length > occsInWord.length) {
+					//
+				}
+				
+				// Otherwise, default to gray.
+			} else {
+				// If only 1 of the letter is in the word,
+				// and this letter is in the wrong place,
+				// then the only option is yellow.
+				return "gold";
+			}*/
+		}
+
+		// Default value
+		return "lightslategray";
+	}
+})();
 
 async function retrieveWords() {
 	// Request data from server
