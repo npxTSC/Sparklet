@@ -37,7 +37,6 @@ app.use(Express.json());
 app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
-app.use(Express.static(path.join(__dirname, "src/img")));
 app.set("view engine", "ejs");
 
 
@@ -47,10 +46,6 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
 	res.render("login");
-});
-
-app.get("/acl-hacks-2022", (req, res) => {
-	res.render("hackathon-wordle");
 });
 
 app.post("/login", async (req, res) => {
@@ -186,15 +181,15 @@ app.get("/news", (req, res) => {
 	res.render("news", passed);
 });
 
-app.get("/games/:GameID", (req, res) => {
-	let postId = parseInt(req.params["GameID"], 10);
-	if (typeof postId !== "number" || isNaN(postId)) {
+app.get("/sparks/:GameID", (req, res) => {
+	let postId = req.params["GameID"];
+	if (!postId) {
 		return res.render("404");
 	}
 
 	let post = db.prepare(`
 		SELECT rowid, * FROM games
-		WHERE rowid = (?) AND visible = 1
+		WHERE id = (?) AND visible = 1
 	`).get(postId);
 
 	if (!post) { return res.render("404"); }
@@ -206,11 +201,12 @@ app.get("/games/:GameID", (req, res) => {
 			post: post,
 		}
 
-		res.render("game", passed);
+		// Probably a security issue if people use .. or ~, fix later
+		res.render("sparks/"+postId, passed);
 	}
 });
 
-app.get("/games", (req, res) => {
+app.get("/sparks", (req, res) => {
 	let qposts = db.prepare(`
 		SELECT rowid, *
 		FROM games WHERE visible = 1

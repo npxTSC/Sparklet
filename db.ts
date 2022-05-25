@@ -36,13 +36,13 @@ db.prepare(`
 
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS games(
-		title TEXT NOT NULL,
-		creator TEXT NOT NULL DEFAULT 'Anonymous',
-		description TEXT NOT NULL DEFAULT 'No description given... :(',
-		requirements TEXT NOT NULL,
-		visible BOOLEAN NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
-		embedded BOOLEAN NOT NULL DEFAULT 0 CHECK (embedded IN (0, 1)),
-		date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+		id			TEXT PRIMARY KEY,
+		title		TEXT		NOT NULL,
+		creator		TEXT		NOT NULL DEFAULT 'Anonymous',
+		description	TEXT		NOT NULL DEFAULT 'No description given... :(',
+		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
+		embedded	BOOLEAN		NOT NULL DEFAULT 0 CHECK (embedded IN (0, 1)),
+		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
 
@@ -62,17 +62,11 @@ db.prepare(`
 `).run();
 
 db.prepare(`
-	INSERT INTO games(title, creator, requirements) VALUES (
-		'Test Game',
+	INSERT INTO games(title, creator, id) VALUES (
+		'Speedrun Wordle',
 		'Dexie',
-		(?)
+		'hackathon-wordle'
 	);
-`).run(JSON.stringify({
-	js: [
-		"game1.js"
-	], css: [
-		"game1.css"
-	]
-}));
+`).run();
 
 export default db;
