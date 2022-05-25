@@ -8,7 +8,7 @@ import path					from "path";
 import ejs					from "ejs";
 import http					from "http";
 import {Server}				from "socket.io";
-import { v4 as newUUID }	from "uuid";
+import {v4 as newUUID}		from "uuid";
 import {str}				from "libdx";
 import gzipCompression		from "compression";
 
@@ -29,7 +29,7 @@ const activeRooms: Room[]	= [
 		ownerAccId:	0,
 		quizId:		0,
 		currentQ:	0,
-		players:	[]
+		players:	[],
 	}
 ];
 
@@ -192,18 +192,17 @@ app.get("/sparks/:GameID", (req, res) => {
 		WHERE id = (?) AND visible = 1
 	`).get(postId);
 
-	if (!post) { return res.render("404"); }
-	else {
-		post.date = new Date(post.date);
+	if (!post) return res.render("404");
+	
+	post.date = new Date(post.date);
 
-		let passed = {
-			postId: postId,
-			post: post,
-		}
-
-		// Probably a security issue if people use .. or ~, fix later
-		res.render("sparks/"+postId, passed);
+	let passed = {
+		postId: postId,
+		post: post,
 	}
+
+	// Probably a security issue if people use .. or ~, fix later
+	res.render("sparks/"+postId, passed);
 });
 
 app.get("/sparks", (req, res) => {
@@ -290,9 +289,6 @@ function checkRoomExists(id: string) {
 	else						return "Found";
 }
 
-
-
-
 let {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
@@ -300,7 +296,5 @@ let {} = server.listen(PORT, () => {
 // Functions
 
 function getIp(req: any) {
-    //return req.headers['x-forwarded-for'].split(',').shift()
-    //|| req.socket.remoteAddress;
 	return req.socket.remoteAddress;
 }
