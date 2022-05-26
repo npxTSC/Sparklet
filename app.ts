@@ -2,6 +2,7 @@
 
 // Modules
 import Express				from "express";
+import crypto				from "crypto";
 import cparse				from "cookie-parser";
 import bcrypt				from "bcrypt";
 import path					from "path";
@@ -34,6 +35,7 @@ const activeRooms: Room[]	= [
 ];
 
 app.use(Express.json());
+app.use(cparse());
 app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
@@ -62,7 +64,7 @@ app.post("/login", async (req, res) => {
 	`).get(user);
 
 	switch (action) {
-		case "Log In": // Login stuff
+		case "Log In":
 			// If username not found, reject early
 			if (!row) return fail("l-nameNotFound");
 			
@@ -73,12 +75,17 @@ app.post("/login", async (req, res) => {
 		
 				// Password is correct
 				console.log("CORRECT PASSWORD FOR "+ user);
+
+				// Change login token in DB
+				const token = makeNewTokenFor(user);
+				
+				res.cookie("luster", token);
 				res.redirect("/rooms/quiz");
 			});
 			
 			break;
 
-		case "Register": // Register stuff
+		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
@@ -113,10 +120,24 @@ app.post("/login", async (req, res) => {
 		
 		res.redirect("/login?ecode="+code);
 	}
+
+	function makeNewTokenFor(user: string) {
+		const token = crypto.randomBytes(512).toString("hex");
+
+		db.prepare(`
+			UPDATE users
+			SET authToken = (?)
+			WHERE name = (?)
+		`).run(token, user);
+	}
 });
 
 app.get("/about", (req, res) => {
 	res.render("about");
+});
+
+app.get("/rooms/breakout", (req, res) => {
+	res.render("breakout");
 });
 
 app.get("/rooms/quiz", (req, res) => {
@@ -201,7 +222,6 @@ app.get("/sparks/:GameID", (req, res) => {
 		post: post,
 	}
 
-	// Probably a security issue if people use .. or ~, fix later
 	res.render("sparks/"+postId, passed);
 });
 
