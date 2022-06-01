@@ -21,7 +21,7 @@ import db					from "./db";
 const PORT = 3000;
 
 // App
-const app					= Express();
+export const app			= Express();
 const server				= http.createServer(app);
 const io					= new Server(server);
 const activeRooms: Room[]	= [
