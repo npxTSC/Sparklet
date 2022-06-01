@@ -9,6 +9,7 @@ qstr.clearQ();
 const loginECs: Keyable<string> = {
 	"l-nameNotFound":	"An account by this username was not found.",
 	"l-wrongPassword":	"Your password was incorrect. Maybe you forgot it?",
+	"l-specialChars":	"Usernames can not contain special characters.",
 	"r-nameExists":		"Couldn't register, because that name is taken!",
 	"r-noPassword":		"You can't register without a password, genius!",
 }

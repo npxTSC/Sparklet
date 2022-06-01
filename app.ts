@@ -58,6 +58,8 @@ app.post("/login", async (req, res) => {
 	// REMOVE IN PRODUCTION
 	console.log("FOR DEV PURPOSES ONLY: " + JSON.stringify(req.body));
 
+	if (str.containsSpecials(user)) return fail("l-specialChars")
+
 	const row = db.prepare(`
 		SELECT * FROM users
 		WHERE name = (?)
@@ -129,6 +131,8 @@ app.post("/login", async (req, res) => {
 			SET authToken = (?)
 			WHERE name = (?)
 		`).run(token, user);
+
+		return token;
 	}
 });
 
