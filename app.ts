@@ -8,7 +8,7 @@ import bcrypt				from "bcrypt";
 import path					from "path";
 import ejs					from "ejs";
 import http					from "http";
-import {Server}				from "socket.io";
+import {Server as ioServer}	from "socket.io";
 import {v4 as newUUID}		from "uuid";
 import {str}				from "libdx";
 import gzipCompression		from "compression";
@@ -23,7 +23,7 @@ const PORT = 3000;
 // App
 export const app			= Express();
 const server				= http.createServer(app);
-const io					= new Server(server);
+const io					= new ioServer(server);
 const activeRooms: Room[]	= [
 	{	// Debug Room #79
 		joinHash:	79,
@@ -54,9 +54,6 @@ app.post("/login", async (req, res) => {
 	const user = req.body?.username;
 	const pass = req.body?.password;
 	const action = req.body?.loginAction;
-
-	// REMOVE IN PRODUCTION
-	console.log("FOR DEV PURPOSES ONLY: " + JSON.stringify(req.body));
 
 	if (str.containsSpecials(user)) return fail("l-specialChars")
 
@@ -159,7 +156,7 @@ app.get("/rooms/quiz/:room", (req, res) => {
 		return res.render("404");
 	}
 	
-	res.render("quizplay");
+	res.render("quizplay", {room: room});
 });
 
 app.get("/news/:PostID", (req, res) => {
@@ -172,17 +169,17 @@ app.get("/news/:PostID", (req, res) => {
 		WHERE rowid = (?) AND visible = 1
 	`).get(postId);
 
-	if (!post) { return res.render("404"); }
-	else {
-		post.date = new Date(post.date);
+	if (!post) return res.render("404");
 
-		let passed = {
-			postId: postId,
-			post: post,
-		}
+	
+	post.date = new Date(post.date);
 
-		res.render("article", passed);
+	let passed = {
+		postId: postId,
+		post: post,
 	}
+
+	res.render("article", passed);
 });
 
 app.get("/news", (req, res) => {
@@ -198,8 +195,7 @@ app.get("/news", (req, res) => {
 
 	// Data passed to the render engine
 	let passed = {
-		// Quick Posts: Doesn't include content, just enough
-		// stuff to display an interesting link.
+		// Quick Posts: No content, just headline data
 		qposts: qposts
 	}
 
@@ -243,8 +239,6 @@ app.get("/sparks", (req, res) => {
 
 	// Data passed to the render engine
 	let passed = {
-		// Quick Posts: Doesn't include content, just enough
-		// stuff to display an interesting link.
 		qposts: qposts
 	}
 
