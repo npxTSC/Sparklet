@@ -20,9 +20,9 @@ db.prepare(`
 		name			TEXT NOT NULL,
 		passHash		TEXT NOT NULL,
 		date			DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		emailVerified	${booleanSQL("emailVerified", false)} NOT NULL,
+		emailVerified	${booleanSQL("emailVerified", false)},
 		emailVToken		TEXT,
-		authToken		TEXT,
+		authToken		TEXT
 	);
 `).run();
 
@@ -31,7 +31,7 @@ db.prepare(`
 		title		TEXT		NOT NULL,
 		author		TEXT		NOT NULL DEFAULT 'Anonymous',
 		content		TEXT		NOT NULL,
-		visible		${booleanSQL("visible", true)} NOT NULL,
+		visible		${booleanSQL("visible", true)},
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
@@ -42,8 +42,8 @@ db.prepare(`
 		title		TEXT		NOT NULL,
 		creator		TEXT		NOT NULL DEFAULT 'Anonymous',
 		description	TEXT		NOT NULL DEFAULT 'No description given... :(',
-		visible		${booleanSQL("visible", true)} NOT NULL,
-		embedded	${booleanSQL("embedded", false)} NOT NULL,
+		visible		${booleanSQL("visible", true)},
+		embedded	${booleanSQL("embedded", false)},
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
@@ -75,5 +75,5 @@ export default db;
 
 function booleanSQL(name: string, deft = true): string {
 	return
-`BOOLEAN DEFAULT ${deft ? 1 : 0} CHECK (${name} IN (0, 1))`;
+`BOOLEAN NOT NULL DEFAULT ${deft ? 1 : 0} CHECK (${name} IN (0, 1))`;
 }
