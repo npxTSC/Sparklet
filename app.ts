@@ -16,6 +16,7 @@ import gzipCompression		from "compression";
 // Local Modules
 import {Room, Keyable}		from "./classes";
 import db					from "./db";
+import accountsMw			from "./middleware/accounts";
 
 // CONSTANTS
 const PORT = 3000;
@@ -36,11 +37,11 @@ const activeRooms: Room[]	= [
 
 app.use(Express.json());
 app.use(cparse());
+app.use(accountsMw);
 app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 app.set("view engine", "ejs");
-
 
 app.get("/", (req, res) => {
 	res.render("home");
@@ -78,6 +79,7 @@ app.post("/login", async (req, res) => {
 				// Change login token in DB
 				const token = makeNewTokenFor(user);
 				
+				res.cookie("user", user);
 				res.cookie("luster", token);
 				res.redirect("/rooms/quiz");
 			});

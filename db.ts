@@ -22,7 +22,8 @@ db.prepare(`
 		date			DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		emailVerified	${booleanSQL("emailVerified", false)},
 		emailVToken		TEXT,
-		authToken		TEXT
+		authToken		TEXT,
+		pfpUuid			TEXT
 	);
 `).run();
 
