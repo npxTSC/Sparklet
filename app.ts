@@ -14,7 +14,7 @@ import {str}				from "libdx";
 import gzipCompression		from "compression";
 
 // Local Modules
-import {Room, Keyable}		from "./classes";
+import {Room}				from "./classes";
 import db					from "./db";
 import accountsMw			from "./middleware/accounts";
 
@@ -279,7 +279,7 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("joinRoom", (jsoni) => {
-		const inp: Keyable<string> = JSON.parse(jsoni);
+		const inp: Record<string, string> = JSON.parse(jsoni);
 		
 		// If quiz invalid
 		if (checkRoomExists(inp.roomcode) !== "Found") {

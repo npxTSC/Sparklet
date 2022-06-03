@@ -1,12 +1,11 @@
 import {qstr}		from "libdx";
-import {Keyable}	from "../../classes";
 
 const parsedQ = qstr.parseQ();
 qstr.clearQ();
 
 // Use a lookup table instead of directly sending error
 // via Qstr to prevent link-sharing vulnerabilities
-const loginECs: Keyable<string> = {
+const loginECs: Record<string, string> = {
 	"l-nameNotFound":	"An account by this username was not found.",
 	"l-wrongPassword":	"Your password was incorrect. Maybe you forgot it?",
 	"l-specialChars":	"Usernames can not contain special characters.",

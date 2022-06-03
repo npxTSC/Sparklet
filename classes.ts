@@ -1,10 +1,6 @@
 // Module for providing classes/types to app.ts
 "use strict";
 
-export interface Keyable<T> {
-	[key: string]: T;
-}
-
 export interface Conductor {
 	username:	string;
 	id:			number;
