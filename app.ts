@@ -99,9 +99,10 @@ app.post("/login", async (req, res) => {
 
 			// Put in DB
 			db.prepare(`
-				INSERT INTO users(name, passHash)
-				VALUES(?, ?)
-			`).run(user, hashed);
+				INSERT INTO users(name, passHash,
+publicUuid, profileUuid, privateUuid)
+				VALUES(?, ?, ?, ?, ?)
+			`).run(user, hashed, newUUID(), newUUID(), newUUID());
 
 			console.log("REGISTERED USER "+ user);
 			res.redirect("/rooms/quiz");

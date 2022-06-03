@@ -16,17 +16,17 @@ export default function middleware(	req:	Request,
 	const user = req.cookies?.user;
 	const token = req.cookies?.luster;
 
-	req.account = null;
+	res.locals.account = null;
 	if (!user) return next();
 
 	const row = db.prepare(`
-		SELECT name, pfpUuid
+		SELECT name, profileUuid
 		FROM users
 		WHERE name = (?) AND authToken = (?);
 	`).get(user, token);
 
 	if (!row) return next();
 	
-	req.account = row;
+	res.locals.account = row;
 	return next();
 }

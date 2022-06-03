@@ -23,7 +23,9 @@ db.prepare(`
 		emailVerified	${booleanSQL("emailVerified", false)},
 		emailVToken		TEXT,
 		authToken		TEXT,
-		pfpUuid			TEXT
+		publicUuid		TEXT NOT NULL,
+		profileUuid		TEXT NOT NULL,
+		privateUuid		TEXT NOT NULL
 	);
 `).run();
 
