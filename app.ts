@@ -58,34 +58,12 @@ app.post("/login", async (req, res) => {
 
 	if (str.containsSpecials(user)) return fail("l-specialChars")
 
-	const row = db.prepare(`
+	let row = db.prepare(`
 		SELECT * FROM users
 		WHERE name = (?)
 	`).get(user);
 
 	switch (action) {
-		case "Log In":
-			// If username not found, reject early
-			if (!row) return fail("l-nameNotFound");
-			
-			// Compare password to hash
-			bcrypt.compare(pass, row.passHash).then((correct) => {
-				// If password is wrong, reject
-				if (!correct) return fail("l-wrongPassword");
-		
-				// Password is correct
-				console.log("CORRECT PASSWORD FOR "+ user);
-
-				// Change login token in DB
-				const token = makeNewTokenFor(user);
-				
-				res.cookie("user", user);
-				res.cookie("luster", token);
-				res.redirect("/rooms/quiz");
-			});
-			
-			break;
-
 		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
@@ -104,8 +82,36 @@ publicUuid, profileUuid, privateUuid)
 				VALUES(?, ?, ?, ?, ?)
 			`).run(user, hashed, newUUID(), newUUID(), newUUID());
 
-			console.log("REGISTERED USER "+ user);
-			res.redirect("/rooms/quiz");
+			console.log(`New account created: ${user}`);
+
+			row = db.prepare(`
+				SELECT * FROM users
+				WHERE name = (?)
+			`).get(user);
+
+			// Fall-through to Login, because let's be real,
+			// it's fucking annoying when you need to log in
+			// after registering on a site ¯\_(ツ)_/¯
+		
+		case "Log In":
+			// If username not found, reject early
+			if (!row) return fail("l-nameNotFound");
+			
+			// Compare password to hash
+			bcrypt.compare(pass, row.passHash).then((correct) => {
+				// If password is wrong, reject
+				if (!correct) return fail("l-wrongPassword");
+		
+				// Password is correct
+				console.log(`User ${user} logged in successfully`);
+
+				// Change login token in DB
+				const token = makeNewTokenFor(user);
+				
+				res.cookie("user", user);
+				res.cookie("luster", token);
+				res.redirect("/rooms/quiz");
+			});
 			
 			break;
 
