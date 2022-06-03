@@ -17,15 +17,15 @@ db.pragma("journal_mode = WAL");
 // Make tables
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
-		name			TEXT NOT NULL,
-		passHash		TEXT NOT NULL,
-		date			DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		emailVerified	${booleanSQL("emailVerified", false)},
+		name			TEXT NOT	NULL,
+		passHash		TEXT NOT	NULL,
+		date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		emailVerified	BOOLEAN		NOT NULL DEFAULT 0 CHECK (emailVerified IN (0, 1)),
+		publicUuid		TEXT		NOT NULL,
+		profileUuid		TEXT		NOT NULL,
+		privateUuid		TEXT		NOT NULL,
 		emailVToken		TEXT,
-		authToken		TEXT,
-		publicUuid		TEXT NOT NULL,
-		profileUuid		TEXT NOT NULL,
-		privateUuid		TEXT NOT NULL
+		authToken		TEXT
 	);
 `).run();
 
@@ -34,7 +34,7 @@ db.prepare(`
 		title		TEXT		NOT NULL,
 		author		TEXT		NOT NULL DEFAULT 'Anonymous',
 		content		TEXT		NOT NULL,
-		visible		${booleanSQL("visible", true)},
+		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
@@ -45,8 +45,7 @@ db.prepare(`
 		title		TEXT		NOT NULL,
 		creator		TEXT		NOT NULL DEFAULT 'Anonymous',
 		description	TEXT		NOT NULL DEFAULT 'No description given... :(',
-		visible		${booleanSQL("visible", true)},
-		embedded	${booleanSQL("embedded", false)},
+		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
 `).run();
@@ -75,8 +74,3 @@ db.prepare(`
 `).run();
 
 export default db;
-
-function booleanSQL(name: string, deft = true): string {
-	return
-`BOOLEAN NOT NULL DEFAULT ${deft ? 1 : 0} CHECK (${name} IN (0, 1))`;
-}
