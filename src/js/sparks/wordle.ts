@@ -7,6 +7,11 @@ const COLUMNS		= 6;
 const GUESS_DELAY	= 500; // milliseconds
 const TIME_LIMIT	= 360; // seconds
 
+// TypeScript keeps thinking setInterval is from Node ._.
+const setInterval = window.setInterval;
+
+let interval: number;
+
 // Get elements as TypeScript typecasted values
 const frame		= <HTMLDivElement>
 	document.getElementById("cellFrame");
@@ -106,7 +111,7 @@ const timerE	= <HTMLHeadingElement>
 		if (!gameRunning) {
 			gameRunning = true;
 			startTime = lastCorrectTime = Date.now();
-			setInterval(timerTick, 40);
+			interval = setInterval(timerTick, 40);
 		}
 		
 		pastGuesses.unshift(guess);
@@ -144,7 +149,7 @@ const timerE	= <HTMLHeadingElement>
 		timerE.innerText = dispLeft + "s";
 
 		if (left < 0) {
-			const hardestWord = winstats.sort((a, b) => (a.time > b.time ? 1 : -1))[0];
+			const easiestWord = winstats.sort((a, b) => (a.time > b.time ? 1 : -1))?.[0];
 			
 			alert(
 `GAME OVER! GG+WP
@@ -153,10 +158,13 @@ HITS: ${Object.keys(winstats).length}
 MISSES: ${pastGuesses.length - Object.keys(winstats).length}
 ATTEMPTS: ${pastGuesses.length}
 
-YOUR HARDEST WORD: ${hardestWord.word}
-(Took you ${Math.ceil(hardestWord.time/1000)} seconds to solve!)
+YOUR EASIEST WORD: ${easiestWord?.word ?? "None"}
+(Took you ${Math.ceil((easiestWord?.time ?? 0)/1000)} seconds to solve!)`);
 
-PRESS CTRL + W TO EXIT`);
+			clearInterval(interval);
+
+			// Refresh
+			window.location.reload();
 		}
 	}
 
