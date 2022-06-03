@@ -25,7 +25,8 @@
 									 href="/about">About</a></li>
 		</ul>
 
-		<img src="/public/pfps/<%- account?.profileUuid ?? 'deft' %>.png"
+		<img src="/public/pfps/<%= account?.user ? ('user-'
+			+ account.user) : 'deft' %>.png"
 			onerror="	if (this.src !== '/public/pfps/deft.png')
 							this.src = '/public/pfps/deft.png'"
 			width="50" height="50" class="profile-picture me-3" alt="PFP">

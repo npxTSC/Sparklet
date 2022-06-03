@@ -20,10 +20,8 @@ db.prepare(`
 		name			TEXT NOT	NULL,
 		passHash		TEXT NOT	NULL,
 		date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		emailVerified	BOOLEAN		NOT NULL DEFAULT 0 CHECK (emailVerified IN (0, 1)),
-		publicUuid		TEXT		NOT NULL,
-		profileUuid		TEXT		NOT NULL,
-		privateUuid		TEXT		NOT NULL,
+		emailVerified	BOOLEAN		NOT NULL DEFAULT 0
+						CHECK (emailVerified IN (0, 1)),
 		emailVToken		TEXT,
 		authToken		TEXT
 	);

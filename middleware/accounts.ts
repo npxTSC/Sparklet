@@ -20,8 +20,7 @@ export default function middleware(	req:	Request,
 	if (!user) return next();
 
 	const row = db.prepare(`
-		SELECT name, profileUuid
-		FROM users
+		SELECT name FROM users
 		WHERE name = (?) AND authToken = (?);
 	`).get(user, token);
 

@@ -56,7 +56,7 @@ app.post("/login", async (req, res) => {
 	const pass = req.body?.password;
 	const action = req.body?.loginAction;
 
-	if (str.containsSpecials(user)) return fail("l-specialChars")
+	if (str.containsSpecials(user)) return fail("l-specialChars");
 
 	let row = db.prepare(`
 		SELECT * FROM users
@@ -77,10 +77,9 @@ app.post("/login", async (req, res) => {
 
 			// Put in DB
 			db.prepare(`
-				INSERT INTO users(name, passHash,
-publicUuid, profileUuid, privateUuid)
-				VALUES(?, ?, ?, ?, ?)
-			`).run(user, hashed, newUUID(), newUUID(), newUUID());
+				INSERT INTO users(name, passHash)
+				VALUES(?, ?)
+			`).run(user, hashed);
 
 			console.log(`New account created: ${user}`);
 
@@ -110,7 +109,7 @@ publicUuid, profileUuid, privateUuid)
 				
 				res.cookie("user", user);
 				res.cookie("luster", token);
-				res.redirect("/rooms/quiz");
+				res.redirect("/conductors/"+ row.profileUuid);
 			});
 			
 			break;
@@ -122,10 +121,7 @@ publicUuid, profileUuid, privateUuid)
 	}
 
 	function fail(code: string) {
-		console.log(
-			`Failed "${action}" on ${user}`
-		);
-		
+		console.log(`Failed "${action}" on ${user}`);
 		res.redirect("/login?ecode="+code);
 	}
 
@@ -141,6 +137,26 @@ publicUuid, profileUuid, privateUuid)
 		return token;
 	}
 });
+
+
+
+app.get("/conductors/:user", async (req, res) => {
+	const {user} = req.params;
+
+	if (str.containsSpecials(user)) return res.render("404");
+
+	let row = db.prepare(`
+		SELECT * FROM users
+		WHERE name = (?)
+	`).get(user);
+
+	if (!user) return res.render("404");
+	
+	// User exists, so... do something?
+	return res.render("profile", {profileInfo: row});
+});
+
+
 
 app.get("/about", (req, res) => {
 	res.render("about");
