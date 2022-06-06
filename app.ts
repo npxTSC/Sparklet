@@ -83,10 +83,11 @@ app.post("/login", async (req, res) => {
 
 			console.log(`New account created: ${user}`);
 
-			row = db.prepare(`
-				SELECT passHash FROM users
-				WHERE name = LOWER((?))
-			`).get(user);
+			// Prevents unnecessary DB calls...
+			row = {
+				passHash: hashed
+			}
+			
 
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
