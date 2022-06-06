@@ -5,7 +5,7 @@
 This repo is a newer version of Sparklet, my failed attempt at putting together a decent-looking website :P
 
 I'm making this to eventually be able to host helpful learning material on here and help other students
-learn easier in school. Best of all, the site is 100% freeware (no greedy subscription plans), and the
+learn more easily in school. Best of all, the site is 100% freeware (no greedy subscription plans), and the
 backend is also completely open-source.
 
 ## Contributions
@@ -15,6 +15,9 @@ have any major security vulnerabilities/performance issues.
 Also, please split up your contributions into separate pull requests, since
 I might want to accept one, but I can't because it includes something else
 that got rejected.
+
+## SETUP FOR DEVS
+The project is mostly ready as-is, but you need to put Bootstrap in
 
 If you find a security vulnerability, you can DM me on
 Twitter @Carbonado870 or on Discord (Dexie With Drip#8426)
