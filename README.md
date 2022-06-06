@@ -16,8 +16,6 @@ Also, please split up your contributions into separate pull requests, since
 I might want to accept one, but I can't because it includes something else
 that got rejected.
 
-## SETUP FOR DEVS
-The project is mostly ready as-is, but you need to put Bootstrap in
-
+## FOR DEVS
 If you find a security vulnerability, you can DM me on
 Twitter @Carbonado870 or on Discord (Dexie With Drip#8426)
