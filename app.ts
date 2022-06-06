@@ -147,7 +147,7 @@ app.get("/conductors/:user", async (req, res) => {
 	if (str.containsSpecials(user)) return res.render("404");
 
 	let row = db.prepare(`
-		SELECT * FROM users
+		SELECT name, date FROM users
 		WHERE name = LOWER((?))
 	`).get(user);
 

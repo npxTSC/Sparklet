@@ -1,5 +1,6 @@
-const bsqlite3 = require("better-sqlite3");
-const fs = require("fs");
+import bsqlite3 	from "better-sqlite3";
+import bcrypt	 	from "bcrypt";
+import fs			from "fs";
 
 // Delete old table in debug, to get rid of old data. DISABLE IN PRODUCTION!
 try {
@@ -7,6 +8,7 @@ try {
 } catch (e) {
 	console.error(e);
 }
+
 
 const db = bsqlite3("./db/db.sqlite3");
 
@@ -48,6 +50,11 @@ db.prepare(`
 	);
 `).run();
 
+
+
+
+
+
 db.prepare(`
 	INSERT INTO news(title, author, content) VALUES (
 		'Test Article',
@@ -63,6 +70,8 @@ db.prepare(`
 	);
 `).run();
 
+
+
 db.prepare(`
 	INSERT INTO games(title, creator, id) VALUES (
 		'Speedrun Wordle',
@@ -70,5 +79,18 @@ db.prepare(`
 		'hackathon-wordle'
 	);
 `).run();
+
+
+(async () => {
+	// Get hash of password
+	const salt = await bcrypt.genSalt(10);
+	const hashed = await bcrypt.hash(process.env["ADMIN_PASSWORD"], salt);
+	
+	// Put in DB
+	db.prepare(`
+		INSERT INTO users(name, passHash)
+		VALUES('dex', ?)
+	`).run(hashed);
+})();
 
 export default db;
