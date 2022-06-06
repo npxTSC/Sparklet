@@ -21,7 +21,7 @@ export default function middleware(	req:	Request,
 
 	const row = db.prepare(`
 		SELECT name FROM users
-		WHERE name = (?) AND authToken = (?);
+		WHERE name = LOWER((?)) AND authToken = (?);
 	`).get(user, token);
 
 	if (!row) return next();

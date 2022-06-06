@@ -60,7 +60,7 @@ app.post("/login", async (req, res) => {
 
 	let row = db.prepare(`
 		SELECT * FROM users
-		WHERE name = (?)
+		WHERE name = LOWER((?))
 	`).get(user);
 
 	switch (action) {
@@ -78,14 +78,14 @@ app.post("/login", async (req, res) => {
 			// Put in DB
 			db.prepare(`
 				INSERT INTO users(name, passHash)
-				VALUES(?, ?)
+				VALUES(LOWER(?), ?)
 			`).run(user, hashed);
 
 			console.log(`New account created: ${user}`);
 
 			row = db.prepare(`
-				SELECT * FROM users
-				WHERE name = (?)
+				SELECT passHash FROM users
+				WHERE name = LOWER((?))
 			`).get(user);
 
 			// Fall-through to Login, because let's be real,
@@ -109,7 +109,7 @@ app.post("/login", async (req, res) => {
 				
 				res.cookie("user", user);
 				res.cookie("luster", token);
-				res.redirect("/conductors/"+ row.profileUuid);
+				res.redirect("/conductors/"+ user.toLowerCase());
 			});
 			
 			break;
@@ -131,7 +131,7 @@ app.post("/login", async (req, res) => {
 		db.prepare(`
 			UPDATE users
 			SET authToken = (?)
-			WHERE name = (?)
+			WHERE name = LOWER((?))
 		`).run(token, user);
 
 		return token;
@@ -147,7 +147,7 @@ app.get("/conductors/:user", async (req, res) => {
 
 	let row = db.prepare(`
 		SELECT * FROM users
-		WHERE name = (?)
+		WHERE name = LOWER((?))
 	`).get(user);
 
 	if (!user) return res.render("404");
