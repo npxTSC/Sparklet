@@ -1,6 +1,7 @@
-import bsqlite3 	from "better-sqlite3";
-import bcrypt	 	from "bcrypt";
-import fs			from "fs";
+import bsqlite3 			from "better-sqlite3";
+import {v4 as newUUID}		from "uuid";
+import bcrypt	 			from "bcrypt";
+import fs					from "fs";
 
 // Delete old table in debug, to get rid of old data. DISABLE IN PRODUCTION!
 try {
@@ -10,7 +11,7 @@ try {
 }
 
 
-const db = bsqlite3("./db/db.sqlite3");
+export const db = bsqlite3("./db/db.sqlite3");
 
 // WAL mode, improves performance
 db.pragma("journal_mode = WAL");
@@ -19,8 +20,9 @@ db.pragma("journal_mode = WAL");
 // Make tables
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS users(
-		name			TEXT NOT	NULL,
-		passHash		TEXT NOT	NULL,
+		name			TEXT		NOT NULL,
+		uuid			TEXT		NOT NULL,
+		passHash		TEXT		NOT	NULL,
 		date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		emailVerified	BOOLEAN		NOT NULL DEFAULT 0
 						CHECK (emailVerified IN (0, 1)),
@@ -80,17 +82,28 @@ db.prepare(`
 	);
 `).run();
 
+export namespace accs {
+	export async function register(user: string, pass: string) {
+		// Get hash of password
+		const salt = await bcrypt.genSalt(10);
+		const hashed = await bcrypt.hash(pass, salt);
 
-(async () => {
-	// Get hash of password
-	const salt = await bcrypt.genSalt(10);
-	const hashed = await bcrypt.hash(process.env["ADMIN_PASSWORD"], salt);
-	
-	// Put in DB
-	db.prepare(`
-		INSERT INTO users(name, passHash)
-		VALUES('dex', ?)
-	`).run(hashed);
-})();
+		// Put in DB
+		db.prepare(`
+			INSERT INTO users(name, passHash, uuid)
+			VALUES(?, ?, ?)
+		`).run(user, hashed, newUUID());
 
-export default db;
+		return hashed
+	}
+
+	export function getFromUsername(user: string) {
+		return db.prepare(`
+			SELECT name, uuid, passHash FROM users
+			WHERE name = (?) COLLATE NOCASE
+		`).get(user);
+	}
+}
+
+accs.register("dex", process.env["ADMIN_PASSWORD"]);
+

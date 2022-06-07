@@ -1,7 +1,7 @@
 // Middleware to add account data to req
 "use strict";
 
-import db		from "../db";
+import {db}		from "../db";
 
 import {
 	Request,
@@ -21,7 +21,7 @@ export default function middleware(	req:	Request,
 
 	const row = db.prepare(`
 		SELECT name FROM users
-		WHERE name = LOWER((?)) AND authToken = (?);
+		WHERE name = (?) COLLATE NOCASE AND authToken = (?);
 	`).get(user, token);
 
 	if (!row) return next();

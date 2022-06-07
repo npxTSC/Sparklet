@@ -15,7 +15,7 @@ import gzipCompression		from "compression";
 
 // Local Modules
 import {Room}				from "./classes";
-import db					from "./db";
+import {db, accs}			from "./db";
 import accountsMw			from "./middleware/accounts";
 
 // CONSTANTS
@@ -58,10 +58,7 @@ app.post("/login", async (req, res) => {
 
 	if (str.containsSpecials(user)) return fail("l-specialChars");
 
-	let row = db.prepare(`
-		SELECT * FROM users
-		WHERE name = LOWER((?))
-	`).get(user);
+	let row = accs.getFromUsername(user);
 
 	switch (action) {
 		case "Register":
@@ -71,15 +68,7 @@ app.post("/login", async (req, res) => {
 			if (!pass || (pass.length === 0))
 				return fail("r-noPassword");
 
-			// Get hash of password
-			const salt = await bcrypt.genSalt(10);
-			const hashed = await bcrypt.hash(pass, salt);
-
-			// Put in DB
-			db.prepare(`
-				INSERT INTO users(name, passHash)
-				VALUES(LOWER(?), ?)
-			`).run(user, hashed);
+			const hashed = await accs.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 
@@ -98,20 +87,20 @@ app.post("/login", async (req, res) => {
 			if (!row) return fail("l-nameNotFound");
 			
 			// Compare password to hash
-			bcrypt.compare(pass, row.passHash).then((correct) => {
-				// If password is wrong, reject
-				if (!correct) return fail("l-wrongPassword");
-		
-				// Password is correct
-				console.log(`User ${user} logged in successfully`);
+			const correct = bcrypt.compare(pass, row.passHash);
+			
+			// If password is wrong, reject
+			if (!correct) return fail("l-wrongPassword");
+	
+			// Password is correct
+			console.log(`User ${user} logged in successfully`);
 
-				// Change login token in DB
-				const token = makeNewTokenFor(user);
-				
-				res.cookie("user", user);
-				res.cookie("luster", token);
-				res.redirect("/conductors/"+ user.toLowerCase());
-			});
+			// Change login token in DB
+			const token = makeNewTokenFor(user);
+			
+			res.cookie("user", user);
+			res.cookie("luster", token);
+			res.redirect("/conductors/"+ user.toLowerCase());
 			
 			break;
 
@@ -131,8 +120,8 @@ app.post("/login", async (req, res) => {
 
 		db.prepare(`
 			UPDATE users
-			SET authToken = (?)
-			WHERE name = LOWER((?))
+			SET authToken = ?
+			WHERE name = ? COLLATE NOCASE
 		`).run(token, user);
 
 		return token;
@@ -144,14 +133,17 @@ app.post("/login", async (req, res) => {
 app.get("/conductors/:user", async (req, res) => {
 	const {user} = req.params;
 
+	console.log("Requesting account: " + user);
 	if (str.containsSpecials(user)) return res.render("404");
-
+	
 	let row = db.prepare(`
-		SELECT name, date FROM users
-		WHERE name = LOWER((?))
+		SELECT name, uuid FROM users
+		WHERE name = ? COLLATE NOCASE
 	`).get(user);
 
-	if (!user) return res.render("404");
+	console.log(JSON.stringify(row));
+
+	if (!row) return res.render("404");
 	
 	// User exists, so... do something?
 	return res.render("profile", {profileInfo: row});

@@ -2,7 +2,7 @@
 "use strict";
 
 import {app}				from "./app";
-import db					from "./db";
+import {db}					from "./db";
 import {createTransport}	from "nodemailer";
 import crypto				from "crypto";
 
@@ -23,7 +23,7 @@ export function sendEmailVLink(user: string) {
 	const email = db.prepare(`
 		SELECT email
 		FROM users
-		WHERE name = (?)
+		WHERE name = ?
 	`).get(user);
 	
 	const mailOptions = {
@@ -48,8 +48,8 @@ function makeNewTokenFor(user: string) {
 
 	db.prepare(`
 		UPDATE users
-		SET emailVToken = (?)
-		WHERE name = (?)
+		SET emailVToken = ?
+		WHERE name = ?
 	`).run(token, user);
 
 	return token;
