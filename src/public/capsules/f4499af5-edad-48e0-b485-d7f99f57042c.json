@@ -1,20 +1,14 @@
 {
 	"capsuleName":		"The Amogus Quiz",
 	"capsuleUUID":		"f4499af5-edad-48e0-b485-d7f99f57042c",
-	"capsuleVersion":	"1.0",
+	"capsuleVersion":	"1.1",
 	
 	"flashcards": {
 		"questions": {
-			"Who Vented?": 0,
-			"Where is the button?": 1,
-			"What color is the button?": 0,
-			"How many players are there?": 2
-		},
-
-		"answers": [
-			"Red",
-			"Cafeteria",
-			"10"
-		]
+			"Who Vented?": "Red",
+			"Where is the button?": "Cafeteria",
+			"What color is the button?": "Red",
+			"How many players are there?": "10"
+		}
 	}
 }
