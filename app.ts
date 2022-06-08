@@ -159,8 +159,6 @@ app.get("/conductors/:profile", async (req, res) => {
 		WHERE name = ? COLLATE NOCASE
 	`).get(profile);
 
-	console.log(JSON.stringify(row));
-
 	if (!row) return res.render("404");
 	
 	// User exists, so... do something?

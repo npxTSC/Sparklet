@@ -105,5 +105,5 @@ export namespace accs {
 	}
 }
 
-accs.register("dex", process.env["ADMIN_PASSWORD"]);
+accs.register("Dexie", process.env["ADMIN_PASSWORD"]);
 
