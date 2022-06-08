@@ -34,6 +34,12 @@
 		
 			<input type="submit" name="loginAction" value="Register"
 				class="btn btn-primary border-black mx-auto">
+			
+			<% if (account) { %>
+			<input type="submit" name="loginAction" value="Log Out"
+				class="btn btn-primary border-black mx-auto">
+			<% } %>
+			
 		</form>
 
 		<div class="container bg-primary rounded

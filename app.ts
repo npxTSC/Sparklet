@@ -104,6 +104,20 @@ app.post("/login", async (req, res) => {
 			
 			break;
 
+		case "Log Out":
+			// Remove auth cookie stuff
+			res.cookie("user", null);
+			res.cookie("luster", null);
+			
+			db.prepare(`
+				UPDATE users
+				SET authToken = NULL
+				WHERE name = ? COLLATE NOCASE
+			`).run(user);
+			
+			res.redirect("/login");
+			break;
+
 		default:
 			// Malformed requests should be rejected
 			res.status(400);
