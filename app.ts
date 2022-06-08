@@ -130,16 +130,20 @@ app.post("/login", async (req, res) => {
 
 
 
-app.get("/conductors/:user", async (req, res) => {
-	const {user} = req.params;
+app.get("/conductors/:profile", async (req, res) => {
+	const {profile}			= req.params;
+	const {account: user}	= res.locals;
 
-	console.log("Requesting account: " + user);
-	if (str.containsSpecials(user)) return res.render("404");
+	console.log(
+		`${user?.name ?? "<Anon>"} requested profile of "${profile}"`
+	);
+	
+	if (str.containsSpecials(profile)) return res.render("404");
 	
 	let row = db.prepare(`
 		SELECT name, uuid FROM users
 		WHERE name = ? COLLATE NOCASE
-	`).get(user);
+	`).get(profile);
 
 	console.log(JSON.stringify(row));
 

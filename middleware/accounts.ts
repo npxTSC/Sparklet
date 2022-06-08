@@ -20,7 +20,7 @@ export default function middleware(	req:	Request,
 	if (!user) return next();
 
 	const row = db.prepare(`
-		SELECT name FROM users
+		SELECT name, uuid FROM users
 		WHERE name = (?) COLLATE NOCASE AND authToken = (?);
 	`).get(user, token);
 
