@@ -12,6 +12,7 @@ import {Server as ioServer}	from "socket.io";
 import {v4 as newUUID}		from "uuid";
 import {str}				from "libdx";
 import gzipCompression		from "compression";
+import fs					from "fs";
 
 // Local Modules
 import {Room}				from "./classes";
@@ -277,6 +278,24 @@ app.get("/sparks", (req, res) => {
 	}
 
 	res.render("catalog", passed);
+});
+
+app.get("/capsules", async (req, res) => {
+	const qposts = db.prepare(`
+		SELECT rowid, *
+		FROM capsules WHERE visible = 1
+		ORDER BY rowid DESC
+		LIMIT 25
+	`).all().map(v => {
+		const jsondata = fs.readFileSync(`./dist/public/capsules/${v.uuid}.json`);
+		return {
+			// JS Date format
+			date: new Date(v.date),
+			...JSON.parse(jsondata),
+		}
+	});
+
+	res.render("catalog", {qposts});
 });
 
 

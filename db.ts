@@ -43,10 +43,18 @@ db.prepare(`
 
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS games(
-		id			TEXT PRIMARY KEY,
+		id			TEXT		PRIMARY KEY,
 		title		TEXT		NOT NULL,
 		creator		TEXT		NOT NULL DEFAULT 'Anonymous',
 		description	TEXT		NOT NULL DEFAULT 'No description given... :(',
+		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
+		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+`).run();
+
+db.prepare(`
+	CREATE TABLE IF NOT EXISTS capsules(
+		uuid		TEXT		PRIMARY KEY,
 		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
@@ -105,5 +113,11 @@ export namespace accs {
 	}
 }
 
-accs.register("Dexie", process.env["ADMIN_PASSWORD"]);
-
+[//	Reserved Username	// Reason
+	"Dexie",			// Admin account
+	"DexieTheSheep",	// Prevents admin impersonation
+	"Sparklet",			// Prevents admin impersonation
+	"Anonymous",		// Reserved for default name in DB
+].forEach((v) => {
+	accs.register(v, process.env["ADMIN_PASSWORD"]);
+});
