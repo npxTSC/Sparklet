@@ -27,8 +27,12 @@
 									 href="/about">About</a></li>
 		</ul>
 
-		<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
+		<a href="<%= account?.name ?
+			`/conductors/${account.name.toLowerCase()}` : "/login" %>">
+			<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
 			width="50" height="50" class="profile-picture me-3" alt="PFP">
+		</a>
+		
 		<a href="/login" class="btn btn-black text-primary
 			active float-right ml-5">
 				<%= account?.name ?? "[Log In]" %>
