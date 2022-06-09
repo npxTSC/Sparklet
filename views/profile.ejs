@@ -9,6 +9,11 @@
 	<%- include("parts/topbar") %>
 	<div class="bb1" style="margin-bottom: 5%;">
 		<h1 class="title center text-white">Conductor <%= profileInfo.name %></h1>
+		<div class="text-center">
+			<img <%- include("parts/pfp-src", {pfpOwner: profileInfo.name}); %>
+			width="400" height="400" class="profile-picture mx-auto"
+			alt="<%= profileInfo.name %>'s PFP">
+		</div>
 	</div>
 </body>
 

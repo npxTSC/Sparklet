@@ -27,10 +27,7 @@
 									 href="/about">About</a></li>
 		</ul>
 
-		<img src="/public/pfps/<%= account?.name ? ('user-'
-			+ account.name.toLowerCase()) : 'deft' %>.png"
-			onerror="	if (this.src !== '/public/pfps/deft.png')
-							this.src = '/public/pfps/deft.png'"
+		<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
 			width="50" height="50" class="profile-picture me-3" alt="PFP">
 		<a href="/login" class="btn btn-black text-primary
 			active float-right ml-5">
