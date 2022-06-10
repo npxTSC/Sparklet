@@ -17,6 +17,7 @@ import fs					from "fs";
 // Local Modules
 import {Room}				from "./classes";
 import {db, accs}			from "./db";
+import statements			from "./statements";
 import accountsMw			from "./middleware/accounts";
 
 // CONSTANTS
@@ -43,6 +44,7 @@ app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 app.set("view engine", "ejs");
+
 
 app.get("/", (req, res) => {
 	res.render("home");
@@ -109,11 +111,7 @@ app.post("/login", async (req, res) => {
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			db.prepare(`
-				UPDATE users
-				SET authToken = NULL
-				WHERE name = ? COLLATE NOCASE
-			`).run(user);
+			statements.editLoginToken.run(user, null);
 			
 			res.redirect("/login");
 			break;
@@ -132,11 +130,7 @@ app.post("/login", async (req, res) => {
 	function makeNewTokenFor(user: string) {
 		const token = crypto.randomBytes(512).toString("hex");
 
-		db.prepare(`
-			UPDATE users
-			SET authToken = ?
-			WHERE name = ? COLLATE NOCASE
-		`).run(token, user);
+		statements.editLoginToken.run(token, user);
 
 		return token;
 	}
@@ -154,10 +148,7 @@ app.get("/conductors/:profile", async (req, res) => {
 	
 	if (str.containsSpecials(profile)) return res.render("404");
 	
-	let row = db.prepare(`
-		SELECT name, uuid FROM users
-		WHERE name = ? COLLATE NOCASE
-	`).get(profile);
+	let row = statements.getUser.get(profile);
 
 	if (!row) return res.render("404");
 	
@@ -198,10 +189,7 @@ app.get("/news/:PostID", (req, res) => {
 	if (typeof postId !== "number" || isNaN(postId))
 		return res.render("404");
 	
-	let post = db.prepare(`
-		SELECT rowid, * FROM news
-		WHERE rowid = (?) AND visible = 1
-	`).get(postId);
+	let post = statements.getNews.get(postId);
 
 	if (!post) return res.render("404");
 
@@ -217,12 +205,7 @@ app.get("/news/:PostID", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-	let qposts = db.prepare(`
-		SELECT title, author, date, rowid
-		FROM news WHERE visible = 1
-		ORDER BY rowid DESC
-		LIMIT 25
-	`).all();
+	let qposts = statements.newsQPosts.all();
 
 	for (const i in qposts)
 		qposts[i].date = new Date(qposts[i].date);
@@ -242,10 +225,7 @@ app.get("/sparks/:GameID", (req, res) => {
 		return res.render("404");
 	}
 
-	let post = db.prepare(`
-		SELECT rowid, * FROM games
-		WHERE id = (?) AND visible = 1
-	`).get(postId);
+	let post = statements.getGame.get(postId);
 
 	if (!post) return res.render("404");
 	
@@ -260,12 +240,7 @@ app.get("/sparks/:GameID", (req, res) => {
 });
 
 app.get("/sparks", (req, res) => {
-	let qposts = db.prepare(`
-		SELECT rowid, *
-		FROM games WHERE visible = 1
-		ORDER BY rowid DESC
-		LIMIT 25
-	`).all();
+	let qposts = statements.gameQPosts.all();
 
 	for (const i in qposts) {
 		qposts[i].date = new Date(qposts[i].date);
@@ -280,12 +255,7 @@ app.get("/sparks", (req, res) => {
 });
 
 app.get("/capsules", async (req, res) => {
-	const qposts = db.prepare(`
-		SELECT uuid, date
-		FROM capsules WHERE visible = 1
-		ORDER BY rowid DESC
-		LIMIT 25
-	`).all().map(v => {
+	const qposts = statements.capsuleQPosts.all().map(v => {
 		const jsondata = fs.readFileSync(
 			`./dist/public/capsules/${v.uuid}.json`
 		).toString();
