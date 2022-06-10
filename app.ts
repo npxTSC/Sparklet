@@ -78,7 +78,6 @@ app.post("/login", async (req, res) => {
 				passHash: hashed
 			}
 			
-
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
 			// after registering on a site ¯\_(ツ)_/¯
@@ -282,20 +281,29 @@ app.get("/sparks", (req, res) => {
 
 app.get("/capsules", async (req, res) => {
 	const qposts = db.prepare(`
-		SELECT rowid, *
+		SELECT uuid, date
 		FROM capsules WHERE visible = 1
 		ORDER BY rowid DESC
 		LIMIT 25
 	`).all().map(v => {
-		const jsondata = fs.readFileSync(`./dist/public/capsules/${v.uuid}.json`);
+		const jsondata = fs.readFileSync(
+			`./dist/public/capsules/${v.uuid}.json`
+		).toString();
+		
 		return {
-			// JS Date format
-			date: new Date(v.date),
+			// all JSON data...
 			...JSON.parse(jsondata),
+			// PLUS the following information:
+
+			// Capsule UUID (from DB query)
+			uuid: v.uuid,
+
+			// JS Date Object instead of Unix Epoch Time
+			date: new Date(v.date),
 		}
 	});
 
-	res.render("catalog", {qposts});
+	res.render("capsules", {qposts});
 });
 
 
