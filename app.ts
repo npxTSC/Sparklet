@@ -15,7 +15,7 @@ import gzipCompression		from "compression";
 import fs					from "fs";
 
 // Local Modules
-import {Room}				from "./classes";
+import {Room, Ranks}		from "./classes";
 import {db, accs}			from "./db";
 import statements			from "./statements";
 import accountsMw			from "./middleware/accounts";
@@ -37,14 +37,20 @@ const activeRooms: Room[]	= [
 	}
 ];
 
+// Middleware
 app.use(Express.json());
 app.use(cparse());
 app.use(accountsMw);
 app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
+
+// App config
+app.locals.Ranks = Ranks;
 app.set("view engine", "ejs");
 
+
+// Routes
 
 app.get("/", (req, res) => {
 	res.render("home");
@@ -111,7 +117,7 @@ app.post("/login", async (req, res) => {
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			statements.editLoginToken.run(user, null);
+			statements.editLoginToken.run(null, user);
 			
 			res.redirect("/login");
 			break;

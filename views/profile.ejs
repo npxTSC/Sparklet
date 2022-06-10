@@ -8,11 +8,23 @@
 <body>
 	<%- include("parts/topbar") %>
 	<div class="bb1" style="margin-bottom: 5%;">
-		<h1 class="title center text-white">Conductor <%= profileInfo.name %></h1>
-		<div class="text-center">
-			<img <%- include("parts/pfp-src", {pfpOwner: profileInfo.name}); %>
-			width="400" height="400" class="profile-picture mx-auto"
-			alt="<%= profileInfo.name %>'s PFP">
+		<div class="container bg-black border border-primary pb-3">
+			<h1 class="display-1 center text-white mb-5">
+				<%= `${Ranks[profileInfo.adminRank]} ${profileInfo.name}` %>
+			</h1>
+			
+			<div class="text-center mb-4">
+				<img <%- include("parts/pfp-src", {pfpOwner: profileInfo.name}); %>
+				width="400" height="400" class="profile-picture-big mx-auto"
+				alt="<%= profileInfo.name %>'s PFP">
+			</div>
+
+			<div class="col-6 mx-auto bg-primary text-center pb-3">
+				<p class="display-3">-About-</p>
+				<p class="profile-bio">
+					<%= profileInfo.bio ?? "This user has not written a bio yet..." %>
+				</p>
+			</div>
 		</div>
 	</div>
 </body>

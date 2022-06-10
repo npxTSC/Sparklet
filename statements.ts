@@ -2,15 +2,62 @@ import {db}			from "./db";
 
 // SQL prepared statements
 namespace statements {
+	export const prepopulate = [
+		db.prepare(`
+			INSERT INTO news(title, author, content) VALUES (
+				'Test Article',
+				'Dexie',
+				'<p>This was written to test SQL queries.</p>'
+			);
+		`),
+		
+		db.prepare(`
+			INSERT INTO news(title, content) VALUES (
+				'Test Article 2',
+				'<p>This was written to test CSS with multiple articles.</p>'
+			);
+		`),
+		
+		db.prepare(`
+			INSERT INTO games(title, creator, id) VALUES (
+				'Speedrun Wordle',
+				'Dexie',
+				'hackathon-wordle'
+			);
+		`),
+	];
+
+	export const updateBio = db.prepare(`
+		UPDATE users
+		SET bio = ?
+		WHERE name = ? COLLATE NOCASE
+	`);
+	
 	export const editLoginToken = db.prepare(`
 		UPDATE users
 		SET authToken = ?
 		WHERE name = ? COLLATE NOCASE
 	`);
+	
+	export const editAdminRank = db.prepare(`
+		UPDATE users
+		SET adminRank = ?
+		WHERE name = ? COLLATE NOCASE
+	`);
 
 	export const getUser = db.prepare(`
-		SELECT name, uuid FROM users
+		SELECT name, uuid, adminRank, bio FROM users
 		WHERE name = ? COLLATE NOCASE
+	`);
+
+	export const getUserPH = db.prepare(`
+		SELECT name, uuid, passHash FROM users
+		WHERE name = ? COLLATE NOCASE
+	`);
+
+	export const registerUser = db.prepare(`
+		INSERT INTO users(name, passHash, uuid)
+		VALUES(?, ?, ?)
 	`);
 
 	export const getGame = db.prepare(`

@@ -2,6 +2,7 @@ import bsqlite3 			from "better-sqlite3";
 import {v4 as newUUID}		from "uuid";
 import bcrypt	 			from "bcrypt";
 import fs					from "fs";
+import {Ranks}				from "./classes";
 
 // Delete old table in debug, to get rid of old data. DISABLE IN PRODUCTION!
 try {
@@ -24,10 +25,12 @@ db.prepare(`
 		uuid			TEXT		NOT NULL,
 		passHash		TEXT		NOT	NULL,
 		date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		adminRank		INTEGER		NOT NULL DEFAULT 0,
 		emailVerified	BOOLEAN		NOT NULL DEFAULT 0
 						CHECK (emailVerified IN (0, 1)),
 		emailVToken		TEXT,
-		authToken		TEXT
+		authToken		TEXT,
+		bio				TEXT
 	);
 `).run();
 
@@ -63,32 +66,9 @@ db.prepare(`
 
 
 
+import statements	from "./statements";
+statements.prepopulate.forEach(v => v.run());
 
-
-db.prepare(`
-	INSERT INTO news(title, author, content) VALUES (
-		'Test Article',
-		'Dexie',
-		'<p>This was written to test SQL queries.</p>'
-	);
-`).run();
-
-db.prepare(`
-	INSERT INTO news(title, content) VALUES (
-		'Test Article 2',
-		'<p>This was written to test CSS with multiple articles.</p>'
-	);
-`).run();
-
-
-
-db.prepare(`
-	INSERT INTO games(title, creator, id) VALUES (
-		'Speedrun Wordle',
-		'Dexie',
-		'hackathon-wordle'
-	);
-`).run();
 
 export namespace accs {
 	export async function register(user: string, pass: string) {
@@ -97,19 +77,21 @@ export namespace accs {
 		const hashed = await bcrypt.hash(pass, salt);
 
 		// Put in DB
-		db.prepare(`
-			INSERT INTO users(name, passHash, uuid)
-			VALUES(?, ?, ?)
-		`).run(user, hashed, newUUID());
+		statements.registerUser.run(user, hashed, newUUID());
 
-		return hashed
+		return hashed;
 	}
 
 	export function getFromUsername(user: string) {
-		return db.prepare(`
-			SELECT name, uuid, passHash FROM users
-			WHERE name = (?) COLLATE NOCASE
-		`).get(user);
+		return statements.getUserPH.get(user);
+	}
+
+	export function setAdminRank(user: string, rank: number) {
+		statements.editAdminRank.run(rank, user);
+	}
+
+	export function updateBio(user: string, bio: string) {
+		statements.updateBio.run(bio, user);
 	}
 }
 
@@ -118,6 +100,8 @@ export namespace accs {
 	"DexieTheSheep",	// Prevents admin impersonation
 	"Sparklet",			// Prevents admin impersonation
 	"Anonymous",		// Reserved for default name in DB
-].forEach((v) => {
-	accs.register(v, process.env["ADMIN_PASSWORD"]);
+].forEach(async (v) => {
+	await accs.register(v, process.env["ADMIN_PASSWORD"]);
+	accs.setAdminRank(v, Ranks.Operator);
+	accs.updateBio(v, "This account is reserved for admin use only.");
 });

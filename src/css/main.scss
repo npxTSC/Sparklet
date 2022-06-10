@@ -241,5 +241,23 @@ ul#topbar {
 	border-radius: 50%;
 	border-width: 0.2rem;
 	border-color: black;
-	border-style: ridge;
+	border-style: double;
+
+	&-big {
+		@extend .profile-picture;
+		border-width: 0.4rem;
+		//border-color: map-get($theme-colors, "primary");
+		box-shadow: 0 0 2rem -0.5rem map-get($theme-colors, "primary");
+		animation: bigPfpGlow 3s ease-in infinite alternate;
+	}
+}
+
+.profile-bio {
+	font-size: 2em;
+}
+
+@keyframes bigPfpGlow {
+	to {
+		box-shadow: 0 0 5rem 2rem map-get($theme-colors, "primary");
+	}
 }

@@ -20,3 +20,11 @@ export interface ActiveQuizPlayer {
 	correctQs:	number;
 	tempToken:	string;
 }
+
+export enum Ranks {
+	Conductor,
+	Helper,
+	Electrician,
+	Manager,
+	Operator
+}
