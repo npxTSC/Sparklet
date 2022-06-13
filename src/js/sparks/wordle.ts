@@ -8,11 +8,10 @@ const GUESS_DELAY	= 500; // milliseconds
 const TIME_LIMIT	= 360; // seconds
 
 // TypeScript keeps thinking setInterval is from Node ._.
-const setInterval = window.setInterval;
-
+const {setInterval} = window;
 let interval: number;
 
-// Get elements as TypeScript typecasted values
+// Get elements as TypeScript casted values
 const frame		= <HTMLDivElement>
 	document.getElementById("cellFrame");
 const gframe	= <HTMLDivElement>

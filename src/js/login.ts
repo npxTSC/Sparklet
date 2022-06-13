@@ -1,5 +1,6 @@
 import {qstr}		from "libdx";
 
+// Get query string, then clear it
 const parsedQ = qstr.parseQ();
 qstr.clearQ();
 

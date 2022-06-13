@@ -4,7 +4,8 @@ import bcrypt	 			from "bcrypt";
 import fs					from "fs";
 import {Ranks}				from "./classes";
 
-// Delete old table in debug, to get rid of old data. DISABLE IN PRODUCTION!
+// Delete old table in debug, to get rid of old data.
+// DISABLE IN PRODUCTION!
 try {
 	fs.unlinkSync("./db/db.sqlite3");
 } catch (e) {
@@ -68,7 +69,6 @@ db.prepare(`
 
 import statements	from "./statements";
 statements.prepopulate.forEach(v => v.run());
-
 
 export namespace accs {
 	export async function register(user: string, pass: string) {

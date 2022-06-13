@@ -18,7 +18,7 @@ import fs					from "fs";
 import {Room, Ranks}		from "./classes";
 import {db, accs}			from "./db";
 import statements			from "./statements";
-import accountsMw			from "./middleware/accounts";
+import accountParser		from "./middleware/accounts";
 
 // CONSTANTS
 const PORT = 3000;
@@ -40,7 +40,7 @@ const activeRooms: Room[]	= [
 // Middleware
 app.use(Express.json());
 app.use(cparse());
-app.use(accountsMw);
+app.use(accountParser);
 app.use(gzipCompression());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
@@ -51,7 +51,6 @@ app.set("view engine", "ejs");
 
 
 // Routes
-
 app.get("/", (req, res) => {
 	res.render("home");
 });
@@ -82,9 +81,7 @@ app.post("/login", async (req, res) => {
 			console.log(`New account created: ${user}`);
 
 			// Prevents unnecessary DB calls...
-			row = {
-				passHash: hashed
-			}
+			row = { passHash: hashed }
 			
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
@@ -137,7 +134,6 @@ app.post("/login", async (req, res) => {
 		const token = crypto.randomBytes(512).toString("hex");
 
 		statements.editLoginToken.run(token, user);
-
 		return token;
 	}
 });
@@ -145,8 +141,8 @@ app.post("/login", async (req, res) => {
 
 
 app.get("/conductors/:profile", async (req, res) => {
-	const {profile}			= req.params;
-	const {account: user}	= res.locals;
+	const {profile}		= req.params;
+	const user			= res.locals.account;
 
 	console.log(
 		`${user?.name ?? "<Anon>"} requested profile of "${profile}"`
@@ -211,18 +207,12 @@ app.get("/news/:PostID", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-	let qposts = statements.newsQPosts.all();
+	let qposts = statements.newsQPosts.all().map(v => {
+		v.date = new Date(qposts[i].date);
+		return v;
+	});
 
-	for (const i in qposts)
-		qposts[i].date = new Date(qposts[i].date);
-
-	// Data passed to the render engine
-	let passed = {
-		// Quick Posts: No content, just headline data
-		qposts: qposts
-	}
-
-	res.render("news", passed);
+	res.render("news", {qposts});
 });
 
 app.get("/sparks/:GameID", (req, res) => {
@@ -246,18 +236,12 @@ app.get("/sparks/:GameID", (req, res) => {
 });
 
 app.get("/sparks", (req, res) => {
-	let qposts = statements.gameQPosts.all();
+	let qposts = statements.gameQPosts.all().map(v => {
+		v.date = new Date(qposts[i].date);
+		return v;
+	});
 
-	for (const i in qposts) {
-		qposts[i].date = new Date(qposts[i].date);
-	}
-
-	// Data passed to the render engine
-	let passed = {
-		qposts: qposts
-	}
-
-	res.render("catalog", passed);
+	res.render("catalog", {qposts});
 });
 
 app.get("/capsules", async (req, res) => {
@@ -344,7 +328,7 @@ function checkRoomExists(id: string) {
 	else						return "Found";
 }
 
-let {} = server.listen(PORT, () => {
+const {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
