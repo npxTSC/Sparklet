@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Sparklet | Web DAW Experiment</title>
+	<%- include("../parts/head") %>
+	<script src="/js/sparks/sparkwave.js" defer></script>
+	<link rel="stylesheet" href="/css/sparks/sparkwave.min.css">
+</head>
+
+<body>
+	<%- include("../parts/topbar") %>
+	<div class="container col-10">
+		<h1 class="display-1 text-center text-white mb-2">
+			Sparkwave DAW
+		</h1>
+
+		<div class="container p-4 bg-white rounded"
+			id="gameFrame">
+
+			<h3 id="lagWarning" class="display-3">
+				Downloading static files...
+			</h3>
+			
+			<div class="container" id="cellFrame"></div>
+
+			<input type="text" id="inputBox" class="col-6"
+				placeholder="WORDLE" autocomplete="off" />
+		</div>
+		
+		<h4 class="display-4 text-center text-white" id="timer">
+			-=- 360s -=-
+		</h4>
+	</div>
+</body>
+
+</html>

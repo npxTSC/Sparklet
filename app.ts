@@ -60,10 +60,12 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-	const user = req.body?.username;
-	const pass = req.body?.password;
-	const action = req.body?.loginAction;
-
+	const {
+		username:		user,
+		password:		pass,
+		loginAction:	action,
+	} = req.body;
+	
 	if (str.containsSpecials(user))	return fail("l-specialChars");
 	if (user.length > 30)			return fail("l-tooLong");
 

@@ -1,0 +1,22 @@
+div.cell {
+	aspect-ratio: 1 / 1;
+	display: inline-block;
+	text-align: center;
+}
+
+div.cellText {
+	aspect-ratio: 1 / 1;
+	width: 100%;
+	display: inline-block;
+	background: darkslategray;
+	border-radius: 10px;
+	font-size: 6em;
+	text-align: center;
+}
+
+#inputBox {
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	font-weight: 1000;
+}

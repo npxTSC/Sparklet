@@ -15,7 +15,10 @@ module.exports = {
 		"sass-main":		cd + "/src/css/main.scss",
 		"sass-quizplay":	cd + "/src/css/quizplay.scss",
 		
-		"sparks/wordle":	cd + "/src/js/sparks/wordle.ts",
+		"sparks/sparkwave":	cd + "/src/js/sparks/sparkwave/main.ts",
+		"sass-sparkwave":	cd + "/src/css/sparks/sparkwave.scss",
+		
+		"sparks/wordle":	cd + "/src/js/sparks/wordle/main.ts",
 		"sass-wordle":		cd + "/src/css/sparks/wordle.scss",
 	},
 	

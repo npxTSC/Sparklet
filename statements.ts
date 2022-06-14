@@ -25,6 +25,14 @@ namespace statements {
 				'hackathon-wordle'
 			);
 		`),
+		
+		db.prepare(`
+			INSERT INTO games(title, creator, id) VALUES (
+				'Sparkwave',
+				'Dexie',
+				'sparkwave'
+			);
+		`),
 	];
 
 	export const updateBio = db.prepare(`
