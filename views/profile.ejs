@@ -2,6 +2,7 @@
 <html lang="en-US">
 
 <head>
+	<title>Sparklet | <%= profileInfo.name %>'s Profile</title>
 	<%- include("parts/head") %>
 </head>
 
@@ -23,7 +24,7 @@
 				text-white text-center pb-3">
 				<p class="display-3">-About-</p>
 				<p class="profile-bio">
-					<%= profileInfo.bio ?? "This user has not written a bio yet..." %>
+<%= profileInfo.bio ?? "This user has not written a bio yet..." %>
 				</p>
 			</div>
 		</div>

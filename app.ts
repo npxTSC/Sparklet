@@ -64,7 +64,8 @@ app.post("/login", async (req, res) => {
 	const pass = req.body?.password;
 	const action = req.body?.loginAction;
 
-	if (str.containsSpecials(user)) return fail("l-specialChars");
+	if (str.containsSpecials(user))	return fail("l-specialChars");
+	if (user.length > 30)			return fail("l-tooLong");
 
 	let row = accs.getFromUsername(user);
 
@@ -208,7 +209,7 @@ app.get("/news/:PostID", (req, res) => {
 
 app.get("/news", (req, res) => {
 	let qposts = statements.newsQPosts.all().map(v => {
-		v.date = new Date(qposts[i].date);
+		v.date = new Date(v.date);
 		return v;
 	});
 
@@ -237,7 +238,7 @@ app.get("/sparks/:GameID", (req, res) => {
 
 app.get("/sparks", (req, res) => {
 	let qposts = statements.gameQPosts.all().map(v => {
-		v.date = new Date(qposts[i].date);
+		v.date = new Date(v.date);
 		return v;
 	});
 
