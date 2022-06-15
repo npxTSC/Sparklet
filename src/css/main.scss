@@ -241,7 +241,7 @@ ul#topbar {
 	border-radius: 50%;
 	border-width: 0.2rem;
 	border-color: black;
-	border-style: double;
+	border-style: solid;
 
 	&-big {
 		@extend .profile-picture;
