@@ -1,3 +1,9 @@
+@import "../custombs.scss";
+
+body {
+	background: map-get($theme-colors, "carbon");
+}
+
 div.cell {
 	aspect-ratio: 1 / 1;
 	display: inline-block;

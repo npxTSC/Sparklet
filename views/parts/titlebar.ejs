@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand bg-primary mb-5" style="font-size: 1.05em;">
+	<div class="container-fluid"><div class="collapse navbar-collapse">
+		<a class="navbar-brand text-black" href="/">
+			<img src="/public/img/favicon.png" class="d-inline-block img-fluid"
+				width="30" height="25" alt="MOTHER 3 Short Circuit Zap sprite" />
+		</a>
+		<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle text-black" href="#"
+					id="navbarDropdown" role="button"
+					data-bs-toggle="dropdown">File</a>
+				<ul class="dropdown-menu">
+					<li><a class="dropdown-item" onclick="dialogs.proj.clear();">New</a></li>
+					<li><a class="dropdown-item" onclick="dialogs.proj.open();">Open</a></li>
+					<li><a class="dropdown-item" onclick="dialogs.proj.exp();">Export</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" onclick="dialogs.manageLFS();">Local FS</a></li>
+					<li><a class="dropdown-item" onclick="dialogs.debugMode();">Debug</a></li>
+				</ul>
+			</li>
+			<!--li class="nav-item"><a class="nav-link active text-black"
+									 href="/sparks">Sparks</a></li-->
+		</ul>
+
+		<a href="<%= account?.name ?
+			`/conductors/${account.name.toLowerCase()}` : "/login" %>">
+			<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
+			width="30" height="30" class="profile-picture me-3" alt="PFP">
+		</a>
+		
+		<a href="javascript:history.back();"
+			class="btn btn-danger text-white
+			active float-right ml-5" style="font-size: 0.9em;">X</a>
+	</div></div>
+</nav>
