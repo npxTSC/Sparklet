@@ -18,13 +18,11 @@
 					<li><a class="dropdown-item" onclick="dialogs.debugMode();">Debug</a></li>
 				</ul>
 			</li>
-			<!--li class="nav-item"><a class="nav-link active text-black"
-									 href="/sparks">Sparks</a></li-->
 		</ul>
 
 		<a href="<%= account?.name ?
 			`/conductors/${account.name.toLowerCase()}` : "/login" %>">
-			<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
+			<img <%- include("../parts/pfp-src", {pfpOwner: account?.name}); %>
 			width="30" height="30" class="profile-picture me-3" alt="PFP">
 		</a>
 		
