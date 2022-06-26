@@ -40,16 +40,16 @@ function drawLoop() {
 
 	// Draw open instance GUIs
 	for (const instance of activeVSTs) {
+		if (!instance.visible) continue;
+		
 		c.fillStyle = theme.VST_BACKGROUND;
 		c.fillRect(	instance.x, instance.y,
 					instance.w, instance.h	);
 
 		instance.draw(c);
-		
-		c.font = "32px serif";
-		c.fillStyle = "#fff";
-		c.fillText("Amogus", 10, 32);
-		continue;
+
+		c.fillStyle = theme.VST_TITLEBAR;
+		c.fillRect(instance.x, instance.y, instance.w, 20);
 	}
 }
 

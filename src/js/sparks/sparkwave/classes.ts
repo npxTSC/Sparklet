@@ -13,7 +13,7 @@ export class Sample {
 }
 
 export class VST {
-	uiActive:	boolean	= true;
+	visible:	boolean	= true;
 	x:			number	= 50;
 	y:			number	= 50;
 	w:			number	= 400;
@@ -31,5 +31,6 @@ export type Rhythm = boolean[];
 export const theme = {
 	TITLEBAR:		"#222",
 	BACKGROUND:		"#383838",
+	VST_TITLEBAR:	"#333",
 	VST_BACKGROUND:	"#4f4f4f",
 }
