@@ -30,4 +30,8 @@ export default class Cloudy extends VST {
 	draw(c: CanvasRenderingContext2D) {
 		this.bg.draw(c);
 	}
+
+	updateDisplay() {
+		[this.bg.x, this.bg.y] = [this.x+border, this.y+border];
+	}
 }

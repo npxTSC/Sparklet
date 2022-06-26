@@ -21,6 +21,7 @@ export class VST {
 	h:				number	= 300;
 	
 	draw(c: CanvasRenderingContext2D) {}
+	updateDisplay() {}
 }
 
 export abstract class Effect {

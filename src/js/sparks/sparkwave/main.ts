@@ -67,6 +67,7 @@ canvas.addEventListener("mousemove", (e) => {
 		if (!instance.isBeingDragged) continue;
 		instance.x += (mx-mouseX);
 		instance.y += (my-mouseY);
+		instance.updateDisplay();
 	}
 	
 	[mouseX, mouseY] = [mx, my];
