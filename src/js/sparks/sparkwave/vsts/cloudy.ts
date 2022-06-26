@@ -34,4 +34,8 @@ export default class Cloudy extends VST {
 	updateDisplay() {
 		[this.bg.x, this.bg.y] = [this.x+border, this.y+border];
 	}
+
+	onMidiInput() {
+		//
+	}
 }

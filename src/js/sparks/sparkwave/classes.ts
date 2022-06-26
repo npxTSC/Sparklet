@@ -13,15 +13,17 @@ export class Sample {
 }
 
 export class VST {
-	visible:		boolean	= true;
-	isBeingDragged:	boolean	= false;
-	x:				number	= 50;
-	y:				number	= 50;
-	w:				number	= 400;
-	h:				number	= 300;
+	visible:			boolean	= true;
+	isBeingDragged:		boolean	= false;
+	acceptMidiInput:	boolean	= true;
+	x:					number	= 50;
+	y:					number	= 50;
+	w:					number	= 400;
+	h:					number	= 300;
 	
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
+	onMidiInput(note: number) {}
 }
 
 export abstract class Effect {

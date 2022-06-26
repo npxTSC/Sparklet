@@ -18,7 +18,8 @@ const FPS			= 60;
 
 const activeVSTs: VST[]	= [];
 
-let mouseX: number, mouseY: number;
+let mouseX: number;
+let mouseY: number;
 let mouseDown = false;
 
 
@@ -28,7 +29,33 @@ resizeHandler();
 // For debug, start out with 1 pre-initialized Cloudy eVST
 activeVSTs.push(new Cloudy());
 
+if (navigator.requestMIDIAccess) {
+	navigator.requestMIDIAccess().then((midi) => {
+		// Success
+		const {inputs, outputs} = midi;
 
+		for (const input of inputs.values()) {
+			input.onmidimessage = midiMessageHandler;
+		}
+	}, () => {
+		// Error
+	});
+}
+
+function midiMessageHandler(message: WebMidi.MIDIMessageEvent) {
+	const [command, note, velocity] = message.data;
+
+	switch (command) {
+		case 144: // Note ON
+			if (velocity > 0) noteOn(note, velocity);
+			else noteOff(note);
+			break;
+			
+		case 128: // Note OFF
+			noteOff(note);
+			break;
+	}
+}
 
 
 function drawLoop() {
@@ -105,6 +132,16 @@ setInterval(drawLoop, FPS/1000);
 
 
 
+
+function noteOn(note: number, velocity: number) {
+	//alert(`Played note ${note} at velocity ${velocity}`);
+
+	playSample(testSample);
+}
+
+function noteOff(note: number) {
+	//
+}
 
 
 function playSample(smp: Sample) {
