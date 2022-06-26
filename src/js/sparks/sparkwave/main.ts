@@ -22,8 +22,10 @@ const activeVSTs: VST[]	= [];
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
-
+// For debug, start out with 1 pre-initialized Cloudy eVST
 activeVSTs.push(new Cloudy());
+
+
 
 
 function drawLoop() {
@@ -53,7 +55,25 @@ function drawLoop() {
 	}
 }
 
+canvas.addEventListener("mousedown", (e) => {
+	const rect	= canvas.getBoundingClientRect();
+	const x		= e.clientX - rect.left;
+	const y		= e.clientY - rect.top;
+	
+	for (const instance of activeVSTs) {
+		if (!instance.visible) continue;
 
+		if (pointInsideRect(x, y, instance.x, instance.y, instance.w, 20)) {
+			alert("hi");
+		}
+	}
+});
+
+canvas.addEventListener("mouseup", (e) => {
+	const rect	= canvas.getBoundingClientRect();
+	const x		= e.clientX - rect.left;
+	const y		= e.clientY - rect.top;
+});
 
 setInterval(drawLoop, FPS/1000);
 
@@ -84,4 +104,11 @@ function playSample(smp: Sample) {
 function resizeHandler() {
 	canvas.width	= innerWidth;
 	canvas.height	= innerHeight;
+}
+
+function pointInsideRect(	x: number,	y: number,
+							rx: number,	ry: number,
+							rw: number,	rh: number,	) {
+	return	((x>=rx) && (x<rx+rw)) &&
+			((y>=ry) && (y<ry+rh));
 }
