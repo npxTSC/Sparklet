@@ -27,7 +27,7 @@ window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
 // For debug, start out with 1 pre-initialized Cloudy eVST
-activeVSTs.push(new Cloudy());
+activeVSTs.push(new Cloudy(ctx));
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
@@ -39,21 +39,17 @@ if (navigator.requestMIDIAccess) {
 		}
 	}, () => {
 		// Error
+		console.error("There was a problem loading a MIDI device.");
 	});
 }
 
 function midiMessageHandler(message: WebMidi.MIDIMessageEvent) {
 	const [command, note, velocity] = message.data;
-
-	switch (command) {
-		case 144: // Note ON
-			if (velocity > 0) noteOn(note, velocity);
-			else noteOff(note);
-			break;
-			
-		case 128: // Note OFF
-			noteOff(note);
-			break;
+	
+	for (const instance of activeVSTs) {
+		if (!instance.acceptsMidiInput) continue;
+		
+		instance.onMidiInput(command, note, velocity);
 	}
 }
 
@@ -131,17 +127,6 @@ setInterval(drawLoop, FPS/1000);
 
 
 
-
-
-function noteOn(note: number, velocity: number) {
-	//alert(`Played note ${note} at velocity ${velocity}`);
-
-	playSample(testSample);
-}
-
-function noteOff(note: number) {
-	//
-}
 
 
 function playSample(smp: Sample) {

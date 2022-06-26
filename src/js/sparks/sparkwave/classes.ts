@@ -13,9 +13,11 @@ export class Sample {
 }
 
 export class VST {
+	constructor(protected ctx: AudioContext) {}
+	
 	visible:			boolean	= true;
 	isBeingDragged:		boolean	= false;
-	acceptMidiInput:	boolean	= true;
+	acceptsMidiInput:	boolean	= true;
 	x:					number	= 50;
 	y:					number	= 50;
 	w:					number	= 400;
@@ -23,7 +25,7 @@ export class VST {
 	
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
-	onMidiInput(note: number) {}
+	onMidiInput(command: number, note: number, velocity: number) {}
 }
 
 export abstract class Effect {
