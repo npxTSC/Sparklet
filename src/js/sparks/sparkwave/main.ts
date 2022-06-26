@@ -18,6 +18,9 @@ const FPS			= 60;
 
 const activeVSTs: VST[]	= [];
 
+let mouseX: number, mouseY: number;
+let mouseDown = false;
+
 
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
@@ -55,24 +58,28 @@ function drawLoop() {
 	}
 }
 
-canvas.addEventListener("mousedown", (e) => {
+canvas.addEventListener("mousemove", (e) => {
 	const rect	= canvas.getBoundingClientRect();
-	const x		= e.clientX - rect.left;
-	const y		= e.clientY - rect.top;
+	mouseX		= e.clientX - rect.left;
+	mouseY		= e.clientY - rect.top;
+});
+
+canvas.addEventListener("mousedown", (e) => {
+	mouseDown = true;
 	
 	for (const instance of activeVSTs) {
 		if (!instance.visible) continue;
 
-		if (pointInsideRect(x, y, instance.x, instance.y, instance.w, 20)) {
+		if (pointInsideRect(mouseX, mouseY,
+			instance.x, instance.y,	instance.w, 20)) {
+			
 			alert("hi");
 		}
 	}
 });
 
 canvas.addEventListener("mouseup", (e) => {
-	const rect	= canvas.getBoundingClientRect();
-	const x		= e.clientX - rect.left;
-	const y		= e.clientY - rect.top;
+	mouseDown = false;
 });
 
 setInterval(drawLoop, FPS/1000);
