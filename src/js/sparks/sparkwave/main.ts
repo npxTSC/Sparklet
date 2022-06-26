@@ -60,8 +60,16 @@ function drawLoop() {
 
 canvas.addEventListener("mousemove", (e) => {
 	const rect	= canvas.getBoundingClientRect();
-	mouseX		= e.clientX - rect.left;
-	mouseY		= e.clientY - rect.top;
+	const mx = e.clientX - rect.left;
+	const my = e.clientY - rect.top;
+
+	for (const instance of activeVSTs) {
+		if (!instance.isBeingDragged) continue;
+		instance.x += (mx-mouseX);
+		instance.y += (my-mouseY);
+	}
+	
+	[mouseX, mouseY] = [mx, my];
 });
 
 canvas.addEventListener("mousedown", (e) => {
@@ -73,13 +81,17 @@ canvas.addEventListener("mousedown", (e) => {
 		if (pointInsideRect(mouseX, mouseY,
 			instance.x, instance.y,	instance.w, 20)) {
 			
-			alert("hi");
+			instance.isBeingDragged = true;
 		}
 	}
 });
 
 canvas.addEventListener("mouseup", (e) => {
 	mouseDown = false;
+
+	for (const instance of activeVSTs) {
+		instance.isBeingDragged = false;
+	}
 });
 
 setInterval(drawLoop, FPS/1000);

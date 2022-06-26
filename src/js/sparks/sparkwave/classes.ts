@@ -13,11 +13,12 @@ export class Sample {
 }
 
 export class VST {
-	visible:	boolean	= true;
-	x:			number	= 50;
-	y:			number	= 50;
-	w:			number	= 400;
-	h:			number	= 300;
+	visible:		boolean	= true;
+	isBeingDragged:	boolean	= false;
+	x:				number	= 50;
+	y:				number	= 50;
+	w:				number	= 400;
+	h:				number	= 300;
 	
 	draw(c: CanvasRenderingContext2D) {}
 }
