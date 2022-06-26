@@ -6,14 +6,16 @@
 
 "use strict";
 
-import {VST, VSTInstance} from "../classes";
+import {VST}	from "../classes";
 
 export default class Cloudy extends VST {
-	drawUI() {
-		console.log("amogus");
+	constructor() {
+		super();
 	}
-
-	static instance(): VSTInstance {
-		return new VSTInstance(Cloudy);
+	
+	draw(c: CanvasRenderingContext2D) {
+		c.fillStyle = "red";
+		c.fillRect(	this.x+4, this.y+4,
+					this.w-8, this.h-8	);
 	}
 }

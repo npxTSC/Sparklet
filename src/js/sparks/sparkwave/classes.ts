@@ -12,21 +12,14 @@ export class Sample {
 	}
 }
 
-export class VSTInstance {
+export class VST {
 	uiActive:	boolean	= true;
 	x:			number	= 50;
 	y:			number	= 50;
 	w:			number	= 400;
 	h:			number	= 300;
-
-	constructor(vst: VST) {
-		//
-	}
-}
-
-export abstract class VST {
-	instance:	() => VSTInstance;
-	drawUI:		() => void;
+	
+	draw(c: CanvasRenderingContext2D) {}
 }
 
 export abstract class Effect {

@@ -5,8 +5,7 @@ import {Howl, Howler}			from "howler";
 import Cloudy					from "./vsts/cloudy";
 import {
 	Sample,	Rhythm,
-	VST, VSTInstance,
-	theme
+	VST, theme
 }	from "./classes";
 
 // Web prep stuff
@@ -17,14 +16,14 @@ const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
 
-const activeVSTs: VSTInstance[]	= [];
+const activeVSTs: VST[]	= [];
 
 
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
 
-activeVSTs.push(Cloudy.instance());
+activeVSTs.push(new Cloudy());
 
 
 function drawLoop() {
@@ -44,6 +43,8 @@ function drawLoop() {
 		c.fillStyle = theme.VST_BACKGROUND;
 		c.fillRect(	instance.x, instance.y,
 					instance.w, instance.h	);
+
+		instance.draw(c);
 		
 		c.font = "32px serif";
 		c.fillStyle = "#fff";
