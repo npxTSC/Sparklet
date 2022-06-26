@@ -6,10 +6,14 @@
 
 "use strict";
 
-import {VST} from "../classes";
+import {VST, VSTInstance} from "../classes";
 
-class Cloudy extends VST {
-	//
+export default class Cloudy extends VST {
+	drawUI() {
+		console.log("amogus");
+	}
+
+	static instance(): VSTInstance {
+		return new VSTInstance(Cloudy);
+	}
 }
-
-export default Cloudy;

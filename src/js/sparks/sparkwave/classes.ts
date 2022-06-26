@@ -13,23 +13,20 @@ export class Sample {
 }
 
 export class VSTInstance {
-	public uiActive:	boolean;
-	public x:			number;
-	public y:			number;
-	public w:			number;
-	public h:			number;
+	uiActive:	boolean	= true;
+	x:			number	= 50;
+	y:			number	= 50;
+	w:			number	= 400;
+	h:			number	= 300;
 
 	constructor(vst: VST) {
-		this.uiActive	= true;
-		this.x			= 0;
-		this.y			= 0;
-		this.w			= 400;
-		this.h			= 300;
+		//
 	}
 }
 
 export abstract class VST {
-	//
+	instance:	() => VSTInstance;
+	drawUI:		() => void;
 }
 
 export abstract class Effect {

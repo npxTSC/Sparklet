@@ -24,7 +24,7 @@ window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
 
-activeVSTs.push(new VSTInstance(Cloudy));
+activeVSTs.push(Cloudy.instance());
 
 
 function drawLoop() {
