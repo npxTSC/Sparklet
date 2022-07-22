@@ -3,6 +3,7 @@
 import {rand, elem, str}		from "libdx";
 import {Howl, Howler}			from "howler";
 import Cloudy					from "./vsts/cloudy";
+import RePlay					from "./vsts/replay";
 import {
 	Sample,	Rhythm,
 	VST, theme
@@ -27,16 +28,17 @@ window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
 // For debug, start out with 1 pre-initialized Cloudy eVST
-activeVSTs.push(new Cloudy(ctx));
+//activeVSTs.push(new Cloudy(ctx));
+activeVSTs.push(new RePlay(ctx));
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
 		// Success
 		const {inputs, outputs} = midi;
 
-		for (const input of inputs.values()) {
+		inputs.forEach((input) => {
 			input.onmidimessage = midiMessageHandler;
-		}
+		});
 	}, () => {
 		// Error
 		console.error("There was a problem loading a MIDI device.");
@@ -129,19 +131,6 @@ setInterval(drawLoop, FPS/1000);
 
 
 
-function playSample(smp: Sample) {
-	const sound = new Howl({
-		src:		[smp.src],
-		preload:	true,
-	});
-
-	sound.play();
-	
-	sound.on("end", () => {
-		sound.unload();
-	});
-}
-
 // Set canvas dimensions
 function resizeHandler() {
 	canvas.width	= innerWidth;
@@ -153,4 +142,9 @@ function pointInsideRect(	x: number,	y: number,
 							rw: number,	rh: number,	) {
 	return	((x>=rx) && (x<rx+rw)) &&
 			((y>=ry) && (y<ry+rh));
+}
+
+// Get frequency in hertz from MIDI note value
+export function noteHz(note: number) {
+	return (440 / 32) * (2 ** ((note - 9) / 12));
 }

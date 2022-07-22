@@ -1,7 +1,11 @@
 // Classes for use in the free eVST GUIs
 "use strict";
 
-export class Point {
+export interface UIComponent {
+	draw:	(c: CanvasRenderingContext2D) => void;
+}
+
+export class Point implements UIComponent {
 	public color: string;
 	
 	constructor(
@@ -12,7 +16,8 @@ export class Point {
 	draw(c: CanvasRenderingContext2D) {}
 }
 
-export class Rectangle extends Point {
+export class Rectangle extends Point
+			implements UIComponent {
 	constructor(
 		x:			number,
 		y:			number,
@@ -28,7 +33,8 @@ export class Rectangle extends Point {
 	}
 }
 
-export class Text extends Point {
+export class Text extends Point
+			implements UIComponent {
 	public fontSize:	number	= 32;
 	public font:		string	= "serif";
 	

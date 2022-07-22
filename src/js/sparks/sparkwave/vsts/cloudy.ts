@@ -7,6 +7,7 @@
 "use strict";
 
 import {VST}				from "../classes";
+import {noteHz}				from "../main";
 import {Rectangle, Text}	from "../dtools";
 
 const border = 4;
@@ -36,7 +37,9 @@ export default class Cloudy extends VST {
 		[this.bg.x, this.bg.y] = [this.x+border, this.y+border];
 	}
 
-	onMidiInput(command: number, note: number, velocity: number) {
+	override onMidiInput(	command:	number,
+							note:		number,
+							velocity:	number) {
 		switch (command) {
 			case 144: // Note ON
 				if (velocity > 0) this.noteOn(note, velocity);
@@ -49,14 +52,9 @@ export default class Cloudy extends VST {
 		}
 	}
 
-	noteOn(note: number, velocity: number) {
-		if (velocity === 0) {
-			this.noteOff(note);
-			return;
-		}
-		
+	override noteOn(note: number, velocity: number) {
 		const oscn = new OscNote(note, this.makeOscillator(0));
-		oscn.osc.frequency.value = Cloudy.noteHz(note);
+		oscn.osc.frequency.value = noteHz(note);
 
 		this.oscs[0].push(oscn);
 		
@@ -64,7 +62,7 @@ export default class Cloudy extends VST {
 		oscn.osc.start();
 	}
 
-	noteOff(note: number) {
+	override noteOff(note: number) {
 		for (const section of this.oscs) {
 			section.forEach((oscn, i) => {
 				// For each oscillator/note container,
@@ -83,11 +81,6 @@ export default class Cloudy extends VST {
 		return new OscillatorNode(this.ctx, {
 			type: "square",
 		});
-	}
-
-	// Get frequency in hertz from MIDI note value
-	private static noteHz(note: number) {
-		return (440 / 32) * (2 ** ((note - 9) / 12));
 	}
 }
 

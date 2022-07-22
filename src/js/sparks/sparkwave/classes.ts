@@ -25,7 +25,22 @@ export class VST {
 	
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
-	onMidiInput(command: number, note: number, velocity: number) {}
+	
+	onMidiInput(command: number, note: number, velocity: number) {
+		switch (command) {
+			case 144: // Note ON
+				if (velocity > 0) this.noteOn(note, velocity);
+				else this.noteOff(note);
+				break;
+				
+			case 128: // Note OFF
+				this.noteOff(note);
+				break;
+		}
+	}
+
+	noteOn(note: number, velocity: number) {}
+	noteOff(note: number) {}
 }
 
 export abstract class Effect {
