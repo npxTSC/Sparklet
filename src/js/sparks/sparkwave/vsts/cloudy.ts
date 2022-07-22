@@ -52,6 +52,7 @@ export default class Cloudy extends VST {
 	noteOn(note: number, velocity: number) {
 		if (velocity === 0) {
 			this.noteOff(note);
+			return;
 		}
 		
 		const oscn = new OscNote(note, this.makeOscillator(0));
@@ -72,7 +73,6 @@ export default class Cloudy extends VST {
 				
 				oscn.osc.stop();
 				oscn.osc.disconnect(this.ctx.destination);
-				oscn.osc = null;
 
 				section.splice(i);
 			});
