@@ -13,12 +13,17 @@ import {Rectangle, Text,
 		UIComponent		}	from "../dtools";
 
 const border = 4;
+const defaultSampleURI = "/public/sparks/sparkwave/debug/ckey.wav";
+
 
 export default class RePlay extends VST {
 	private ui:		Record<string, UIComponent>	= {};
+	private sample:	Sample;
 	
-	constructor(ctx: AudioContext) {
+	constructor(ctx: AudioContext, smp?: Sample) {
 		super(ctx);
+
+		this.sample = smp ?? new Sample(defaultSampleURI);
 		
 		const bg = new Rectangle(
 			this.x+border,
@@ -27,19 +32,36 @@ export default class RePlay extends VST {
 			this.h-(2*border),
 		);
 
-		bg.color = "aliceblue";
-
+		bg.color	= "aliceblue";
 		this.ui.bg = bg;
+
+		const titletext = new Text(
+			"RePlay",
+			this.x+(border*2),
+			this.y+(border)+50
+		);
+
+		titletext.color = "black";
+		titletext.z		= 50;
+
+		this.ui.title = titletext;
 	}
 	
 	draw(c: CanvasRenderingContext2D) {
-		Object.values(this.ui).forEach(cmp => cmp.draw(c));
+		const sorted = Object.values(this.ui)
+			.sort((a, b) => a.z - b.z);
+		
+		sorted.forEach(cmp => cmp.draw(c));
 	}
 
 	updateDisplay() {
 		[	(<Rectangle>this.ui.bg).x,
 			(<Rectangle>this.ui.bg).y	]
 				= [this.x+border, this.y+border];
+		
+		[	(<Text>this.ui.title).x,
+			(<Text>this.ui.title).y	]
+				= [this.x+(border*2), this.y+border+50];
 	}
 
 	override onMidiInput(	command:	number,
@@ -62,17 +84,4 @@ export default class RePlay extends VST {
 	}
 
 	override noteOff(note: number) {}
-}
-
-function playSample(smp: Sample) {
-	const sound = new Howl({
-		src:		[smp.src],
-		preload:	true,
-	});
-
-	sound.play();
-	
-	sound.on("end", () => {
-		sound.unload();
-	});
 }

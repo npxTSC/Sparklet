@@ -1,6 +1,6 @@
 "use strict";
 
-const defaultSampleURL = "http://starmen.net/mother2/soundfx/error.wav";
+import {Howl}	from "howler";
 
 export class Sample {
 	public src:		string;
@@ -8,7 +8,20 @@ export class Sample {
 	public effects:	Effect[];
 	
 	constructor(ct_src?: string) {
-		this.src = ct_src ?? defaultSampleURL;
+		this.src = ct_src ?? null;
+	}
+
+	static play(smp: Sample) {
+		const sound = new Howl({
+			src:		[smp.src],
+			preload:	true,
+		});
+	
+		sound.play();
+		
+		sound.on("end", () => {
+			sound.unload();
+		});
 	}
 }
 

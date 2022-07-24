@@ -3,10 +3,12 @@
 
 export interface UIComponent {
 	draw:	(c: CanvasRenderingContext2D) => void;
+	z:		number;
 }
 
 export class Point implements UIComponent {
-	public color: string;
+	public color:	string;
+	public z:		number	= 0;
 	
 	constructor(
 		public x:	number,
