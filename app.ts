@@ -151,11 +151,11 @@ app.get("/conductors/:profile", async (req, res) => {
 		`${user?.name ?? "<Anon>"} requested profile of "${profile}"`
 	);
 	
-	if (str.containsSpecials(profile)) return res.render("404");
+	if (str.containsSpecials(profile)) return throw404(res);
 	
 	let row = statements.getUser.get(profile);
 
-	if (!row) return res.render("404");
+	if (!row) return throw404(res);
 	
 	// User exists, so... do something?
 	return res.render("profile", {profileInfo: row});
@@ -183,7 +183,7 @@ app.get("/rooms/quiz/:room", (req, res) => {
 		isNaN(room)					||
 		checkRoomExists(room.toString()) !== "Found") {
 	
-		return res.render("404");
+		return throw404(res);
 	}
 	
 	res.render("quizplay", {room: room});
@@ -192,11 +192,11 @@ app.get("/rooms/quiz/:room", (req, res) => {
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"], 10);
 	if (typeof postId !== "number" || isNaN(postId))
-		return res.render("404");
+		return throw404(res);
 	
 	let post = statements.getNews.get(postId);
 
-	if (!post) return res.render("404");
+	if (!post) return throw404(res);
 
 	
 	post.date = new Date(post.date);
@@ -221,12 +221,12 @@ app.get("/news", (req, res) => {
 app.get("/sparks/:GameID", (req, res) => {
 	let postId = req.params["GameID"];
 	if (!postId) {
-		return res.render("404");
+		return throw404(res);
 	}
 
 	let post = statements.getGame.get(postId);
 
-	if (!post) return res.render("404");
+	if (!post) return throw404(res);
 	
 	post.date = new Date(post.date);
 
@@ -269,7 +269,9 @@ app.get("/capsules", async (req, res) => {
 	res.render("capsules", {qposts});
 });
 
-
+app.get("*", (req, res) => {
+	return throw404(res);
+});
 
 io.on("connection", (socket) => {
 	console.log("User Connected");
@@ -339,4 +341,9 @@ const {} = server.listen(PORT, () => {
 
 function getIp(req: any) {
 	return req.socket.remoteAddress;
+}
+
+function throw404(res: Express.Response) {
+	res.status(404);
+	res.render("404");
 }
