@@ -6,14 +6,14 @@
 
 "use strict";
 
-import {VST}				from "../classes";
+import {Synth}				from "../classes";
 import {noteHz,
 		SYNTH_BORDERS,
 		SYNTH_TITLEBAR_HEIGHT
 }							from "../main";
 import {Rectangle, Text}	from "../dtools";
 
-export default class Cloudy extends VST {
+export default class Cloudy extends Synth {
 	private oscs:		OscNote[][] = [[]];
 	private bg:			Rectangle;
 	

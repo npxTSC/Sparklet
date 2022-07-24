@@ -26,12 +26,11 @@ export class Sample {
 	}
 }
 
-export class VST {
+export class SWPlugin {
 	constructor(protected ctx: AudioContext) {}
 	
 	visible:			boolean	= true;
 	isBeingDragged:		boolean	= false;
-	acceptsMidiInput:	boolean	= true;
 	x:					number	= 50;
 	y:					number	= 50;
 	w:					number	= 400;
@@ -40,6 +39,8 @@ export class VST {
 
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
+	
+	acceptsMidiInput:	boolean	= true;
 	
 	onMidiInput(command: number, note: number, velocity: number) {
 		switch (command) {
@@ -58,16 +59,22 @@ export class VST {
 	noteOff(note: number) {}
 }
 
-export abstract class Effect {
+// Produces sound
+export class Synth extends SWPlugin {
+	//
+}
+
+// Modifies incoming sound
+export class Effect extends SWPlugin {
 	//
 }
 
 export type Rhythm = boolean[];
 
 export const theme = {
-	TITLEBAR:		"#222",
-	BACKGROUND:		"#383838",
-	VST_TITLEBAR:	"#333",
-	VST_BACKGROUND:	"#4f4f4f",
-	VST_EMPTY:		"#fff",
+	TITLEBAR:			"#222",
+	BACKGROUND:			"#383838",
+	PLUGIN_TITLEBAR:	"#333",
+	PLUGIN_BACKGROUND:	"#4f4f4f",
+	PLUGIN_EMPTY:		"#fff",
 }

@@ -11,14 +11,14 @@ import {noteHz,
 		SYNTH_BORDERS,
 		SYNTH_TITLEBAR_HEIGHT
 }								from "../main";
-import {VST, Sample}			from "../classes";
+import {Synth, Sample}			from "../classes";
 import {Rectangle, Text,
 		UIComponent		}		from "../dtools";
 
 const defaultSampleURI = "/public/sparks/sparkwave/debug/ckey.wav";
 
 
-export default class RePlay extends VST {
+export default class RePlay extends Synth {
 	public ui:		Record<string, UIComponent>	= {};
 	private sample:	Sample;
 	

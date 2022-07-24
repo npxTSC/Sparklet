@@ -2,11 +2,11 @@
 
 import {rand, elem, str}		from "libdx";
 import {Howl, Howler}			from "howler";
-import Cloudy					from "./vsts/cloudy";
-import RePlay					from "./vsts/replay";
+import Cloudy					from "./synths/cloudy";
+import RePlay					from "./synths/replay";
 import {
 	Sample,	Rhythm,
-	VST, theme
+	Synth, theme, SWPlugin
 }	from "./classes";
 
 // Web prep stuff
@@ -19,7 +19,7 @@ const FPS			= 60;
 
 export const SYNTH_BORDERS			= 4;
 export const SYNTH_TITLEBAR_HEIGHT	= 20;
-const activeVSTs: VST[]	= [];
+const activePlugins: SWPlugin[]		= [];
 
 let mouseX: number;
 let mouseY: number;
@@ -29,9 +29,11 @@ let mouseDown = false;
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
-// For debug, start out with 1 pre-initialized Cloudy eVST
-activeVSTs.push(new Cloudy(ctx));
-//activeVSTs.push(new RePlay(ctx));
+// Debug pre-initialized plugins
+activePlugins.push(
+	new Cloudy(ctx)
+//	new RePlay(ctx)
+);
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
@@ -50,7 +52,7 @@ if (navigator.requestMIDIAccess) {
 function midiMessageHandler(message: WebMidi.MIDIMessageEvent) {
 	const [command, note, velocity] = message.data;
 	
-	for (const instance of activeVSTs) {
+	for (const instance of activePlugins) {
 		if (!instance.acceptsMidiInput) continue;
 		
 		instance.onMidiInput(command, note, velocity);
@@ -71,14 +73,14 @@ function drawLoop() {
 	c.fillRect(0, 0, innerWidth, 40);
 
 	// Draw open instance GUIs
-	for (const instance of activeVSTs) {
+	for (const instance of activePlugins) {
 		if (!instance.visible) continue;
 		
-		c.fillStyle = theme.VST_BACKGROUND;
+		c.fillStyle = theme.PLUGIN_BACKGROUND;
 		c.fillRect(	instance.x, instance.y,
 					instance.w, instance.h	);
 		
-		c.fillStyle = theme.VST_EMPTY;
+		c.fillStyle = theme.PLUGIN_EMPTY;
 		c.fillRect(	instance.x+SYNTH_BORDERS,
 					instance.y+SYNTH_BORDERS,
 					instance.w-(SYNTH_BORDERS*2),
@@ -86,7 +88,7 @@ function drawLoop() {
 
 		instance.draw(c);
 
-		c.fillStyle = theme.VST_TITLEBAR;
+		c.fillStyle = theme.PLUGIN_TITLEBAR;
 		c.fillRect(instance.x, instance.y, instance.w, SYNTH_TITLEBAR_HEIGHT);
 	}
 }
@@ -96,7 +98,7 @@ canvas.addEventListener("mousemove", (e) => {
 	const mx = e.clientX - rect.left;
 	const my = e.clientY - rect.top;
 
-	for (const instance of activeVSTs) {
+	for (const instance of activePlugins) {
 		if (!instance.isBeingDragged) continue;
 		instance.x += (mx-mouseX);
 		instance.y += (my-mouseY);
@@ -109,7 +111,7 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("mousedown", (e) => {
 	mouseDown = true;
 	
-	for (const instance of activeVSTs) {
+	for (const instance of activePlugins) {
 		if (!instance.visible) continue;
 
 		if (pointInsideRect(mouseX, mouseY,
@@ -123,7 +125,7 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
 	mouseDown = false;
 
-	for (const instance of activeVSTs) {
+	for (const instance of activePlugins) {
 		instance.isBeingDragged = false;
 	}
 });
