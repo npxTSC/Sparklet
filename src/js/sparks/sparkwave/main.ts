@@ -17,6 +17,8 @@ const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
 
+export const SYNTH_BORDERS			= 4;
+export const SYNTH_TITLEBAR_HEIGHT	= 20;
 const activeVSTs: VST[]	= [];
 
 let mouseX: number;
@@ -28,8 +30,8 @@ window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
 // For debug, start out with 1 pre-initialized Cloudy eVST
-//activeVSTs.push(new Cloudy(ctx));
-activeVSTs.push(new RePlay(ctx));
+activeVSTs.push(new Cloudy(ctx));
+//activeVSTs.push(new RePlay(ctx));
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
@@ -75,11 +77,17 @@ function drawLoop() {
 		c.fillStyle = theme.VST_BACKGROUND;
 		c.fillRect(	instance.x, instance.y,
 					instance.w, instance.h	);
+		
+		c.fillStyle = theme.VST_EMPTY;
+		c.fillRect(	instance.x+SYNTH_BORDERS,
+					instance.y+SYNTH_BORDERS,
+					instance.w-(SYNTH_BORDERS*2),
+					instance.h-(SYNTH_BORDERS*2)	);
 
 		instance.draw(c);
 
 		c.fillStyle = theme.VST_TITLEBAR;
-		c.fillRect(instance.x, instance.y, instance.w, 20);
+		c.fillRect(instance.x, instance.y, instance.w, SYNTH_TITLEBAR_HEIGHT);
 	}
 }
 

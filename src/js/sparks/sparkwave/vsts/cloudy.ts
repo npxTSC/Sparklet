@@ -7,10 +7,11 @@
 "use strict";
 
 import {VST}				from "../classes";
-import {noteHz}				from "../main";
+import {noteHz,
+		SYNTH_BORDERS,
+		SYNTH_TITLEBAR_HEIGHT
+}							from "../main";
 import {Rectangle, Text}	from "../dtools";
-
-const border = 4;
 
 export default class Cloudy extends VST {
 	private oscs:		OscNote[][] = [[]];
@@ -20,21 +21,19 @@ export default class Cloudy extends VST {
 		super(ctx);
 		
 		this.bg = new Rectangle(
-			this.x+border,
-			this.y+border,
-			this.w-(2*border),
-			this.h-(2*border),
+			0, 0,
+			this.w-(2*SYNTH_BORDERS),
+			this.h-(SYNTH_TITLEBAR_HEIGHT+SYNTH_BORDERS),
 		);
 
-		this.bg.color = "aliceblue";
+		this.bg.color = "red";
 	}
 	
-	draw(c: CanvasRenderingContext2D) {
-		this.bg.draw(c);
-	}
-
-	updateDisplay() {
-		[this.bg.x, this.bg.y] = [this.x+border, this.y+border];
+	override draw(c: CanvasRenderingContext2D) {
+		this.bg.draw(c, [
+			this.x+SYNTH_BORDERS,
+			this.y+SYNTH_TITLEBAR_HEIGHT
+		]);
 	}
 
 	override onMidiInput(	command:	number,

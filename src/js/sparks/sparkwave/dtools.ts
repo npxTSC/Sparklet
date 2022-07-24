@@ -2,9 +2,11 @@
 "use strict";
 
 export interface UIComponent {
-	draw:	(c: CanvasRenderingContext2D) => void;
+	draw:	(c: CanvasRenderingContext2D, offset?: Vector2D) => void;
 	z:		number;
 }
+
+export type Vector2D = [number, number];
 
 export class Point implements UIComponent {
 	public color:	string;
@@ -15,7 +17,7 @@ export class Point implements UIComponent {
 		public y:	number,
 	) {}
 
-	draw(c: CanvasRenderingContext2D) {}
+	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {}
 }
 
 export class Rectangle extends Point
@@ -29,9 +31,14 @@ export class Rectangle extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D) {
+	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {
 		c.fillStyle = this.color;
-		c.fillRect(this.x, this.y, this.w, this.h);
+		c.fillRect(
+			this.x+offset[0],
+			this.y+offset[1],
+			this.w,
+			this.h
+		);
 	}
 }
 
@@ -48,9 +55,9 @@ export class Text extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D) {
+	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {
 		c.font = `${this.fontSize}px ${this.font}`;
 		c.fillStyle = this.color;
-		c.fillText(this.text, this.x, this.y);
+		c.fillText(this.text, this.x+offset[0], this.y+offset[1]);
 	}
 }

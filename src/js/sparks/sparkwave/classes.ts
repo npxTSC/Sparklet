@@ -1,6 +1,7 @@
 "use strict";
 
-import {Howl}	from "howler";
+import {Howl}			from "howler";
+import {UIComponent}	from "./dtools";
 
 export class Sample {
 	public src:		string;
@@ -35,7 +36,8 @@ export class VST {
 	y:					number	= 50;
 	w:					number	= 400;
 	h:					number	= 300;
-	
+	ui:					Record<string, UIComponent>	= {};
+
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
 	
@@ -67,4 +69,5 @@ export const theme = {
 	BACKGROUND:		"#383838",
 	VST_TITLEBAR:	"#333",
 	VST_BACKGROUND:	"#4f4f4f",
+	VST_EMPTY:		"#fff",
 }
