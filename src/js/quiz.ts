@@ -28,6 +28,8 @@ let phase					= "entering join code";
 let lastEnteredRID: string	= null;
 
 
+RIDElement.focus();
+
 loginForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 	switch (phase) {
@@ -78,6 +80,9 @@ socket.on("quizFound", () => {
 	joinCodeSlide.style.animation = "fadeOut 500ms normal forwards";
 	setTimeout(() => {
 		joinCarousel.to(1);
+		setTimeout(() => {
+			unameElement.focus();
+		}, 1000);
 	}, 500);
 	phase = "entering username";
 });

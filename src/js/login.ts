@@ -4,6 +4,9 @@ import {qstr}		from "libdx";
 const parsedQ = qstr.parseQ();
 qstr.clearQ();
 
+// Elements
+const usernameBox = document.getElementById("usernameBox") as HTMLInputElement;
+
 // Use a lookup table instead of directly sending error
 // via Qstr to prevent link-sharing vulnerabilities
 const loginECs: Record<string, string> = {
@@ -22,3 +25,5 @@ if (parsedQ?.ecode) {
 	document.getElementById("ecBox")
 		.classList.remove("invisible");
 }
+
+usernameBox.focus();
