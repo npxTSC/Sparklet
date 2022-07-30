@@ -256,6 +256,18 @@ ul#topbar {
 	font-size: 1.6em;
 }
 
+.searchbox {
+	border: 0.3rem solid map-get($theme-colors, "carbon");
+	border-bottom: 1.5rem solid map-get($theme-colors, "carbon");
+	transition: border 0.5s linear;
+}
+
+.searchbox:focus {
+	border: 0.3rem solid map-get($theme-colors, "primary");
+	border-bottom: 1.5rem solid map-get($theme-colors, "primary");
+	transition: border 0.1s linear;
+}
+
 @keyframes bigPfpGlow {
 	to {
 		box-shadow: 0 0 5rem 2rem map-get($theme-colors, "primary");
