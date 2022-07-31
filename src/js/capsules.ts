@@ -71,4 +71,3 @@ searchbox.addEventListener("input", () => {
 
 // the actual code lol
 fetchCapsules();
-

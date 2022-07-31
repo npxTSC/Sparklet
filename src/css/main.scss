@@ -268,13 +268,22 @@ ul#topbar {
 	border: 0.3rem solid map-get($theme-colors, "carbon");
 	border-bottom: 1.5rem solid map-get($theme-colors, "carbon");
 	transition: border 0.5s linear;
+
+	&:focus,
+	&:not(:placeholder-shown) {
+		border: 0.3rem solid map-get($theme-colors, "primary");
+		border-bottom: 1.5rem solid map-get($theme-colors, "primary");
+		transition: border 0.1s linear;
+	}
 }
 
-.searchbox:focus,
-.searchbox:not(:placeholder-shown) {
-	border: 0.3rem solid map-get($theme-colors, "primary");
-	border-bottom: 1.5rem solid map-get($theme-colors, "primary");
-	transition: border 0.1s linear;
+.quizStartButton {
+	transition: background-color 0.1s linear;
+
+	&:hover {
+		transition: background-color 0.1s linear;
+		background-color: map-get($theme-colors, "danger");
+	}
 }
 
 @keyframes bigPfpGlow {
