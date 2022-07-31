@@ -2,6 +2,7 @@
 
 @import "custombs.scss";
 @import "~bootstrap/scss/bootstrap";
+@import "mixins.scss";
 
 // Constants
 $mobile-max-width:	768px;
@@ -21,6 +22,11 @@ body {
 	background-size: cover;
 	background-position-x: center;
 	background-attachment: fixed;
+
+	// Hide outline when tabbing
+	/*& * {
+		outline: none;
+	}*/
 
 	// Hide Scrollbars
 	-ms-overflow-style: none;	// IE
@@ -118,7 +124,8 @@ div.qpostBox {
 	border-radius: 3em;
 	transition: border-radius 100ms linear;
 	//cursor: pointer;
-	&:hover {
+	
+	@include selected {
 		border-radius: 2em;
 	}
 }
@@ -220,15 +227,16 @@ ul#topbar {
 	}
 }
 
-.nav-item {
+.nav-link {
 	filter: brightness(100%);
 	background: $spark-yellow; //theme-color("primary");
 	transition: filter 0.2s ease-in-out;
-}
+	outline: none;
 
-.nav-item:hover {
-	filter: brightness(95%);
-	transition: filter 0.2s ease-in-out;
+	@include selected {
+		filter: brightness(90%);
+		transition: filter 0.2s ease-in-out;
+	}
 }
 
 .no-aa {
@@ -280,7 +288,7 @@ ul#topbar {
 .quizStartButton {
 	transition: background-color 0.1s linear;
 
-	&:hover {
+	@include selected {
 		transition: background-color 0.1s linear;
 		background-color: map-get($theme-colors, "danger");
 	}
