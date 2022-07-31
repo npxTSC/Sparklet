@@ -55,6 +55,18 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/api/capsules", (req, res) => {
+	const spaced = (<string>req.query.q).replace(/\+/g, " ");
+	const searchQuery = decodeURIComponent(spaced);
+	
+	// Get posts with
+	const rows = statements.searchCapsules.all(searchQuery);
+
+	if (rows.length > 0) console.log("Found!");
+	
+	return res.status(200).json(rows);
+});
+
 app.get("/login", (req, res) => {
 	res.render("login");
 });

@@ -59,6 +59,10 @@ db.prepare(`
 db.prepare(`
 	CREATE TABLE IF NOT EXISTS capsules(
 		uuid		TEXT		PRIMARY KEY,
+		name		TEXT		NOT NULL,
+		creator		TEXT		NOT NULL,
+		version		TEXT		NOT NULL,
+		content		TEXT		NOT NULL,
 		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
@@ -66,8 +70,7 @@ db.prepare(`
 
 
 
-
-import statements	from "./statements";
+import statements			from "./statements";
 statements.prepopulate.forEach(v => v.run());
 
 export namespace accs {
