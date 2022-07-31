@@ -21,6 +21,14 @@ body {
 	background-size: cover;
 	background-position-x: center;
 	background-attachment: fixed;
+
+	// Hide Scrollbars
+	-ms-overflow-style: none;	// IE
+    scrollbar-width: none;		// Firefox
+	
+	&::-webkit-scrollbar { 
+	    display: none;			// Safari/Chrome
+	}
 }
 
 .center {
@@ -262,7 +270,8 @@ ul#topbar {
 	transition: border 0.5s linear;
 }
 
-.searchbox:focus {
+.searchbox:focus,
+.searchbox:not(:placeholder-shown) {
 	border: 0.3rem solid map-get($theme-colors, "primary");
 	border-bottom: 1.5rem solid map-get($theme-colors, "primary");
 	transition: border 0.1s linear;

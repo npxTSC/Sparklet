@@ -64,7 +64,8 @@ db.prepare(`
 		version		TEXT		NOT NULL,
 		content		TEXT		NOT NULL,
 		visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
-		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
+		date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		likes		INTEGER		NOT NULL DEFAULT 0
 	);
 `).run();
 

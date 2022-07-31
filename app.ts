@@ -56,11 +56,15 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/capsules", (req, res) => {
-	const spaced = (<string>req.query.q).replace(/\+/g, " ");
-	const searchQuery = decodeURIComponent(spaced);
+	let rows;
 	
-	// Get posts with
-	const rows = statements.searchCapsules.all(searchQuery);
+	if (req.query.q) {
+		const spaced = (<string>req.query.q).replace(/\+/g, " ");
+		const searchQuery = decodeURIComponent(spaced);
+		rows = statements.searchCapsules.all(searchQuery);
+	} else {
+		rows = statements.capsuleQPosts.all();
+	}
 
 	if (rows.length > 0) console.log("Found!");
 	

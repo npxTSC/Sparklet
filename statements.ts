@@ -108,7 +108,7 @@ namespace statements {
 	export const capsuleQPosts = db.prepare(`
 		SELECT rowid, *
 		FROM capsules WHERE visible = 1
-		ORDER BY rowid DESC
+		ORDER BY likes DESC
 		LIMIT 25;
 	`);
 

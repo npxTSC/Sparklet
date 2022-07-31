@@ -21,6 +21,22 @@ export interface ActiveQuizPlayer {
 	tempToken:	string;
 }
 
+export interface Capsule {
+	uuid:		string;
+	name:		string;
+	creator:	string;
+	version:	string;
+	content:	string;
+	visible:	boolean;
+	date:		Date;
+	likes:		number;
+}
+
+export interface CapsuleContent {
+	questions:	Record<string, number>;
+	answers:	string[];
+}
+
 export enum Ranks {
 	Conductor,
 	Helper,
