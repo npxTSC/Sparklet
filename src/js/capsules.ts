@@ -25,9 +25,35 @@ function makeListingE(	capsule: Capsule,
 		.innerText = "Made by " + creator;
 	
 	(<HTMLAnchorElement> el.children[1].children[0])
-		.href = "/createQProom?capsuleUUID="+encodeURIComponent(capsule.uuid);
+		.addEventListener("click", () => createQPRoom(capsule.uuid));
 	
 	return el;
+}
+
+async function createQPRoom(cuuid: string) {
+	if (!currentAccount) return alert("Make an account first!");
+	
+	const data = {
+		cuuid,
+	}
+	
+	const res = await fetch("/create-room/quiz/", {
+		method:	"POST",
+		body:	JSON.stringify(data),
+		headers: {
+			"Accept":		"application/json",
+			"Content-Type":	"application/json",
+		},
+	});
+
+	if (!res.ok) {
+		console.log(await res.json());
+		return alert("There was a problem contacting the server.");
+	}
+
+	const room = await res.json();
+
+	location.href = "/host-room/quiz/" + room.joinHash;
 }
 
 function fetchCapsules(query?: string) {

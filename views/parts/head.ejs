@@ -9,11 +9,9 @@
 
 <script src="/js/bootstrap.min.js"></script>
 
-<% if (typeof jsData !== "undefined") { %>
-	<script>
-		window.EJS = <%= JSON.stringify(jsData) %>;
-	</script>
-<% } %>
+<script>
+	window.currentAccount = <%- JSON.stringify(account) %>;
+</script>
 
 <script src="/js/main.js" defer></script>
 <link rel="stylesheet" href="/css/main.min.css">

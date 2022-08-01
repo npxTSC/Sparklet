@@ -7,14 +7,14 @@ export interface Conductor {
 }
 
 export interface Room {
-	joinHash:	number;
-	ownerAccId:	number;
-	quizId:		number;
+	joinHash:	string;
+	ownerAccId:	string;
+	quizId:		string;
 	currentQ:	number;
-	players:	ActiveQuizPlayer[];
+	players:	QuizPlayer[];
 }
 
-export interface ActiveQuizPlayer {
+export interface QuizPlayer {
 	username:	string;
 	accountId:	number | null;
 	correctQs:	number;

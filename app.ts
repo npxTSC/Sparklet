@@ -1,24 +1,24 @@
 "use strict";
 
 // Modules
-import Express				from "express";
-import crypto				from "crypto";
-import cparse				from "cookie-parser";
-import bcrypt				from "bcrypt";
-import path					from "path";
-import ejs					from "ejs";
-import http					from "http";
-import {Server as ioServer}	from "socket.io";
-import {v4 as newUUID}		from "uuid";
-import {str}				from "libdx";
-import gzipCompression		from "compression";
-import fs					from "fs";
+import Express						from "express";
+import crypto						from "crypto";
+import cparse						from "cookie-parser";
+import bcrypt						from "bcrypt";
+import path							from "path";
+import ejs							from "ejs";
+import http							from "http";
+import {Server as ioServer}			from "socket.io";
+import {v4 as newUUID}				from "uuid";
+import {str}						from "libdx";
+import gzipCompression				from "compression";
+import fs							from "fs";
 
 // Local Modules
-import {Room, Ranks}		from "./classes";
-import {db, accs}			from "./db";
-import statements			from "./statements";
-import accountParser		from "./middleware/accounts";
+import {Room, Ranks, QuizPlayer}	from "./classes";
+import {db, accs}					from "./db";
+import statements					from "./statements";
+import accountParser				from "./middleware/accounts";
 
 // CONSTANTS
 const PORT = 3000;
@@ -29,19 +29,19 @@ const server				= http.createServer(app);
 const io					= new ioServer(server);
 const activeRooms: Room[]	= [
 	{	// Debug Room #79
-		joinHash:	79,
-		ownerAccId:	0,
-		quizId:		0,
+		joinHash:	"79",
+		ownerAccId:	"0",
+		quizId:		"0",
 		currentQ:	0,
 		players:	[],
 	}
 ];
 
 // Middleware
-app.use(Express.json());
 app.use(cparse());
 app.use(accountParser);
 app.use(gzipCompression());
+app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 
@@ -65,10 +65,39 @@ app.get("/api/capsules", (req, res) => {
 	} else {
 		rows = statements.capsuleQPosts.all();
 	}
-
-	if (rows.length > 0) console.log("Found!");
 	
 	return res.status(200).json(rows);
+});
+
+app.post("/create-room/:roomType", (req, res) => {
+	const {roomType}	= req.params;
+	const {cuuid}		= req.body;
+
+	
+	const row = statements.getCapsule.get(cuuid);
+	if (!row) return res.status(400).json({
+		bruhmoment:	"Invalid capsule! You shouldn't be here...",
+	});
+	
+
+	let jh = "";
+	
+	do {
+		jh = r_str(6);
+	} while (activeRooms.filter(v => v.joinHash === jh).length > 0);
+	
+	
+	const newRoom = {
+		joinHash:	jh,
+		ownerAccId:	res.locals.account?.uuid,
+		quizId:		cuuid,
+		currentQ:	0,
+		players:	<QuizPlayer[]>[],
+	}
+	
+	activeRooms.push(newRoom);
+
+	return res.status(200).json(newRoom);
 });
 
 app.get("/login", (req, res) => {
@@ -299,7 +328,6 @@ io.on("connection", (socket) => {
 		const res = checkRoomExists(id);
 		
 		switch (res) {
-			case "NaN":
 			case "Not Found":
 				socket.emit("quizNotFound");
 				console.log("Invalid quiz " + id);
@@ -335,14 +363,8 @@ io.on("connection", (socket) => {
 });
 
 function checkRoomExists(id: string) {
-	const receivedId = parseInt(
-		str.filterStrings(id, [" ", ",", "."]),
-	10);
-
-	if (isNaN(receivedId)) return "NaN";
-
 	const searched = activeRooms.filter(
-		(v) => v.joinHash === receivedId
+		(v) => v.joinHash === id
 	);
 
 	if (searched.length === 0)	return "Not Found";
@@ -362,4 +384,8 @@ function getIp(req: any) {
 function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
+}
+
+function r_str(len: number) {
+	return Math.random().toString(36).substring(2,len+2).toUpperCase();
 }
