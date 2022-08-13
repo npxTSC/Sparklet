@@ -321,17 +321,14 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("queryRoom", (id) => {
-		const res = checkRoomExists(id);
+		const room = findRoom(id);
 		
-		switch (res) {
-			case "Not Found":
-				socket.emit("quizNotFound");
-				console.log("Invalid quiz " + id);
-				break;
-			case "Found":
-				socket.emit("quizFound");
-				console.log("Successful quiz " + id);
-				break;
+		if (!room) {
+			socket.emit("quizNotFound");
+			console.log("Invalid quiz " + id);
+		} else {
+			socket.emit("quizFound");
+			console.log("Successful quiz " + id);
 		}
 	});
 
@@ -355,15 +352,6 @@ io.on("connection", (socket) => {
 		});
 	});
 });
-
-function checkRoomExists(id: string) {
-	const searched = activeRooms.filter(
-		(v) => v.joinHash === id
-	);
-
-	if (searched.length === 0)	return "Not Found";
-	else						return "Found";
-}
 
 const {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
