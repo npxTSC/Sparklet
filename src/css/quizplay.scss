@@ -2,6 +2,8 @@
 // Active quiz session styles //
 ////////////////////////////////
 
+@import "mixins.scss";
+
 // Button colors
 $carnation:			#f34e4e; //#b01e1e;
 $florange:			#ff9d47;
@@ -22,4 +24,11 @@ body {
 	
 	overflow: hidden;
 	white-space: nowrap;
+
+	transition: filter 0.1s linear;
+
+	@include selected {
+		transition: filter 0.1s linear;
+		filter: brightness(60%);
+	}
 }
