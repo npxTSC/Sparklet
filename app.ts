@@ -16,7 +16,8 @@ import fs							from "fs";
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer, QuizHostCommand, QuizHostResponse
+	Room, Ranks, QuizPlayer,
+	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
 } from "./classes";
 import {db, accs}					from "./db";
 import statements					from "./statements";
@@ -360,6 +361,16 @@ function throw404(res: Express.Response) {
 	res.render("404");
 }
 
+function generateToken(len: number) {
+	return crypto.randomBytes(len).toString("hex");
+}
+
+function findRoom(code: string) {
+	return activeRooms.find(v => v.joinHash === code);
+}
+
+
+// For quiz hosts
 function runHostCommand(cmdf: QuizHostCommand) {
 	const {room, auth}	= cmdf;
 
@@ -375,7 +386,6 @@ function runHostCommand(cmdf: QuizHostCommand) {
 	return HOST_CMDS[cmd](args, found);
 }
 
-type QuizHostCmdFn = ((args: string[], room?: Room) => QuizHostResponse);
 const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
 		return {
@@ -388,12 +398,4 @@ const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 			alert: args[0]
 		}
 	}
-}
-
-function generateToken(len: number) {
-	return crypto.randomBytes(len).toString("hex");
-}
-
-function findRoom(code: string) {
-	return activeRooms.find(v => v.joinHash === code);
 }

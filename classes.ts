@@ -34,6 +34,11 @@ export interface QuizHostResponse {
 	alert?:		string;
 }
 
+export type QuizHostCmdFn = (
+	(args: string[], room?: Room) =>
+		QuizHostResponse
+);
+
 export interface Capsule {
 	uuid:		string;
 	name:		string;
