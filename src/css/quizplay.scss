@@ -6,8 +6,20 @@
 $carnation:			#f34e4e; //#b01e1e;
 $florange:			#ff9d47;
 $pkFlash:			#47ff72;
-$uglyDiscordColor:	#6347ff;
+$dclavender:		#ea75ff;
 
 body {
 	background: black;
+}
+
+.qpAnswer {
+	border: 2px black solid;
+	border-radius: 5%/20%;
+	text-align: center;
+
+	font-size: 2rem;
+	font-weight: bold;
+	
+	overflow: hidden;
+	white-space: nowrap;
 }

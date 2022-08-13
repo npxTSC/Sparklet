@@ -31,13 +31,16 @@ async function makePlayerE(player: QuizPlayer): Promise<HTMLDivElement> {
 	el.style.display = "flex";
 	
 	const {username, account, tempToken} = player;
-
+	
 	// Title
 	(<HTMLParagraphElement> el.children[0].children[0])
 		.innerText = username;
 	
 	(<HTMLParagraphElement> el.children[0].children[1])
-		.innerText = "Account: " + "";
+		.innerText = (
+			player.account ?`Account: ${player.account.name} (${player.account.uuid})`
+			: "// No Account"
+		);
 	
 	(<HTMLAnchorElement> el.children[1].children[0])
 		.addEventListener("click", () => kickPlayer(player));

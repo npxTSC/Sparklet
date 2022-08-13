@@ -18,9 +18,14 @@ export interface Room {
 
 export interface QuizPlayer {
 	username:	string;
-	account:	string | null;
 	correctQs:	number;
 	tempToken:	string;
+	account?:	AccountPublic;
+}
+
+export interface AccountPublic {
+	name:	string;
+	uuid:	string;
 }
 
 export interface QuizHostCommand {

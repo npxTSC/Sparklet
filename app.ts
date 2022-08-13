@@ -16,7 +16,7 @@ import fs							from "fs";
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer,
+	Room, Ranks, QuizPlayer, AccountPublic,
 	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
 } from "./classes";
 import {db, accs}					from "./db";
@@ -331,22 +331,25 @@ io.on("connection", (socket) => {
 		}
 	});
 
-	socket.on("joinRoom", (data: Record<string, string>) => {
+	socket.on("joinRoom", (data: {
+		username:	string;
+		account:	AccountPublic
+		roomcode:	string;
+	}) => {
 		// If quiz invalid
 		const room = findRoom(data.roomcode);
+		const username = data.username.trim().substring(0, QP_NAME_LIMIT);
 		
-		if (!room) {
+		if (!room || username.length === 0) {
 			console.log("Attempt to join finished quiz :P");
 			return socket.emit("quizNotFound on step 2");
 		}
-
-		const username = data.username.substring(0, QP_NAME_LIMIT);
-
+		
 		// Add user to quiz
 		console.log(`User ${username} joined code ${data.roomcode}`);
 
 		const ply: QuizPlayer = {
-			username:		username ?? "Anonymous",
+			username,
 			account:		data.account,
 			correctQs:		0,
 			tempToken:		newUUID()

@@ -20,6 +20,8 @@ function showWaitingScreen() {
 	document.getElementById("");
 }
 
+function updateAnswers() {}
+
 socket.on("connect", () => {
 	console.log("Connected to Socket.IO");
 });
@@ -28,3 +30,5 @@ socket.on("updateRoomStatus", (nstatus: string) => {
 	status = nstatus;
 	statusUpdateHandler();
 });
+
+updateAnswers();

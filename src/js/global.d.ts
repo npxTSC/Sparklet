@@ -1,6 +1,7 @@
+import {AccountPublic}	from "../../classes";
 export {}
 
 declare global {
 	//var EJS: any;
-	var currentAccount: any;
+	var currentAccount: AccountPublic;
 }
