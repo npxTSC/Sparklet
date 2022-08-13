@@ -2,6 +2,7 @@
 "use strict";
 
 import {Capsule, CapsuleContent}	from "../../classes";
+import {cmon}						from "libdx";
 
 // Elements
 const searchbox		= document.getElementById("capsuleSearch")	as HTMLInputElement;
@@ -55,6 +56,8 @@ async function createQPRoom(cuuid: string) {
 	}
 
 	const room = await res.json();
+
+	document.cookie = cmon.assignment("qhostAuthToken", room.authToken);
 
 	location.href = "/host-room/" + room.joinHash;
 }

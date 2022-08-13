@@ -1,15 +1,24 @@
 // Control panel page for quizes
 "use strict";
 
-import {Capsule, CapsuleContent, QuizPlayer}	from "../../classes";
-import {io}										from "socket.io-client";
+import {cmon}	from "libdx";
+import {io}		from "socket.io-client";
+import {
+	Capsule, CapsuleContent, QuizPlayer,
+	QuizHostCommand, QuizHostResponse
+}	from "../../classes";
+
 const socket = io();
+const ROOM_CODE = location.pathname.split("/")[2];
+const ROOM_AUTH = cmon.read(document.cookie, "qhostAuthToken");
 
 // Elements
 const CLI			= document.getElementById("quizHostCLI")	as HTMLInputElement;
 const resultsbox	= document.getElementById("results")		as HTMLDivElement;
 const listingsDiv	= document.getElementById("listings")		as HTMLDivElement;
 const noResultsE	= document.getElementById("noresults")		as HTMLDivElement;
+
+let players: QuizPlayer[] = [];
 
 
 
@@ -53,3 +62,37 @@ async function updatePlayers(plys: QuizPlayer[]) {
 		noResultsE.style.display = "block";
 	}
 }
+
+socket.on("connect", () => {
+	console.log("Connected to Socket.IO");
+	
+	socket.emit("quizHostAction", {
+		room:	ROOM_CODE,
+		auth:	ROOM_AUTH,
+		cmd:	"getPlayers"
+	});
+});
+
+socket.on("quizHostResponse", (res: QuizHostResponse) => {
+	console.log("Received response");
+	
+	if (res.alert)		alert(res.alert);
+	
+	if (res.players) {
+		players = res.players;
+		updatePlayers(players);
+	}
+});
+
+CLI.addEventListener("keydown", (e) => {
+	if (e.key === "Enter") {
+		socket.emit("quizHostAction", {
+			room:	ROOM_CODE,
+			auth:	ROOM_AUTH,
+			cmd:	CLI.value
+		});
+		
+		// Clear CLI
+		CLI.value = "";
+	}
+});

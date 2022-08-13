@@ -15,7 +15,9 @@ import gzipCompression				from "compression";
 import fs							from "fs";
 
 // Local Modules
-import {Room, Ranks, QuizPlayer}	from "./classes";
+import {
+	Room, Ranks, QuizPlayer, QuizHostCommand, QuizHostResponse
+} from "./classes";
 import {db, accs}					from "./db";
 import statements					from "./statements";
 import accountParser				from "./middleware/accounts";
@@ -31,6 +33,7 @@ const activeRooms: Room[]	= [
 	{	// Debug Room #79
 		joinHash:	"79",
 		ownerAccId:	"0",
+		authToken:	"",
 		quizId:		"0",
 		currentQ:	0,
 		players:	[],
@@ -85,11 +88,13 @@ app.post("/create-room/:roomType", (req, res) => {
 	do {
 		jh = rand.r_str(6);
 	} while (activeRooms.filter(v => v.joinHash === jh).length > 0);
-	
+
+	const tok = generateToken(128);
 	
 	const newRoom = {
 		joinHash:	jh,
 		ownerAccId:	res.locals.account?.uuid,
+		authToken:	tok,
 		quizId:		cuuid,
 		currentQ:	0,
 		players:	<QuizPlayer[]>[],
@@ -183,7 +188,7 @@ app.post("/login", async (req, res) => {
 	}
 
 	function makeNewTokenFor(user: string) {
-		const token = crypto.randomBytes(512).toString("hex");
+		const token = generateToken(512);
 
 		statements.editLoginToken.run(token, user);
 		return token;
@@ -323,9 +328,11 @@ app.get("*", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-	console.log("User Connected");
-	socket.on("disconnect", () => {
-		console.log("User Disconnected");
+	//socket.on("disconnect", () => {});
+	socket.on("quizHostAction", (command: QuizHostCommand) => {
+		console.log(JSON.stringify(command));
+		
+		socket.emit("quizHostResponse", runHostCommand(command));
 	});
 
 	socket.on("queryRoom", (id) => {
@@ -388,4 +395,38 @@ function getIp(req: any) {
 function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
+}
+
+function runHostCommand(cmdf: QuizHostCommand) {
+	const {room, auth}	= cmdf;
+
+	// Find room where owner's token matches
+	const found = activeRooms.find(v => v.authToken === auth);
+	if (!found) return HOST_CMDS.echo(["???"]);
+	
+	const args = cmdf.cmd.split(":");
+	const cmd = args.shift();
+
+	if (!HOST_CMDS[cmd]) return HOST_CMDS.echo(["Invalid Command!"]);
+	
+	return HOST_CMDS[cmd](args, found);
+}
+
+type QuizHostCmdFn = ((args: string[], room?: Room) => QuizHostResponse);
+const HOST_CMDS: Record<string, QuizHostCmdFn> = {
+	getPlayers:	(args) => {
+		return {
+			players: []
+		}
+	},
+	
+	echo:		(args) => {
+		return {
+			alert: args[0]
+		}
+	}
+}
+
+function generateToken(len: number) {
+	return crypto.randomBytes(len).toString("hex");
 }

@@ -9,6 +9,7 @@ export interface Conductor {
 export interface Room {
 	joinHash:	string;
 	ownerAccId:	string;
+	authToken:	string;
 	quizId:		string;
 	currentQ:	number;
 	players:	QuizPlayer[];
@@ -19,6 +20,17 @@ export interface QuizPlayer {
 	account:	string | null;
 	correctQs:	number;
 	tempToken:	string;
+}
+
+export interface QuizHostCommand {
+	room:	string;
+	auth:	string;
+	cmd:	string;
+}
+
+export interface QuizHostResponse {
+	players?:	QuizPlayer[];
+	alert?:		string;
 }
 
 export interface Capsule {
