@@ -230,15 +230,10 @@ app.get("/rooms/quiz", (req, res) => {
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
-	const room = parseInt(req.params.room, 10);
+	const room = activeRooms.find(v => v.joinHash === req.params.room);;
 
 	// Guard clause for invalid inputs
-	if (typeof room !== "number"	||
-		isNaN(room)					||
-		checkRoomExists(room.toString()) !== "Found") {
-	
-		return throw404(res);
-	}
+	if (!room) return throw404(res);
 	
 	res.render("quizplay", {room: room});
 });
@@ -411,9 +406,9 @@ function runHostCommand(cmdf: QuizHostCommand) {
 
 type QuizHostCmdFn = ((args: string[], room?: Room) => QuizHostResponse);
 const HOST_CMDS: Record<string, QuizHostCmdFn> = {
-	getPlayers:	(args) => {
+	getPlayers:	(args, room) => {
 		return {
-			players: []
+			players: room.players
 		}
 	},
 	

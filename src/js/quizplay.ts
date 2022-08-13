@@ -13,9 +13,7 @@ const {
 
 // If no cookie
 if (ROOM_STATUS_AT_JOIN !== "???") {
-	alert(JSON.stringify(cmon.parse(document.cookie)));
 	document.cookie = cmon.remove("jrStatus", "/");
-	alert(JSON.stringify(cmon.parse(document.cookie)));
 }
 
 //
