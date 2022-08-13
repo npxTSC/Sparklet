@@ -75,13 +75,15 @@ app.post("/create-room/:roomType", (req, res) => {
 	
 
 	let jh = "";
-	
-	do {
-		jh = rand.r_str(6);
-	} while (activeRooms.filter(v => v.joinHash === jh).length > 0);
 
+	// Make a random join code (repeat until unique)
+	do jh = rand.r_str(6);
+	while (activeRooms.filter(v => v.joinHash === jh).length > 0);
+
+	// Admin token (doesn't have to be as secure, since rooms are temporary)
 	const tok = generateToken(128);
-	
+
+	// Create new room object, and push it to activeRooms
 	const newRoom = {
 		joinHash:	jh,
 		ownerAccId:	res.locals.account?.uuid,
@@ -203,7 +205,6 @@ app.get("/conductors/:profile", async (req, res) => {
 
 	if (!row) return throw404(res);
 	
-	// User exists, so... do something?
 	return res.render("profile", {profileInfo: row});
 });
 
@@ -295,14 +296,11 @@ app.get("/capsules", async (req, res) => {
 		).toString();
 		
 		return {
-			// all JSON data...
 			...JSON.parse(jsondata),
+			
 			// PLUS the following information:
 
-			// Capsule UUID (from DB query)
 			uuid: v.uuid,
-
-			// JS Date Object instead of Unix Epoch Time
 			date: new Date(v.date),
 		}
 	});
