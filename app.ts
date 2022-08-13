@@ -350,9 +350,12 @@ io.on("connection", (socket) => {
 
 		const ply: QuizPlayer = {
 			username,
+			uuid:			newUUID(),
 			account:		data.account,
 			correctQs:		0,
-			tempToken:		newUUID()
+
+			// Less secure token, due to less motivation to hack it
+			tempToken:		generateToken(96)
 		}
 
 		room.players.push(ply);
@@ -402,6 +405,15 @@ const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
 		return {
 			players: room.players
+		}
+	},
+
+	ban:		(args, room) => {
+		const name = room.players.find((v) => v.uuid === args[0]).username;
+		room.players = room.players.filter((v) => v.uuid !== args[0]);
+		
+		return {
+			alert: `Banned player "${name}"`
 		}
 	},
 	

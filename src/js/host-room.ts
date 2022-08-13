@@ -48,7 +48,9 @@ async function makePlayerE(player: QuizPlayer): Promise<HTMLDivElement> {
 	return el;
 }
 
-async function kickPlayer(pl: QuizPlayer) {}
+async function kickPlayer(pl: QuizPlayer) {
+	runCommand(`ban:${pl.uuid}`);
+}
 
 async function updatePlayers(plys: QuizPlayer[]) {
 	// Clear previous results
