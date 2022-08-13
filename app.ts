@@ -351,7 +351,6 @@ io.on("connection", (socket) => {
 		let quizToken = newUUID();
 		
 		socket.emit("joinRoomSuccess", {
-			roomStatus: room.status,
 			quizToken,
 		});
 	});

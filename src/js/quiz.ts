@@ -91,11 +91,7 @@ socket.on("quizFound", () => {
 
 socket.on("joinRoomSuccess", (data) => {
 	document.cookie = cmon.assignment("quizToken", data.quizToken);
-	document.cookie = cmon.assignment("jrStatus", data.roomStatus);
-	
-	setTimeout(() => {
-		window.location.href = "/rooms/quiz/" + lastEnteredRID;
-	}, 50);
+	window.location.href = "/rooms/quiz/" + lastEnteredRID;
 });
 
 function errorModalHandler() {
