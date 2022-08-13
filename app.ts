@@ -16,7 +16,8 @@ import fs							from "fs";
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer, QuizHostCommand, QuizHostResponse
+	Room, Ranks, QuizPlayer,
+	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
 } from "./classes";
 import {db, accs}					from "./db";
 import statements					from "./statements";
@@ -49,6 +50,18 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/about", (req, res) => {
+	res.render("about");
+});
+
+app.get("/rooms/quiz", (req, res) => {
+	res.render("quiz");
+});
+
+/*app.get("/rooms/breakout", (req, res) => {
+	res.render("breakout");
+});*/
+
 app.get("/api/capsules", (req, res) => {
 	let rows;
 	
@@ -75,13 +88,15 @@ app.post("/create-room/:roomType", (req, res) => {
 	
 
 	let jh = "";
-	
-	do {
-		jh = rand.r_str(6);
-	} while (activeRooms.filter(v => v.joinHash === jh).length > 0);
 
+	// Make a random join code (repeat until unique)
+	do jh = rand.r_str(6);
+	while (activeRooms.filter(v => v.joinHash === jh).length > 0);
+
+	// Admin token (doesn't have to be as secure, since rooms are temporary)
 	const tok = generateToken(128);
-	
+
+	// Create new room object, and push it to activeRooms
 	const newRoom = {
 		joinHash:	jh,
 		ownerAccId:	res.locals.account?.uuid,
@@ -187,8 +202,6 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-
-
 app.get("/conductors/:profile", async (req, res) => {
 	const {profile}		= req.params;
 	const user			= res.locals.account;
@@ -203,22 +216,7 @@ app.get("/conductors/:profile", async (req, res) => {
 
 	if (!row) return throw404(res);
 	
-	// User exists, so... do something?
 	return res.render("profile", {profileInfo: row});
-});
-
-
-
-app.get("/about", (req, res) => {
-	res.render("about");
-});
-
-app.get("/rooms/breakout", (req, res) => {
-	res.render("breakout");
-});
-
-app.get("/rooms/quiz", (req, res) => {
-	res.render("quiz");
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
@@ -295,14 +293,11 @@ app.get("/capsules", async (req, res) => {
 		).toString();
 		
 		return {
-			// all JSON data...
 			...JSON.parse(jsondata),
+			
 			// PLUS the following information:
 
-			// Capsule UUID (from DB query)
 			uuid: v.uuid,
-
-			// JS Date Object instead of Unix Epoch Time
 			date: new Date(v.date),
 		}
 	});
@@ -310,10 +305,13 @@ app.get("/capsules", async (req, res) => {
 	res.render("capsules", {qposts});
 });
 
+// 404 other routes
 app.get("*", (req, res) => {
 	return throw404(res);
 });
 
+
+// Socket.IO handlers
 io.on("connection", (socket) => {
 	//socket.on("disconnect", () => {});
 	socket.on("quizHostAction", (command: QuizHostCommand) => {
@@ -321,17 +319,14 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("queryRoom", (id) => {
-		const res = checkRoomExists(id);
+		const room = findRoom(id);
 		
-		switch (res) {
-			case "Not Found":
-				socket.emit("quizNotFound");
-				console.log("Invalid quiz " + id);
-				break;
-			case "Found":
-				socket.emit("quizFound");
-				console.log("Successful quiz " + id);
-				break;
+		if (!room) {
+			socket.emit("quizNotFound");
+			console.log("Invalid quiz " + id);
+		} else {
+			socket.emit("quizFound");
+			console.log("Successful quiz " + id);
 		}
 	});
 
@@ -356,30 +351,26 @@ io.on("connection", (socket) => {
 	});
 });
 
-function checkRoomExists(id: string) {
-	const searched = activeRooms.filter(
-		(v) => v.joinHash === id
-	);
-
-	if (searched.length === 0)	return "Not Found";
-	else						return "Found";
-}
-
 const {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
 // Functions
-
-function getIp(req: any) {
-	return req.socket.remoteAddress;
-}
-
 function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
 }
 
+function generateToken(len: number) {
+	return crypto.randomBytes(len).toString("hex");
+}
+
+function findRoom(code: string) {
+	return activeRooms.find(v => v.joinHash === code);
+}
+
+
+// For quiz hosts
 function runHostCommand(cmdf: QuizHostCommand) {
 	const {room, auth}	= cmdf;
 
@@ -395,7 +386,6 @@ function runHostCommand(cmdf: QuizHostCommand) {
 	return HOST_CMDS[cmd](args, found);
 }
 
-type QuizHostCmdFn = ((args: string[], room?: Room) => QuizHostResponse);
 const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
 		return {
@@ -408,12 +398,4 @@ const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 			alert: args[0]
 		}
 	}
-}
-
-function generateToken(len: number) {
-	return crypto.randomBytes(len).toString("hex");
-}
-
-function findRoom(code: string) {
-	return activeRooms.find(v => v.joinHash === code);
 }
