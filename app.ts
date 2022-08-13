@@ -330,11 +330,9 @@ io.on("connection", (socket) => {
 		}
 	});
 
-	socket.on("joinRoom", (jsoni) => {
-		const inp: Record<string, string> = JSON.parse(jsoni);
-		
+	socket.on("joinRoom", (data: Record<string, string>) => {
 		// If quiz invalid
-		const room = findRoom(inp.roomcode);
+		const room = findRoom(data.roomcode);
 		
 		if (!room) {
 			console.log("Attempt to join finished quiz :P");
@@ -342,11 +340,19 @@ io.on("connection", (socket) => {
 		}
 
 		// Add user to quiz
-		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
-		let quizToken = newUUID();
+		console.log(`User ${data.username} joined code ${data.roomcode}`);
+
+		const ply: QuizPlayer = {
+			username:		data.username ?? "Anonymous",
+			account:		data.account,
+			correctQs:		0,
+			tempToken:		newUUID()
+		}
+
+		room.players.push(ply);
 		
 		socket.emit("joinRoomSuccess", {
-			quizToken,
+			quizToken: ply.tempToken,
 		});
 	});
 });

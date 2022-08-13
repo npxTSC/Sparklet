@@ -67,12 +67,7 @@ async function updatePlayers(plys: QuizPlayer[]) {
 
 socket.on("connect", () => {
 	console.log("Connected to Socket.IO");
-	
-	socket.emit("quizHostAction", {
-		room:	ROOM_CODE,
-		auth:	ROOM_AUTH,
-		cmd:	"getPlayers"
-	});
+	runCommand("getPlayers");
 });
 
 socket.on("quizHostResponse", (res: QuizHostResponse) => {
@@ -86,13 +81,20 @@ socket.on("quizHostResponse", (res: QuizHostResponse) => {
 
 CLI.addEventListener("keydown", (e) => {
 	if (e.key === "Enter") {
-		socket.emit("quizHostAction", {
-			room:	ROOM_CODE,
-			auth:	ROOM_AUTH,
-			cmd:	CLI.value
-		});
+		runCommand(CLI.value);
 		
 		// Clear CLI
 		CLI.value = "";
 	}
 });
+
+function runCommand(v: string) {
+	socket.emit("quizHostAction", {
+		room:	ROOM_CODE,
+		auth:	ROOM_AUTH,
+		cmd:	v
+	});
+}
+
+// Polling,,, yuck! (Fix this later)
+setInterval(() => runCommand("getPlayers"), 5000);

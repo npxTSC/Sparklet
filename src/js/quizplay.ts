@@ -10,9 +10,10 @@ const {
 	quizToken:	QPLAY_TOKEN
 } = cmon.parse(document.cookie);
 
-//
-if (ROOM_STATUS_AT_JOIN === "waiting") {
-	showWaitingScreen();
+let status;
+
+function statusUpdateHandler() {
+	//
 }
 
 function showWaitingScreen() {
@@ -21,4 +22,9 @@ function showWaitingScreen() {
 
 socket.on("connect", () => {
 	console.log("Connected to Socket.IO");
+});
+
+socket.on("updateRoomStatus", (nstatus: string) => {
+	status = nstatus;
+	statusUpdateHandler();
 });

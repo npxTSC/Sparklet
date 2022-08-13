@@ -42,11 +42,11 @@ loginForm.addEventListener("submit", (e) => {
 
 		case "entering username":
 			if (unameElement.value) {
-				const data = JSON.stringify({
-					username: unameElement.value,
-					roomcode: lastEnteredRID,
+				socket.emit("joinRoom", {
+					username:	unameElement.value,
+					account:	currentAccount,
+					roomcode:	lastEnteredRID,
 				});
-				socket.emit("joinRoom", data);
 
 				phase = "loading in";
 

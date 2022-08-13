@@ -294,6 +294,15 @@ ul#topbar {
 	}
 }
 
+.qhostBanButton {
+	transition: background-color 0.1s linear;
+
+	@include selected {
+		transition: background-color 0.1s linear;
+		background-color: map-get($theme-colors, "danger");
+	}
+}
+
 @keyframes bigPfpGlow {
 	to {
 		box-shadow: 0 0 5rem 2rem map-get($theme-colors, "primary");
