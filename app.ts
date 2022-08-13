@@ -24,7 +24,8 @@ import statements					from "./statements";
 import accountParser				from "./middleware/accounts";
 
 // CONSTANTS
-const PORT = 3000;
+const PORT			= 3000;
+const QP_NAME_LIMIT	= 20;
 
 // App
 export const app			= Express();
@@ -339,11 +340,13 @@ io.on("connection", (socket) => {
 			return socket.emit("quizNotFound on step 2");
 		}
 
+		const username = data.username.substring(0, QP_NAME_LIMIT);
+
 		// Add user to quiz
-		console.log(`User ${data.username} joined code ${data.roomcode}`);
+		console.log(`User ${username} joined code ${data.roomcode}`);
 
 		const ply: QuizPlayer = {
-			username:		data.username ?? "Anonymous",
+			username:		username ?? "Anonymous",
 			account:		data.account,
 			correctQs:		0,
 			tempToken:		newUUID()
