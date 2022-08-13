@@ -12,6 +12,7 @@ export interface Room {
 	authToken:	string;
 	quizId:		string;
 	currentQ:	number;
+	status:		string;
 	players:	QuizPlayer[];
 }
 

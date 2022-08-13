@@ -24,3 +24,7 @@ if (ROOM_STATUS_AT_JOIN === "waiting") {
 function showWaitingScreen() {
 	document.getElementById("");
 }
+
+socket.on("connect", () => {
+	console.log("Connected to Socket.IO");
+});

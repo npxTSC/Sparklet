@@ -12,6 +12,8 @@ const socket = io();
 const ROOM_CODE = location.pathname.split("/")[2];
 const ROOM_AUTH = cmon.read(document.cookie, "qhostAuthToken");
 
+document.getElementById("joincode").innerText = `Quiz Control (${ROOM_CODE})`;
+
 // Elements
 const CLI			= document.getElementById("quizHostCLI")	as HTMLInputElement;
 const resultsbox	= document.getElementById("results")		as HTMLDivElement;

@@ -29,16 +29,7 @@ const PORT = 3000;
 export const app			= Express();
 const server				= http.createServer(app);
 const io					= new ioServer(server);
-const activeRooms: Room[]	= [
-	{	// Debug Room #79
-		joinHash:	"79",
-		ownerAccId:	"0",
-		authToken:	"",
-		quizId:		"0",
-		currentQ:	0,
-		players:	[],
-	}
-];
+const activeRooms: Room[]	= [];
 
 // Middleware
 app.use(cparse());
@@ -97,6 +88,7 @@ app.post("/create-room/:roomType", (req, res) => {
 		authToken:	tok,
 		quizId:		cuuid,
 		currentQ:	0,
+		status:		"waiting",
 		players:	<QuizPlayer[]>[],
 	}
 	
@@ -230,7 +222,7 @@ app.get("/rooms/quiz", (req, res) => {
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
-	const room = activeRooms.find(v => v.joinHash === req.params.room);;
+	const room = findRoom(req.params.room);
 
 	// Guard clause for invalid inputs
 	if (!room) return throw404(res);
@@ -347,19 +339,19 @@ io.on("connection", (socket) => {
 		const inp: Record<string, string> = JSON.parse(jsoni);
 		
 		// If quiz invalid
-		if (checkRoomExists(inp.roomcode) !== "Found") {
+		const room = findRoom(inp.roomcode);
+		
+		if (!room) {
 			console.log("Attempt to join finished quiz :P");
-			socket.emit("quizNotFound on step 2");
-			return;
+			return socket.emit("quizNotFound on step 2");
 		}
 
 		// Add user to quiz
 		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
-		let roomStatus = "waiting";
 		let quizToken = newUUID();
 		
 		socket.emit("joinRoomSuccess", {
-			roomStatus,
+			roomStatus: room.status,
 			quizToken,
 		});
 	});
@@ -421,4 +413,8 @@ const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 
 function generateToken(len: number) {
 	return crypto.randomBytes(len).toString("hex");
+}
+
+function findRoom(code: string) {
+	return activeRooms.find(v => v.joinHash === code);
 }
