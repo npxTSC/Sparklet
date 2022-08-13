@@ -51,7 +51,7 @@ async function createQPRoom(cuuid: string) {
 	});
 
 	if (!res.ok) {
-		console.log(await res.json());
+		console.error(await res.json());
 		return alert("There was a problem contacting the server.");
 	}
 
@@ -81,8 +81,6 @@ function updateListings(rows: Capsule[]) {
 		// Show results
 		rows.forEach((row) => {
 			const content = <CapsuleContent>JSON.parse(row.content);
-	
-			console.log(content);
 			listingsDiv.appendChild(makeListingE(row, content));
 		});
 	} else {

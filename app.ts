@@ -330,8 +330,6 @@ app.get("*", (req, res) => {
 io.on("connection", (socket) => {
 	//socket.on("disconnect", () => {});
 	socket.on("quizHostAction", (command: QuizHostCommand) => {
-		console.log(JSON.stringify(command));
-		
 		socket.emit("quizHostResponse", runHostCommand(command));
 	});
 
@@ -364,7 +362,6 @@ io.on("connection", (socket) => {
 		console.log(`User ${inp.username} joined code ${inp.roomcode}`);
 		let roomStatus = "waiting";
 		let quizToken = newUUID();
-		console.log(quizToken);
 		
 		socket.emit("joinRoomSuccess", {
 			roomStatus,

@@ -74,8 +74,6 @@ socket.on("connect", () => {
 });
 
 socket.on("quizHostResponse", (res: QuizHostResponse) => {
-	console.log("Received response");
-	
 	if (res.alert)		alert(res.alert);
 	
 	if (res.players) {
