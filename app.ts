@@ -358,11 +358,6 @@ const {} = server.listen(PORT, () => {
 });
 
 // Functions
-
-function getIp(req: any) {
-	return req.socket.remoteAddress;
-}
-
 function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
