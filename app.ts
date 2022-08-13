@@ -49,6 +49,18 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/about", (req, res) => {
+	res.render("about");
+});
+
+app.get("/rooms/quiz", (req, res) => {
+	res.render("quiz");
+});
+
+/*app.get("/rooms/breakout", (req, res) => {
+	res.render("breakout");
+});*/
+
 app.get("/api/capsules", (req, res) => {
 	let rows;
 	
@@ -189,8 +201,6 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-
-
 app.get("/conductors/:profile", async (req, res) => {
 	const {profile}		= req.params;
 	const user			= res.locals.account;
@@ -206,20 +216,6 @@ app.get("/conductors/:profile", async (req, res) => {
 	if (!row) return throw404(res);
 	
 	return res.render("profile", {profileInfo: row});
-});
-
-
-
-app.get("/about", (req, res) => {
-	res.render("about");
-});
-
-app.get("/rooms/breakout", (req, res) => {
-	res.render("breakout");
-});
-
-app.get("/rooms/quiz", (req, res) => {
-	res.render("quiz");
 });
 
 app.get("/rooms/quiz/:room", (req, res) => {
@@ -308,10 +304,13 @@ app.get("/capsules", async (req, res) => {
 	res.render("capsules", {qposts});
 });
 
+// 404 other routes
 app.get("*", (req, res) => {
 	return throw404(res);
 });
 
+
+// Socket.IO handlers
 io.on("connection", (socket) => {
 	//socket.on("disconnect", () => {});
 	socket.on("quizHostAction", (command: QuizHostCommand) => {
