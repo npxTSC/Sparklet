@@ -6,11 +6,12 @@ const cd = path.resolve(__dirname);
 module.exports = {
 	mode: "development",
 	entry: {
-		"main":		cd + "/src/js/main.ts",
-		"login":	cd + "/src/js/login.ts",
-		"quiz":		cd + "/src/js/quiz.ts",
-		"quizplay":	cd + "/src/js/quizplay.ts",
-		"capsules":	cd + "/src/js/capsules.ts",
+		"main":				cd + "/src/js/main.ts",
+		"login":			cd + "/src/js/login.ts",
+		"quiz":				cd + "/src/js/quiz.ts",
+		"quizplay":			cd + "/src/js/quizplay.ts",
+		"capsules":			cd + "/src/js/capsules.ts",
+		"host-room":		cd + "/src/js/host-room.ts",
 		
 		"bootstrap.min":	cd + "/src/js/bootstrap.min.js",
 		"sass-main":		cd + "/src/css/main.scss",

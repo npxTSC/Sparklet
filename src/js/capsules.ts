@@ -1,3 +1,6 @@
+// Capsule search page
+"use strict";
+
 import {Capsule, CapsuleContent}	from "../../classes";
 
 // Elements
@@ -25,7 +28,7 @@ function makeListingE(	capsule: Capsule,
 		.innerText = "Made by " + creator;
 	
 	(<HTMLAnchorElement> el.children[1].children[0])
-		.addEventListener("click", () => createQPRoom(capsule.uuid));
+		.addEventListener("click", () => createQPRoom(uuid));
 	
 	return el;
 }
@@ -53,7 +56,7 @@ async function createQPRoom(cuuid: string) {
 
 	const room = await res.json();
 
-	location.href = "/host-room/quiz/" + room.joinHash;
+	location.href = "/host-room/" + room.joinHash;
 }
 
 function fetchCapsules(query?: string) {

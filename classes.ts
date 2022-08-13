@@ -16,7 +16,7 @@ export interface Room {
 
 export interface QuizPlayer {
 	username:	string;
-	accountId:	number | null;
+	account:	string | null;
 	correctQs:	number;
 	tempToken:	string;
 }

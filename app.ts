@@ -100,6 +100,10 @@ app.post("/create-room/:roomType", (req, res) => {
 	return res.status(200).json(newRoom);
 });
 
+app.get("/host-room/:rid", (req, res) => {
+	return res.render("host-room");
+});
+
 app.get("/login", (req, res) => {
 	res.render("login");
 });
