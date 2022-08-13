@@ -10,7 +10,7 @@ import ejs							from "ejs";
 import http							from "http";
 import {Server as ioServer}			from "socket.io";
 import {v4 as newUUID}				from "uuid";
-import {str}						from "libdx";
+import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
 
@@ -83,7 +83,7 @@ app.post("/create-room/:roomType", (req, res) => {
 	let jh = "";
 	
 	do {
-		jh = r_str(6);
+		jh = rand.r_str(6);
 	} while (activeRooms.filter(v => v.joinHash === jh).length > 0);
 	
 	
@@ -384,8 +384,4 @@ function getIp(req: any) {
 function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
-}
-
-function r_str(len: number) {
-	return Math.random().toString(36).substring(2,len+2).toUpperCase();
 }
