@@ -46,6 +46,8 @@ async function makePlayerE(player: QuizPlayer): Promise<HTMLDivElement> {
 	(<HTMLAnchorElement> el.children[1].children[0])
 		.addEventListener("click", () => {
 			CLI.value += uuid;
+			CLI.focus();
+			CLI.setSelectionRange(CLI.value.length, CLI.value.length);
 		});
 
 	// Ban
