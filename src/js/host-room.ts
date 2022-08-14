@@ -30,7 +30,7 @@ async function makePlayerE(player: QuizPlayer): Promise<HTMLDivElement> {
 	const el = <HTMLDivElement>listingBlueprint.cloneNode(true);
 	el.style.display = "flex";
 	
-	const {username, account, tempToken} = player;
+	const {username, account, tempToken, uuid} = player;
 	
 	// Title
 	(<HTMLParagraphElement> el.children[0].children[0])
@@ -41,8 +41,15 @@ async function makePlayerE(player: QuizPlayer): Promise<HTMLDivElement> {
 			player.account ?`Account: ${player.account.name} (${player.account.uuid})`
 			: "// No Account"
 		);
-	
+
+	// UUID
 	(<HTMLAnchorElement> el.children[1].children[0])
+		.addEventListener("click", () => {
+			CLI.value += uuid;
+		});
+
+	// Ban
+	(<HTMLAnchorElement> el.children[1].children[1])
 		.addEventListener("click", () => kickPlayer(player));
 	
 	return el;
