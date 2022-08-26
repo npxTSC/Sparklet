@@ -76,5 +76,5 @@ export const theme = {
 	BACKGROUND:			"#383838",
 	PLUGIN_TITLEBAR:	"#333",
 	PLUGIN_BACKGROUND:	"#4f4f4f",
-	PLUGIN_EMPTY:		"#fff",
+	PLUGIN_EMPTY:		"aliceblue", //"#fff",
 }

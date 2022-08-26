@@ -77,14 +77,18 @@ function drawLoop() {
 		if (!instance.visible) continue;
 		
 		c.fillStyle = theme.PLUGIN_BACKGROUND;
-		c.fillRect(	instance.x, instance.y,
-					instance.w, instance.h	);
+		c.fillRect(
+			instance.x-SYNTH_BORDERS,
+			instance.y-SYNTH_BORDERS,
+			instance.w+2*SYNTH_BORDERS,
+			instance.h+2*SYNTH_BORDERS
+		);
 		
-		c.fillStyle = theme.PLUGIN_EMPTY;
+		/*c.fillStyle = theme.PLUGIN_EMPTY;
 		c.fillRect(	instance.x+SYNTH_BORDERS,
 					instance.y+SYNTH_BORDERS,
 					instance.w-(SYNTH_BORDERS*2),
-					instance.h-(SYNTH_BORDERS*2)	);
+					instance.h-(SYNTH_BORDERS*2)	);*/
 
 		instance.draw(c);
 

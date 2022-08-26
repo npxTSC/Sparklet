@@ -6,33 +6,50 @@
 
 "use strict";
 
-import {Synth}				from "../classes";
+import {Synth,	theme}		from "../classes";
 import {noteHz,
 		SYNTH_BORDERS,
 		SYNTH_TITLEBAR_HEIGHT
 }							from "../main";
-import {Rectangle, Text}	from "../dtools";
+import {Rectangle, Text, PianoWidget}	from "../dtools";
 
 export default class Cloudy extends Synth {
 	private oscs:		OscNote[][] = [[]];
 	private bg:			Rectangle;
+	private piano:		PianoWidget;
 	
 	constructor(ctx: AudioContext) {
 		super(ctx);
 		
 		this.bg = new Rectangle(
-			0, 0,
-			this.w-(2*SYNTH_BORDERS),
-			this.h-(SYNTH_TITLEBAR_HEIGHT+SYNTH_BORDERS),
+			0,
+			0,
+			this.w,
+			this.h,
 		);
+		
+		this.bg.color = theme.PLUGIN_EMPTY;
+		this.bg.borderWidth = 4;
+		this.bg.borderColor = "black";
 
-		this.bg.color = "red";
+		
+		this.piano = new PianoWidget(
+			0,
+			this.h-50,
+			this.w,
+			50,
+		);
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
 		this.bg.draw(c, [
-			this.x+SYNTH_BORDERS,
-			this.y+SYNTH_TITLEBAR_HEIGHT
+			this.x,
+			this.y
+		]);
+		
+		this.piano.draw(c, [
+			this.x,
+			this.y
 		]);
 	}
 
