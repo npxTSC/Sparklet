@@ -1,6 +1,8 @@
 // Classes for use in the free eVST GUIs
 "use strict";
 
+import {isBlackKey}	from "./main";
+
 export interface UIComponent {
 	draw:	(c: CanvasRenderingContext2D, offset?: Vector2D) => void;
 	z:		number;
@@ -75,10 +77,15 @@ export class Text extends Point
 	}
 }
 
+
+
+// Piano Widget classes
+
 export class PianoWidget extends Rectangle
 			implements UIComponent {
-	public keys:		number		= 12;
-	public startKey:	number		= 48; // Middle C
+	private keys:		PianoKey[] = [];
+	public keyCount:	number	= 12;
+	public startKey:	number	= 48; // Middle C
 	
 	constructor(
 		x:	number,
@@ -87,10 +94,31 @@ export class PianoWidget extends Rectangle
 		h:	number,
 	) {
 		super(x,y,w,h);
+		this.color = "white";
+		this.updateKeys();
+	}
+
+	updateKeys() {
+		// Clear the array
+		this.keys = [];
+
+		// Make new keys
+		for (let i = 0; i < this.keyCount; i++) {
+			const key = new PianoKey(
+				this.x + (i * (this.w / this.keyCount)),
+				this.y,
+				this.w / this.keyCount,
+				this.h,
+			);
+
+			key.note = this.startKey + i;
+			
+			this.keys.push(key);
+		}
 	}
 
 	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {
-		c.fillStyle	= "white";
+		c.fillStyle	= this.color;
 		c.fillRect(
 			this.x+offset[0],
 			this.y+offset[1],
@@ -98,6 +126,28 @@ export class PianoWidget extends Rectangle
 			this.h
 		);
 
-		//
+		this.keys.forEach((key) => key.draw(c, offset, [this.color, "black"]));
+	}
+}
+
+export class NotePlayerWidget extends Rectangle
+		implements UIComponent {
+	public note = 60;
+}
+				
+export class PianoKey extends NotePlayerWidget
+		implements UIComponent {
+	
+	draw(	c: CanvasRenderingContext2D,
+			offset: Vector2D = [0,0],
+			keyColors: string[] = ["white", "black"]) {
+		
+		c.fillStyle = isBlackKey(this.note) ? keyColors[1] : keyColors[0];
+		c.fillRect(
+			this.x+offset[0],
+			this.y+offset[1],
+			this.w,
+			this.h / (isBlackKey(this.note) ? 1.5 : 1)
+		);
 	}
 }

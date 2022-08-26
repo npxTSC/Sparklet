@@ -162,3 +162,10 @@ function pointInsideRect(	x: number,	y: number,
 export function noteHz(note: number) {
 	return (440 / 32) * (2 ** ((note - 9) / 12));
 }
+
+export function isBlackKey(note: number) {
+	return [
+		//	C#,	D#, F#, G#, A#
+			1,	3,	6,	8,	10
+	].includes(note % 12);
+}

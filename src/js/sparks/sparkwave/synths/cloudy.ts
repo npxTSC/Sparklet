@@ -34,11 +34,14 @@ export default class Cloudy extends Synth {
 
 		
 		this.piano = new PianoWidget(
-			0,
+			4,
 			this.h-50,
-			this.w,
+			this.w-8,
 			50,
 		);
+
+		this.piano.keyCount = 48;
+		this.piano.updateKeys();
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
