@@ -24,7 +24,7 @@ const octx			= new OfflineAudioContext({
 });
 
 const ctx			= new AudioContext();
-const testSample	= new Sample();
+const testSample	= await Sample.load();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;

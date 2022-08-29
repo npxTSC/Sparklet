@@ -20,12 +20,12 @@ const defaultSampleURI = "/public/sparks/sparkwave/debug/ckey.wav";
 
 export default class RePlay extends Synth {
 	public ui:		Record<string, UIComponent>	= {};
-	private sample:	Sample;
+	private sample:	Sample | null;
 	
 	constructor(ctx: AudioContext, smp?: Sample) {
 		super(ctx);
 
-		this.sample = smp ?? new Sample(ctx, defaultSampleURI);
+		this.sample = smp ?? null;
 		
 		const bg = new Rectangle(
 			0, 0,

@@ -1,6 +1,5 @@
 "use strict";
 
-import {Howl}			from "howler";
 import {UIComponent}	from "./dtools";
 
 const DEFAULT_SAMPLE_SRC = "/public/sparks/sparkwave/debug/ckey.wav";
@@ -10,21 +9,14 @@ export class Sample {
 	public volume:	number = 100;
 	public effects:	Effect[];
 	
-	constructor(ctx?: AudioContext, src?: string) {
-		if (ctx) {
-			if (!src) src = DEFAULT_SAMPLE_SRC;
-			
-			const file = fetch(src)
-				.then(response => response.arrayBuffer())
-				.then(buffer => ctx.decodeAudioData(buffer))
-				.then(buffer => {
-					let track = ctx.createBufferSource();
-					track.buffer = buffer;
-					track.connect(ctx.destination);
-					track.start(0);
-					alert(buffer);
-			});
-		}
+	static async load(ctx?: AudioContext, src?: string) {
+		if (!src) src = DEFAULT_SAMPLE_SRC;
+		
+		const file = await fetch(src)
+			.then(response => response.arrayBuffer())
+			.then(buffer => ctx.decodeAudioData(buffer));
+
+		return file;
 	}
 
 	static play(smp: Sample) {}
