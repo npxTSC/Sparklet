@@ -9,17 +9,29 @@ import {
 	Synth, theme, SWPlugin
 }	from "./classes";
 
+// Constants
+export const SYNTH_BORDERS			= 4;
+export const SYNTH_TITLEBAR_HEIGHT	= 20;
+
+
 // Web prep stuff
 const {setInterval} = window;
+
+const octx			= new OfflineAudioContext({
+	numberOfChannels: 2,
+	length: 44100 * 40,
+	sampleRate: 44100,
+});
+
 const ctx			= new AudioContext();
 const testSample	= new Sample();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
 
-export const SYNTH_BORDERS			= 4;
-export const SYNTH_TITLEBAR_HEIGHT	= 20;
+
 const activePlugins: SWPlugin[]		= [];
+
 
 let mouseX: number;
 let mouseY: number;
@@ -28,6 +40,7 @@ let mouseDown = false;
 
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
+
 
 // Debug pre-initialized plugins
 activePlugins.push(
@@ -114,15 +127,18 @@ canvas.addEventListener("mousemove", (e) => {
 
 canvas.addEventListener("mousedown", (e) => {
 	mouseDown = true;
+
+	let instancesUnderCursor: SWPlugin[] = [];
 	
 	for (const instance of activePlugins) {
 		if (!instance.visible) continue;
 
 		if (pointInsideRect(mouseX, mouseY,
-			instance.x, instance.y,	instance.w, 20)) {
+			instance.x, instance.y,	instance.w, instance.h)) {
 			
-			instance.isBeingDragged = true;
+			instancesUnderCursor.push(instance);
 		}
+		//	instance.isBeingDragged = true;
 	}
 });
 

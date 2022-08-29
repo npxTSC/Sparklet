@@ -25,7 +25,7 @@ export default class RePlay extends Synth {
 	constructor(ctx: AudioContext, smp?: Sample) {
 		super(ctx);
 
-		this.sample = smp ?? new Sample(defaultSampleURI);
+		this.sample = smp ?? new Sample(ctx, defaultSampleURI);
 		
 		const bg = new Rectangle(
 			0, 0,

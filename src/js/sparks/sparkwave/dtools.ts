@@ -151,9 +151,6 @@ export class NotePlayerWidget extends Rectangle
 		h:	number,
 	) {
 		super(x,y,w,h);
-		document.addEventListener("click", (e) => {
-			//
-		});
 	}
 
 	onClick(): void {}
