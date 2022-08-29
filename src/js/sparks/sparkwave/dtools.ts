@@ -117,6 +117,16 @@ export class PianoWidget extends Rectangle
 		}
 	}
 
+	updateKeyActions(
+		keyAction: (key: number) => void,
+		keyReleaseAction: (key: number) => void
+	) {
+		this.keys.forEach((v, i) => {
+			v.onClick = () => keyAction(this.startKey + i);
+			v.onRelease = () => keyReleaseAction(this.startKey + i);
+		});
+	}
+
 	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {
 		c.fillStyle	= this.color;
 		c.fillRect(
@@ -133,6 +143,21 @@ export class PianoWidget extends Rectangle
 export class NotePlayerWidget extends Rectangle
 		implements UIComponent {
 	public note = 60;
+
+	constructor(
+		x:	number,
+		y:	number,
+		w:	number,
+		h:	number,
+	) {
+		super(x,y,w,h);
+		document.addEventListener("click", (e) => {
+			//
+		});
+	}
+
+	onClick(): void {}
+	onRelease(): void {}
 }
 				
 export class PianoKey extends NotePlayerWidget

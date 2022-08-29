@@ -42,6 +42,10 @@ export default class Cloudy extends Synth {
 
 		this.piano.keyCount = 48;
 		this.piano.updateKeys();
+		this.piano.updateKeyActions(
+			(note) => this.noteOn(note, 127),
+			(note) => this.noteOff(note),
+		);
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
