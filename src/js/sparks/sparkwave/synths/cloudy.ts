@@ -91,6 +91,20 @@ export default class Cloudy extends Synth {
 		}
 	}
 
+	override onRelease(x: number, y: number) {
+		const w = this;
+		const p = this.piano
+
+		// If clicked on piano, pass click to widget code
+		if (pointWithin(
+			x, y,
+			w.x+p.x, w.y+p.y,
+			p.w, p.h
+		)) {
+			p.onRelease(x, y, {x: this.x, y: this.y});
+		}
+	}
+
 	override noteOn(note: number, velocity: number) {
 		const oscn = new OscNote(note, this.makeOscillator(0));
 		oscn.osc.frequency.value = noteHz(note);

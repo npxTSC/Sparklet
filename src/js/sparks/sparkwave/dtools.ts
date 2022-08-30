@@ -135,7 +135,20 @@ export class PianoWidget extends Rectangle
 
 		const keyWidth = this.w / this.keyCount;
 		const keyPressed = Math.floor(rel.x / keyWidth);
-		console.log(keyPressed);
+
+		this.keys[keyPressed].onClick();
+	}
+
+	onRelease(mx: number, my: number, hostPos: Vector2D<number>) {
+		const rel = {
+			x:	mx - (hostPos.x + this.x),
+			y:	my - (hostPos.y + this.y)
+		}
+
+		const keyWidth = this.w / this.keyCount;
+		const keyPressed = Math.floor(rel.x / keyWidth);
+
+		this.keys[keyPressed].onRelease();
 	}
 
 	draw(c: CanvasRenderingContext2D, offset: Vector2D<number> = {x: 0, y: 0}) {

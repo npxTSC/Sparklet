@@ -165,6 +165,36 @@ canvas.addEventListener("mouseup", (e) => {
 	for (const instance of activePlugins) {
 		instance.isBeingDragged = false;
 	}
+
+	let instancesUnderCursor: SWPlugin[] = [];
+	
+	for (const instance of activePlugins) {
+		if (!instance.visible) continue;
+
+		if (pointWithin(mouseX, mouseY,
+			instance.x, instance.y,	instance.w, instance.h)) {
+			
+			instancesUnderCursor.push(instance);
+		}
+	}
+
+	//const highestInstance = instancesUnderCursor.sort((a,b) => a.z - b.z)[0];
+	const instance = instancesUnderCursor[0];
+	if (!instance) return;
+
+	
+	// If dragging titlebar
+	if (pointWithin(
+		mouseX,		mouseY,
+		instance.x,	instance.y,
+		instance.w,	SYNTH_TITLEBAR_HEIGHT)
+	) {
+		// Set dragging
+		instance.isBeingDragged = true;
+	} else {
+		// Otherwise, pass control to the plugin
+		instance.onRelease(mouseX, mouseY);
+	}
 });
 
 setInterval(drawLoop, FPS/1000);
