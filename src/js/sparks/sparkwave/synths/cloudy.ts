@@ -118,7 +118,7 @@ export default class Cloudy extends Synth {
 
 	makeOscillator(section: number): OscillatorNode {
 		return new OscillatorNode(this.ctx, {
-			type: "square",
+			type: "triangle",
 		});
 	}
 }

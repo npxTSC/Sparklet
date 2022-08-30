@@ -48,6 +48,9 @@ activePlugins.push(
 //	new RePlay(ctx)
 );
 
+activePlugins[0].w = 700;
+activePlugins[0].h = 600;
+
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
 		// Success
@@ -177,22 +180,18 @@ canvas.addEventListener("mouseup", (e) => {
 			instancesUnderCursor.push(instance);
 		}
 	}
-
-	//const highestInstance = instancesUnderCursor.sort((a,b) => a.z - b.z)[0];
+	
 	const instance = instancesUnderCursor[0];
 	if (!instance) return;
 
 	
-	// If dragging titlebar
-	if (pointWithin(
+	// If NOT dragging titlebar
+	if (!pointWithin(
 		mouseX,		mouseY,
 		instance.x,	instance.y,
 		instance.w,	SYNTH_TITLEBAR_HEIGHT)
 	) {
-		// Set dragging
-		instance.isBeingDragged = true;
-	} else {
-		// Otherwise, pass control to the plugin
+		// Pass control to the plugin
 		instance.onClick(mouseX, mouseY, true);
 	}
 });
