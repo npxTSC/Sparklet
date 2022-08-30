@@ -6,15 +6,15 @@
 
 "use strict";
 
-import {Synth, theme}	from "../classes";
+import {Synth, theme, Vec2_i}	from "../classes";
 import {
 	noteHz,
 	SYNTH_BORDERS,
 	SYNTH_TITLEBAR_HEIGHT,
 	pointWithin,
-}						from "../main";
+}								from "../main";
 import {Rectangle, Text, PianoWidget}	from "../dtools";
-import {dman}			from "libdx";
+import {dman}					from "libdx";
 
 export default class Cloudy extends Synth {
 	private oscs:		OscNote[][] = [[]];
@@ -60,15 +60,9 @@ export default class Cloudy extends Synth {
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
-		this.bg.draw(c, {
-			x:	this.x,
-			y:	this.y
-		});
+		this.bg.draw(c, new Vec2_i(this.x, this.y));
 		
-		this.piano.draw(c, {
-			x:	this.x,
-			y:	this.y
-		});
+		this.piano.draw(c, new Vec2_i(this.x, this.y));
 	}
 
 	override onMidiInput(	command:	number,
@@ -96,7 +90,7 @@ export default class Cloudy extends Synth {
 			w.x+p.x, w.y+p.y,
 			p.w, p.h
 		)) {
-			p.onClick(x, y, {x: this.x, y: this.y}, release ?? false);
+			p.onClick(x, y, new Vec2_i(this.x, this.y), release ?? false);
 		}
 	}
 

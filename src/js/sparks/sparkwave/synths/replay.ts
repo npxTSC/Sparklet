@@ -11,7 +11,7 @@ import {noteHz,
 		SYNTH_BORDERS,
 		SYNTH_TITLEBAR_HEIGHT
 }								from "../main";
-import {Synth, Sample}			from "../classes";
+import {Synth, Sample, Vec2_i}	from "../classes";
 import {Rectangle, Text,
 		UIComponent		}		from "../dtools";
 
@@ -52,10 +52,10 @@ export default class RePlay extends Synth {
 		const sorted = Object.values(this.ui)
 			.sort((a, b) => a.z - b.z);
 		
-		sorted.forEach(cmp => cmp.draw(c, {
-				x:	this.x+SYNTH_BORDERS,
-				y:	this.y+SYNTH_TITLEBAR_HEIGHT
-			}
+		sorted.forEach(cmp => cmp.draw(c, new Vec2_i(
+				this.x+SYNTH_BORDERS,
+				this.y+SYNTH_TITLEBAR_HEIGHT
+			)
 		));
 	}
 

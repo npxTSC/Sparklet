@@ -2,10 +2,10 @@
 "use strict";
 
 import {isBlackKey}	from "./main";
-import {Vector2D}	from "./classes";
+import {Vec2_i}		from "./classes";
 
 export interface UIComponent {
-	draw:	(c: CanvasRenderingContext2D, offset?: Vector2D<number>) => void;
+	draw:	(c: CanvasRenderingContext2D, offset?: Vec2_i<number>) => void;
 	z:		number;
 }
 
@@ -18,7 +18,7 @@ export class Point implements UIComponent {
 		public y:	number,
 	) {}
 
-	draw(c: CanvasRenderingContext2D, offset: Vector2D<number> = {x: 0, y: 0}) {}
+	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {}
 }
 
 export class Rectangle extends Point
@@ -35,7 +35,7 @@ export class Rectangle extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vector2D<number> = {x: 0, y: 0}) {
+	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
 		// Draw border
 		c.fillStyle = this.borderColor;
 		c.fillRect(
@@ -69,7 +69,7 @@ export class Text extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vector2D<number> = {x: 0, y: 0}) {
+	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
 		c.font = `${this.fontSize}px ${this.font}`;
 		c.fillStyle = this.color;
 		c.fillText(this.text, this.x+offset.x, this.y+offset.y);
@@ -126,7 +126,7 @@ export class PianoWidget extends Rectangle
 		});
 	}
 
-	onClick(mx: number, my: number, hostPos: Vector2D<number>, release?: boolean) {
+	onClick(mx: number, my: number, hostPos: Vec2_i<number>, release?: boolean) {
 		const rel = {
 			x:	mx - (hostPos.x + this.x),
 			y:	my - (hostPos.y + this.y)
@@ -142,7 +142,7 @@ export class PianoWidget extends Rectangle
 		)();
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vector2D<number> = {x: 0, y: 0}) {
+	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
 		c.fillStyle	= this.color;
 		c.fillRect(
 			this.x+offset.x,
@@ -176,7 +176,7 @@ export class PianoKey extends NotePlayerWidget
 		implements UIComponent {
 	
 	draw(	c: CanvasRenderingContext2D,
-			offset: Vector2D<number> = {x: 0, y: 0},
+			offset: Vec2_i<number> = Vec2_i.ZEROES(),
 			keyColors: string[] = ["white", "black"]) {
 		
 		c.fillStyle = isBlackKey(this.note) ? keyColors[1] : keyColors[0];

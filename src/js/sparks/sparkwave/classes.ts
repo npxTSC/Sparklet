@@ -68,14 +68,16 @@ export class Effect extends SWPlugin {
 
 export type Rhythm = boolean[];
 
-export type Vector2D<T> = {x: T, y: T};
-
 // Immutable Vector2
-export class Vector2_i<CT> {
+export class Vec2_i<CT> {
 	constructor(private _x: CT, private _y: CT) {}
 
+	static ZEROES() {
+		return new Vec2_i<number>(0, 0);
+	}
+	
 	static from<T>(arr: [T, T]) {
-		return new Vector2_i(arr[0], arr[1]);
+		return new Vec2_i<T>(arr[0], arr[1]);
 	}
 	
 	get x() {
