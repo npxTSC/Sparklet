@@ -193,7 +193,7 @@ canvas.addEventListener("mouseup", (e) => {
 		instance.isBeingDragged = true;
 	} else {
 		// Otherwise, pass control to the plugin
-		instance.onRelease(mouseX, mouseY);
+		instance.onClick(mouseX, mouseY, true);
 	}
 });
 
