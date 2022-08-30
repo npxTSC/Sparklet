@@ -8,7 +8,6 @@ const DEFAULT_SAMPLE_SRC = "/public/sparks/sparkwave/debug/ckey.wav";
 export class Sample {
 	public buffer:	AudioBuffer;
 	public volume:	number = 100;
-	public effects:	Effect[];
 	
 	static async load(src?: string) {
 		const res = await fetch(src ?? DEFAULT_SAMPLE_SRC)
@@ -17,8 +16,6 @@ export class Sample {
 		
 		return abuffer;
 	}
-
-	static play(smp: Sample) {}
 }
 
 export class SWPlugin {

@@ -60,9 +60,10 @@ export default class Cloudy extends Synth {
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
-		this.bg.draw(c, new Vec2_i(this.x, this.y));
+		const offset = new Vec2_i(this.x, this.y);
 		
-		this.piano.draw(c, new Vec2_i(this.x, this.y));
+		this.bg.draw(c, offset);
+		this.piano.draw(c, offset);
 	}
 
 	override onMidiInput(	command:	number,
