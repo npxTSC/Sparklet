@@ -1,14 +1,13 @@
-// Classes for use in the free eVST GUIs
+// Classes for use in developing plugins
 "use strict";
 
 import {isBlackKey}	from "./main";
+import {Vector2D}	from "./classes";
 
 export interface UIComponent {
 	draw:	(c: CanvasRenderingContext2D, offset?: Vector2D<number>) => void;
 	z:		number;
 }
-
-export type Vector2D<T> = {x: T, y: T};
 
 export class Point implements UIComponent {
 	public color:	string;

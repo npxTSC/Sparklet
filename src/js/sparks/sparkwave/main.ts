@@ -202,12 +202,6 @@ setInterval(drawLoop, FPS/1000);
 
 
 
-
-
-
-
-
-
 // Set canvas dimensions
 function resizeHandler() {
 	canvas.width	= innerWidth;

@@ -67,6 +67,7 @@ export class Effect extends SWPlugin {
 }
 
 export type Rhythm = boolean[];
+export type Vector2D<T> = {x: T, y: T};
 
 export const theme = {
 	TITLEBAR:			"#222",
