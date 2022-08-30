@@ -6,14 +6,15 @@
 
 "use strict";
 
-import {Synth, theme, dynamic}	from "../classes";
+import {Synth, theme}	from "../classes";
 import {
 	noteHz,
 	SYNTH_BORDERS,
 	SYNTH_TITLEBAR_HEIGHT,
 	pointWithin,
-}							from "../main";
+}						from "../main";
 import {Rectangle, Text, PianoWidget}	from "../dtools";
+import {dman}			from "libdx";
 
 export default class Cloudy extends Synth {
 	private oscs:		OscNote[][] = [[]];
@@ -42,15 +43,9 @@ export default class Cloudy extends Synth {
 			50,
 		);
 
-		const lthis = this;
-
-		Object.defineProperty(this.piano , "y", {
-			get() { return lthis.h-54 }
-		});
-
-		Object.defineProperty(this.piano , "w", {
-			get() { return lthis.w-8 }
-		});
+		dman.ptr(this.piano, "y", () => this.h-54);
+		dman.ptr(this.piano, "w", () => this.w-8);
+		
 
 		this.piano.keyCount = 48;
 		this.piano.updateKeys();
