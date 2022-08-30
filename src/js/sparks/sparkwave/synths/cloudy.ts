@@ -35,6 +35,9 @@ export default class Cloudy extends Synth {
 		this.bg.borderWidth = 4;
 		this.bg.borderColor = "black";
 
+		dman.ptr(this.bg, "w", () => this.w);
+		dman.ptr(this.bg, "h", () => this.h);
+
 		
 		this.piano = new PianoWidget(
 			4,

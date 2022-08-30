@@ -121,6 +121,8 @@ export default class RePlay extends Synth {
 		source.buffer = buf;
 		source.connect(this.ctx.destination);
 		source.start();
+
+		alert("playing buffer " + buf);
 	}
 
 	override noteOff(note: number) {}

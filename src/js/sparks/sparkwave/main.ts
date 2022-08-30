@@ -24,7 +24,6 @@ export const octx	= new OfflineAudioContext({
 });
 
 export const ctx	= new AudioContext();
-const testSample	= Sample.load();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
@@ -44,15 +43,15 @@ resizeHandler();
 
 // Debug pre-initialized plugins
 activePlugins.push(
-//	new Cloudy(ctx)
-	new RePlay(ctx)
+	new Cloudy(ctx)
+//	new RePlay(ctx)
 );
 
 activePlugins[0].w = 700;
-activePlugins[0].h = 600;
-//(<Cloudy>activePlugins[0]).refreshPiano();
-(<RePlay>activePlugins[0]).loadSample(await Sample.load());
-(<RePlay>activePlugins[0]).refreshPiano();
+activePlugins[0].h = 400;
+(<Cloudy>activePlugins[0]).refreshPiano();
+//(<RePlay>activePlugins[0]).loadSample(await Sample.load());
+//(<RePlay>activePlugins[0]).refreshPiano();
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
