@@ -41,12 +41,12 @@ export default class Cloudy extends Synth {
 		
 		this.piano = new PianoWidget(
 			4,
-			this.h-54,
-			this.w-8,
-			50,
+			0,
+			0,
+			100,
 		);
 
-		dman.ptr(this.piano, "y", () => this.h-54);
+		dman.ptr(this.piano, "y", () => this.h-104);
 		dman.ptr(this.piano, "w", () => this.w-8);
 		
 

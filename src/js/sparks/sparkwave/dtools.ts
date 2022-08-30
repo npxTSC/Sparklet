@@ -1,8 +1,10 @@
 // Classes for use in developing plugins
 "use strict";
 
-import {isBlackKey}	from "./main";
+import {isBlackKey, whiteKeyBelow}	from "./main";
 import {Vec2_i}		from "./classes";
+
+const BLACK_KEY_HEIGHT_COEFFICIENT = 0.6;
 
 export interface UIComponent {
 	draw:	(c: CanvasRenderingContext2D, offset?: Vec2_i<number>) => void;
@@ -128,12 +130,18 @@ export class PianoWidget extends Rectangle
 
 	onClick(mx: number, my: number, hostPos: Vec2_i<number>, release?: boolean) {
 		const rel = {
-			x:	mx - (hostPos.x + this.x),
-			y:	my - (hostPos.y + this.y)
+			x:	(hostPos.x + this.x),
+			y:	(hostPos.y + this.y)
 		}
 
 		const keyWidth = this.w / this.keyCount;
-		const keyPressed = Math.floor(rel.x / keyWidth);
+		const keyFromW = Math.floor((mx - rel.x) / keyWidth);
+
+		const keyPressed = (
+			((my - rel.y) < (this.h * BLACK_KEY_HEIGHT_COEFFICIENT)) ?
+			keyFromW :
+			whiteKeyBelow(keyFromW)
+		);
 
 		(
 			release ?
@@ -184,7 +192,7 @@ export class PianoKey extends NotePlayerWidget
 			this.x+offset.x,
 			this.y+offset.y,
 			this.w,
-			this.h / (isBlackKey(this.note) ? 1.5 : 1)
+			this.h * (isBlackKey(this.note) ? BLACK_KEY_HEIGHT_COEFFICIENT : 1)
 		);
 	}
 }

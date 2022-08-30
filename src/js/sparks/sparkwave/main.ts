@@ -48,7 +48,7 @@ activePlugins.push(
 );
 
 activePlugins[0].w = 700;
-activePlugins[0].h = 400;
+activePlugins[0].h = 500;
 (<Cloudy>activePlugins[0]).refreshPiano();
 //(<RePlay>activePlugins[0]).loadSample(await Sample.load());
 //(<RePlay>activePlugins[0]).refreshPiano();
@@ -226,4 +226,14 @@ export function isBlackKey(note: number) {
 		//	C#,	D#, F#, G#, A#
 			1,	3,	6,	8,	10
 	].includes(note % 12);
+}
+
+export function whiteKeyBelow(note: number) {
+	if (!isBlackKey(note)) return note;
+
+	const rel = note % 12;
+
+	const offset = [3, 10].includes(rel) ? 1 : -1;
+
+	return note + offset;
 }
