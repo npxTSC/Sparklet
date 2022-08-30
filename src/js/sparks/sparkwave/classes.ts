@@ -1,6 +1,7 @@
 "use strict";
 
 import {UIComponent}	from "./dtools";
+import {ctx, octx}		from "./main";
 
 const DEFAULT_SAMPLE_SRC = "/public/sparks/sparkwave/debug/ckey.wav";
 
@@ -9,14 +10,12 @@ export class Sample {
 	public volume:	number = 100;
 	public effects:	Effect[];
 	
-	static async load(ctx?: AudioContext, src?: string) {
-		if (!src) src = DEFAULT_SAMPLE_SRC;
+	static async load(src?: string) {
+		const res = await fetch(src ?? DEFAULT_SAMPLE_SRC)
+		const buffer = await res.arrayBuffer();
+		const abuffer = await ctx.decodeAudioData(buffer);
 		
-		const file = await fetch(src)
-			.then(response => response.arrayBuffer())
-			.then(buffer => ctx.decodeAudioData(buffer));
-
-		return file;
+		return abuffer;
 	}
 
 	static play(smp: Sample) {}

@@ -17,14 +17,14 @@ export const SYNTH_TITLEBAR_HEIGHT	= 20;
 // Web prep stuff
 const {setInterval} = window;
 
-const octx			= new OfflineAudioContext({
+export const octx	= new OfflineAudioContext({
 	numberOfChannels: 2,
 	length: 44100 * 40,
 	sampleRate: 44100,
 });
 
-const ctx			= new AudioContext();
-const testSample	= await Sample.load();
+export const ctx	= new AudioContext();
+const testSample	= Sample.load();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
