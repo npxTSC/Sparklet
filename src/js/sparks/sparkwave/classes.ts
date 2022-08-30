@@ -50,6 +50,8 @@ export class SWPlugin {
 		}
 	}
 
+	onClick(x: number, y: number) {}
+
 	noteOn(note: number, velocity: number) {}
 	noteOff(note: number) {}
 }

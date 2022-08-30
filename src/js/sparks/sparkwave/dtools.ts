@@ -127,6 +127,17 @@ export class PianoWidget extends Rectangle
 		});
 	}
 
+	onClick(mx: number, my: number, hostPos: Vector2D) {
+		const rel = {
+			x:	mx - (hostPos[0] + this.x),
+			y:	my - (hostPos[1] + this.y)
+		}
+
+		const keyWidth = this.w / this.keyCount;
+		const keyPressed = Math.floor(rel.x / keyWidth);
+		console.log(keyPressed);
+	}
+
 	draw(c: CanvasRenderingContext2D, offset: Vector2D = [0,0]) {
 		c.fillStyle	= this.color;
 		c.fillRect(

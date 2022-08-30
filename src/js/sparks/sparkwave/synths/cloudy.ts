@@ -7,9 +7,11 @@
 "use strict";
 
 import {Synth,	theme}		from "../classes";
-import {noteHz,
-		SYNTH_BORDERS,
-		SYNTH_TITLEBAR_HEIGHT
+import {
+	noteHz,
+	SYNTH_BORDERS,
+	SYNTH_TITLEBAR_HEIGHT,
+	pointWithin,
 }							from "../main";
 import {Rectangle, Text, PianoWidget}	from "../dtools";
 
@@ -35,7 +37,7 @@ export default class Cloudy extends Synth {
 		
 		this.piano = new PianoWidget(
 			4,
-			this.h-50,
+			this.h-54,
 			this.w-8,
 			50,
 		);
@@ -72,6 +74,20 @@ export default class Cloudy extends Synth {
 			case 128: // Note OFF
 				this.noteOff(note);
 				break;
+		}
+	}
+
+	override onClick(x: number, y: number) {
+		const w = this;
+		const p = this.piano
+
+		// If clicked on piano, pass click to widget code
+		if (pointWithin(
+			x, y,
+			w.x+p.x, w.y+p.y,
+			p.w, p.h
+		)) {
+			p.onClick(x, y, [this.x, this.y]);
 		}
 	}
 
