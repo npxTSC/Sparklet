@@ -79,6 +79,18 @@ export class Vec2_i<CT> {
 	static from<T>(arr: [T, T]) {
 		return new Vec2_i<T>(arr[0], arr[1]);
 	}
+
+	static add(v1: Vec2_i<number>, v2: Vec2_i<number>) {
+		return new Vec2_i<number>(v1.x + v2.x, v1.y + v2.y);
+	}
+
+	static subtract(v1: Vec2_i<number>, v2: Vec2_i<number>) {
+		return new Vec2_i<number>(v1.x - v2.x, v1.y - v2.y);
+	}
+
+	static negate(v: Vec2_i<number>) {
+		return new Vec2_i<number>(-v.x, -v.y);
+	}
 	
 	get x() {
 		return this._x;
