@@ -51,15 +51,15 @@ export default class Cloudy extends Synth {
 	}
 	
 	override draw(c: CanvasRenderingContext2D) {
-		this.bg.draw(c, [
-			this.x,
-			this.y
-		]);
+		this.bg.draw(c, {
+			x:	this.x,
+			y:	this.y
+		});
 		
-		this.piano.draw(c, [
-			this.x,
-			this.y
-		]);
+		this.piano.draw(c, {
+			x:	this.x,
+			y:	this.y
+		});
 	}
 
 	override onMidiInput(	command:	number,
@@ -87,7 +87,7 @@ export default class Cloudy extends Synth {
 			w.x+p.x, w.y+p.y,
 			p.w, p.h
 		)) {
-			p.onClick(x, y, [this.x, this.y]);
+			p.onClick(x, y, {x: this.x, y: this.y});
 		}
 	}
 
