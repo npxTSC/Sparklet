@@ -6,7 +6,7 @@
 
 "use strict";
 
-import {Synth,	theme}		from "../classes";
+import {Synth, theme, dynamic}	from "../classes";
 import {
 	noteHz,
 	SYNTH_BORDERS,
@@ -42,7 +42,25 @@ export default class Cloudy extends Synth {
 			50,
 		);
 
+		const lthis = this;
+
+		Object.defineProperty(this.piano , "y", {
+			get() { return lthis.h-54 }
+		});
+
+		Object.defineProperty(this.piano , "w", {
+			get() { return lthis.w-8 }
+		});
+
 		this.piano.keyCount = 48;
+		this.piano.updateKeys();
+		this.piano.updateKeyActions(
+			(note) => this.noteOn(note, 127),
+			(note) => this.noteOff(note),
+		);
+	}
+
+	refreshPiano() {
 		this.piano.updateKeys();
 		this.piano.updateKeyActions(
 			(note) => this.noteOn(note, 127),

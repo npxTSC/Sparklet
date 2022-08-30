@@ -50,6 +50,7 @@ activePlugins.push(
 
 activePlugins[0].w = 700;
 activePlugins[0].h = 600;
+(<Cloudy>activePlugins[0]).refreshPiano();
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {

@@ -68,6 +68,9 @@ export class Effect extends SWPlugin {
 
 export type Rhythm = boolean[];
 
+// Value OR function returning value
+export type dynamic<T> = T | ((...x: any) => T);
+
 export const theme = {
 	TITLEBAR:			"#222",
 	BACKGROUND:			"#383838",
