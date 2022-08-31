@@ -8,7 +8,8 @@
 
 import {noteHz,
 		SYNTH_BORDERS,
-		SYNTH_TITLEBAR_HEIGHT
+		SYNTH_TITLEBAR_HEIGHT,
+		pointWithin
 }								from "../main";
 import {Synth, Sample, Vec2_i}	from "../classes";
 import {Rectangle, Text,
@@ -112,6 +113,20 @@ export default class RePlay extends Synth {
 		}
 	}
 
+	override onClick(x: number, y: number, release?: boolean) {
+		const w = this;
+		const p = this.piano
+
+		// If clicked on piano, pass click to widget code
+		if (pointWithin(
+			x, y,
+			w.x+p.x, w.y+p.y,
+			p.w, p.h
+		)) {
+			p.onClick(x, y, new Vec2_i(this.x, this.y), release ?? false);
+		}
+	}
+
 	override noteOn(note: number, velocity: number) {
 		if (!this.sample) return;
 
@@ -121,8 +136,6 @@ export default class RePlay extends Synth {
 		source.buffer = buf;
 		source.connect(this.ctx.destination);
 		source.start();
-
-		alert("playing buffer " + buf);
 	}
 
 	override noteOff(note: number) {}
