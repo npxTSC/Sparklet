@@ -92,8 +92,7 @@ if (PURGE_DATABASE) {
 export namespace accs {
 	export async function register(user: string, pass: string) {
 		// Get hash of password
-		const salt = await bcrypt.genSalt(10);
-		const hashed = await bcrypt.hash(pass, salt);
+		const hashed = await bcrypt.hash(pass, 10);
 
 		// Put in DB
 		statements.registerUser.run(user, hashed, newUUID());

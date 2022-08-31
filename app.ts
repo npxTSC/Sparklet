@@ -13,6 +13,9 @@ import {v4 as newUUID}				from "uuid";
 import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
+import {config as loadEnv}			from "dotenv";
+
+loadEnv();
 
 // Local Modules
 import {
