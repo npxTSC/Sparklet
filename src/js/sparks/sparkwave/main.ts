@@ -48,7 +48,7 @@ activePlugins.push(
 	new RePlay(ctx)
 );
 
-activePlugins[0].w = 1360;
+activePlugins[0].w = 1000;
 activePlugins[0].h = 600;
 //(<Cloudy>activePlugins[0]).refreshPiano();
 (<RePlay>activePlugins[0]).loadSample(await Sample.load());
