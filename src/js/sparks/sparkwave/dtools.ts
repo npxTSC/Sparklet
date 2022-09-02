@@ -153,10 +153,10 @@ export class PianoWidget extends Rectangle
 		const keyPressedO = this.keys[keyPressedN];
 
 		if (mb === MOUSEBUTTONS.Left) {
-				rel ?
+			(	rel ?
 				keyPressedO.onRelease :
 				keyPressedO.onClick
-			();
+			)();
 		}
 	}
 
