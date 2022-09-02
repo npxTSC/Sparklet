@@ -2,7 +2,7 @@
 "use strict";
 
 import {isBlackKey, whiteKeyBelow}	from "./main";
-import {Vec2_i}		from "./classes";
+import {Vec2_i, MOUSEBUTTONS}		from "./classes";
 
 const BLACK_KEY_HEIGHT_COEFFICIENT = 0.6;
 
@@ -128,26 +128,36 @@ export class PianoWidget extends Rectangle
 		});
 	}
 
-	onClick(mx: number, my: number, hostPos: Vec2_i<number>, release?: boolean) {
-		const rel = {
+	onClick(	
+		mx:		number,
+		my:		number,
+		hostPos: Vec2_i<number>,
+		rel:	boolean,
+		mb:		number,
+	) {
+		// Relative position
+		const lpos = {
 			x:	(hostPos.x + this.x),
 			y:	(hostPos.y + this.y)
 		}
 
 		const keyWidth = this.w / this.keyCount;
-		const keyFromW = Math.floor((mx - rel.x) / keyWidth);
+		const keyFromW = Math.floor((mx - lpos.x) / keyWidth);
 
-		const keyPressed = (
-			((my - rel.y) < (this.h * BLACK_KEY_HEIGHT_COEFFICIENT)) ?
+		const keyPressedN = (
+			((my - lpos.y) < (this.h * BLACK_KEY_HEIGHT_COEFFICIENT)) ?
 			keyFromW :
 			whiteKeyBelow(keyFromW)
 		);
 
-		(
-			release ?
-			this.keys[keyPressed].onRelease :
-			this.keys[keyPressed].onClick
-		)();
+		const keyPressedO = this.keys[keyPressedN];
+
+		if (mb === MOUSEBUTTONS.Left) {
+				rel ?
+				keyPressedO.onRelease :
+				keyPressedO.onClick
+			();
+		}
 	}
 
 	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {

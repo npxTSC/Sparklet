@@ -99,6 +99,12 @@ export namespace accs {
 
 		return hashed;
 	}
+	
+	export async function registerIfNotExists(u: string, p: string) {
+		if (getFromUsername(u)) return null;
+
+		return await register(u, p);
+	}
 
 	export function getFromUsername(user: string) {
 		return statements.getUserPH.get(user);
@@ -121,7 +127,7 @@ export namespace accs {
 	"Sparklet",			// Prevents admin impersonation
 	"Anonymous",		// Reserved for default name in DB
 ].forEach(async (v) => {
-	await accs.register(v, process.env["ADMIN_PASSWORD"]);
+	await accs.registerIfNotExists(v, process.env["ADMIN_PASSWORD"]);
 	accs.setAdminRank(v, Ranks.Operator);
 	accs.updateBio(v, "This account is reserved for admin use only.");
 });

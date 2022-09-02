@@ -10,14 +10,11 @@ import {noteHz,
 		SYNTH_BORDERS,
 		SYNTH_TITLEBAR_HEIGHT,
 		pointWithin
-}								from "../main";
-import {Synth, Sample, Vec2_i}	from "../classes";
+}									from "../main";
+import {Synth, Sample, Vec2_i}		from "../classes";
 import {Rectangle, Text,
-		UIComponent,	PianoWidget	}		from "../dtools";
-import {dman}					from "libdx";
-
-const defaultSampleURI = "/public/sparks/sparkwave/debug/ckey.wav";
-
+		UIComponent, PianoWidget}	from "../dtools";
+import {dman}						from "libdx";
 
 export default class RePlay extends Synth {
 	public ui:		Record<string, UIComponent>	= {};
@@ -57,6 +54,7 @@ export default class RePlay extends Synth {
 		dman.ptr(this.piano, "w", () => this.w-16);
 
 		this.piano.keyCount = 48;
+		this.piano.z = 10;
 		this.refreshPiano();
 
 		this.ui.piano = this.piano;
@@ -64,9 +62,9 @@ export default class RePlay extends Synth {
 		
 
 		const titletext = new Text(
-			"RePlay",
-			(SYNTH_BORDERS*2),
-			(SYNTH_BORDERS)+30
+			"RePlay Sampler",
+			15,
+			50
 		);
 
 		titletext.color = "black";
@@ -113,7 +111,12 @@ export default class RePlay extends Synth {
 		}
 	}
 
-	override onClick(x: number, y: number, release?: boolean) {
+	override onClick(
+		x:		number,
+		y:		number,
+		rel:	boolean,
+		mb:		number,
+	) {
 		const w = this;
 		const p = this.piano
 
@@ -123,7 +126,7 @@ export default class RePlay extends Synth {
 			w.x+p.x, w.y+p.y,
 			p.w, p.h
 		)) {
-			p.onClick(x, y, new Vec2_i(this.x, this.y), release ?? false);
+			p.onClick(x, y, new Vec2_i(this.x, this.y), rel, mb);
 		}
 	}
 

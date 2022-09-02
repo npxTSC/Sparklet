@@ -8,6 +8,7 @@ const DEFAULT_SAMPLE_SRC = "/public/sparks/sparkwave/debug/ckey.wav";
 export class Sample {
 	public buffer:	AudioBuffer;
 	public volume:	number = 100;
+	public root:	number = 60;
 	
 	static async load(src?: string) {
 		const res = await fetch(src ?? DEFAULT_SAMPLE_SRC)
@@ -47,7 +48,7 @@ export class SWPlugin {
 		}
 	}
 
-	onClick(x: number, y: number, rel?: boolean) {}
+	onClick(x: number, y: number, rel: boolean, mb: number) {}
 
 	noteOn(note: number, velocity: number) {}
 	noteOff(note: number) {}
@@ -96,6 +97,14 @@ export class Vec2_i<CT> {
 	get y() {
 		return this._y;
 	}
+}
+
+export enum MOUSEBUTTONS {
+	Left,
+	Middle,
+	Right,
+	Thumb1,
+	Thumb2
 }
 
 export const theme = {

@@ -84,7 +84,12 @@ export default class Cloudy extends Synth {
 		}
 	}
 
-	override onClick(x: number, y: number, release?: boolean) {
+	override onClick(
+		x:		number,
+		y:		number,
+		rel:	boolean,
+		mb:		number,
+	) {
 		const w = this;
 		const p = this.piano
 
@@ -94,7 +99,7 @@ export default class Cloudy extends Synth {
 			w.x+p.x, w.y+p.y,
 			p.w, p.h
 		)) {
-			p.onClick(x, y, new Vec2_i(this.x, this.y), release ?? false);
+			p.onClick(x, y, new Vec2_i(this.x, this.y), rel, mb);
 		}
 	}
 

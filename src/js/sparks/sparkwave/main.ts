@@ -1,12 +1,13 @@
 "use strict";
 
-import {rand, elem, str}		from "libdx";
-import {Howl, Howler}			from "howler";
-import Cloudy					from "./synths/cloudy";
-import RePlay					from "./synths/replay";
+import {rand, elem, str}	from "libdx";
+import {Howl, Howler}		from "howler";
+import Cloudy				from "./synths/cloudy";
+import RePlay				from "./synths/replay";
 import {
 	Sample,	Rhythm,
-	Synth, theme, SWPlugin
+	Synth, theme, SWPlugin,
+	MOUSEBUTTONS
 }	from "./classes";
 
 // Constants
@@ -131,6 +132,7 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 canvas.addEventListener("mousedown", (e) => {
+	
 	mouseDown = true;
 
 	let instancesUnderCursor: SWPlugin[] = [];
@@ -145,7 +147,6 @@ canvas.addEventListener("mousedown", (e) => {
 		}
 	}
 
-	//const highestInstance = instancesUnderCursor.sort((a,b) => a.z - b.z)[0];
 	const instance = instancesUnderCursor[0];
 	if (!instance) return;
 
@@ -156,11 +157,13 @@ canvas.addEventListener("mousedown", (e) => {
 		instance.x,	instance.y,
 		instance.w,	SYNTH_TITLEBAR_HEIGHT)
 	) {
-		// Set dragging
-		instance.isBeingDragged = true;
+		if (e.button === MOUSEBUTTONS.Left) {
+			// Set dragging
+			instance.isBeingDragged = true;
+		}
 	} else {
 		// Otherwise, pass control to the plugin
-		instance.onClick(mouseX, mouseY);
+		instance.onClick(mouseX, mouseY, false, e.button);
 	}
 });
 
@@ -194,8 +197,12 @@ canvas.addEventListener("mouseup", (e) => {
 		instance.w,	SYNTH_TITLEBAR_HEIGHT)
 	) {
 		// Pass control to the plugin
-		instance.onClick(mouseX, mouseY, true);
+		instance.onClick(mouseX, mouseY, true, e.button);
 	}
+});
+
+document.addEventListener("contextmenu", (e) => {
+	e.preventDefault();
 });
 
 setInterval(drawLoop, FPS/1000);
