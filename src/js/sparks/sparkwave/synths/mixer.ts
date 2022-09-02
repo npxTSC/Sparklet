@@ -1,15 +1,16 @@
 /*
-* RePlay, a free open-source sampler for Sparkwave
+* Sparkwave's default mixer plugin
 * Made by DexieTheSheep for Sparklet
 * Licensed under GPLv3
 */
 
 "use strict";
 
-import {noteHz,
-		SYNTH_BORDERS,
-		SYNTH_TITLEBAR_HEIGHT,
-		pointWithin
+import {
+	noteHz,
+	SYNTH_BORDERS,
+	SYNTH_TITLEBAR_HEIGHT,
+	pointWithin
 }									from "../main";
 import {Synth, Sample, Vec2_i}		from "../classes";
 import {Rectangle, Text,
@@ -37,7 +38,7 @@ export default class RePlay extends Synth {
 		bg.borderColor = "black";
 		
 		dman.ptr(bg, "w", () => this.w-(2*SYNTH_BORDERS));
-		dman.ptr(bg, "h", () => this.h);
+		dman.ptr(bg, "h", () => this.h-(SYNTH_TITLEBAR_HEIGHT+SYNTH_BORDERS));
 
 		this.ui.bg = bg;
 
@@ -47,12 +48,11 @@ export default class RePlay extends Synth {
 			4,
 			-1,
 			-1,
-			-1,
+			50,
 		);
 
+		dman.ptr(this.piano, "y", () => this.h-58);
 		dman.ptr(this.piano, "w", () => this.w-16);
-		dman.ptr(this.piano, "h", () => this.h/6);
-		dman.ptr(this.piano, "y", () => this.h-(this.piano.h+4));
 
 		this.piano.keyCount = 48;
 		this.piano.z = 10;

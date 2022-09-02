@@ -86,7 +86,7 @@ export class PianoWidget extends Rectangle
 			implements UIComponent {
 	private keys:		PianoKey[] = [];
 	public keyCount:	number	= 12;
-	public startKey:	number	= 48; // Middle C
+	public startKey:	number	= 36; // Middle C
 	
 	constructor(
 		x:	number,
