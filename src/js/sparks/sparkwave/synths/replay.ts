@@ -134,9 +134,13 @@ export default class RePlay extends Synth {
 		if (!this.sample) return;
 
 		const buf = this.sample.buffer;
-
-		const source = this.ctx.createBufferSource();
-		source.buffer = buf;
+		const rootDiff = note - this.sample.root;
+		
+		const source = new AudioBufferSourceNode(this.ctx, {
+			buffer: buf,
+			detune: rootDiff * 100,
+		});
+		
 		source.connect(this.ctx.destination);
 		source.start();
 	}
