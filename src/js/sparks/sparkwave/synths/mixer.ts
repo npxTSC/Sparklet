@@ -37,8 +37,8 @@ export default class RePlay extends Synth {
 		bg.borderWidth = 4;
 		bg.borderColor = "black";
 		
-		dman.ptr(bg, "w", () => this.w-(2*SYNTH_BORDERS));
-		dman.ptr(bg, "h", () => this.h-(SYNTH_TITLEBAR_HEIGHT+SYNTH_BORDERS));
+		dman.ptr(bg, "w", () => this.w);
+		dman.ptr(bg, "h", () => this.h);
 
 		this.ui.bg = bg;
 
@@ -48,11 +48,12 @@ export default class RePlay extends Synth {
 			4,
 			-1,
 			-1,
-			50,
+			-1,
 		);
 
-		dman.ptr(this.piano, "y", () => this.h-58);
-		dman.ptr(this.piano, "w", () => this.w-16);
+		dman.ptr(this.piano, "w", () => this.w-8);
+		dman.ptr(this.piano, "h", () => this.h/6);
+		dman.ptr(this.piano, "y", () => this.h-(this.piano.h+4));
 
 		this.piano.keyCount = 48;
 		this.piano.z = 10;

@@ -24,7 +24,8 @@ export default class RePlay extends Synth {
 	constructor(ctx: AudioContext, smp?: Sample) {
 		super(ctx);
 
-		this.sample = smp ?? null;
+		if (smp) this.sample = smp;
+		else this.loadSample();
 		
 		const bg = new Rectangle(
 			0, 0,
@@ -74,9 +75,9 @@ export default class RePlay extends Synth {
 		this.ui.title = titletext;
 	}
 
-	async loadSample(buf: AudioBuffer) {
-		if (!(this.sample)) this.sample = new Sample();
-		this.sample.buffer = buf;
+	async loadSample(buf?: AudioBuffer) {
+		this.sample = new Sample()
+		this.sample.buffer = buf ?? (await Sample.load());
 	}
 
 	refreshPiano() {

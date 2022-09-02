@@ -4,6 +4,7 @@ import {rand, elem, str}	from "libdx";
 import {Howl, Howler}		from "howler";
 import Cloudy				from "./synths/cloudy";
 import RePlay				from "./synths/replay";
+import Mixer				from "./synths/mixer";
 import {
 	Sample,	Rhythm,
 	Synth, theme, SWPlugin,
@@ -28,7 +29,7 @@ export const ctx	= new AudioContext();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
-
+const mixer			= new Mixer(ctx);
 
 const activePlugins: SWPlugin[]		= [];
 
@@ -44,14 +45,14 @@ resizeHandler();
 
 // Debug pre-initialized plugins
 activePlugins.push(
+//	mixer,
 //	new Cloudy(ctx)
-	new RePlay(ctx)
+	new RePlay(ctx),
+	new RePlay(ctx),
 );
 
 activePlugins[0].w = 1000;
 activePlugins[0].h = 600;
-//(<Cloudy>activePlugins[0]).refreshPiano();
-(<RePlay>activePlugins[0]).loadSample(await Sample.load());
 (<RePlay>activePlugins[0]).refreshPiano();
 
 if (navigator.requestMIDIAccess) {
@@ -121,7 +122,7 @@ canvas.addEventListener("mousemove", (e) => {
 	const mx = e.clientX - rect.left;
 	const my = e.clientY - rect.top;
 
-	for (const instance of activePlugins) {
+	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.isBeingDragged) continue;
 		instance.x += (mx-mouseX);
 		instance.y += (my-mouseY);
@@ -137,7 +138,7 @@ canvas.addEventListener("mousedown", (e) => {
 
 	let instancesUnderCursor: SWPlugin[] = [];
 	
-	for (const instance of activePlugins) {
+	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.visible) continue;
 
 		if (pointWithin(mouseX, mouseY,
@@ -176,7 +177,7 @@ canvas.addEventListener("mouseup", (e) => {
 
 	let instancesUnderCursor: SWPlugin[] = [];
 	
-	for (const instance of activePlugins) {
+	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.visible) continue;
 
 		if (pointWithin(mouseX, mouseY,
