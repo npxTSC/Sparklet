@@ -8,7 +8,7 @@ import Mixer				from "./synths/mixer";
 import {
 	Sample,	Rhythm,
 	Synth, theme, SWPlugin,
-	MOUSEBUTTONS
+	MOUSEBUTTONS, Vec2_i
 }	from "./classes";
 
 // Constants
@@ -34,9 +34,8 @@ const mixer			= new Mixer(ctx);
 const activePlugins: SWPlugin[]		= [];
 
 
-let mouseX: number;
-let mouseY: number;
-let mouseDown = false;
+let mouse		= new Vec2_i(0,0);
+let mouseDown	= false;
 
 
 window.addEventListener("resize", resizeHandler);
@@ -64,7 +63,6 @@ if (navigator.requestMIDIAccess) {
 			input.onmidimessage = midiMessageHandler;
 		});
 	}, () => {
-		// Error
 		console.error("There was a problem loading a MIDI device.");
 	});
 }
@@ -103,12 +101,6 @@ function drawLoop() {
 			instance.w+2*SYNTH_BORDERS,
 			instance.h+2*SYNTH_BORDERS
 		);
-		
-		/*c.fillStyle = theme.PLUGIN_EMPTY;
-		c.fillRect(	instance.x+SYNTH_BORDERS,
-					instance.y+SYNTH_BORDERS,
-					instance.w-(SYNTH_BORDERS*2),
-					instance.h-(SYNTH_BORDERS*2)	);*/
 
 		instance.draw(c);
 
@@ -124,12 +116,12 @@ canvas.addEventListener("mousemove", (e) => {
 
 	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.isBeingDragged) continue;
-		instance.x += (mx-mouseX);
-		instance.y += (my-mouseY);
+		instance.x += (mx-mouse.x);
+		instance.y += (my-mouse.y);
 		instance.updateDisplay();
 	}
 	
-	[mouseX, mouseY] = [mx, my];
+	mouse = Vec2_i.from([mx, my]);
 });
 
 canvas.addEventListener("mousedown", (e) => {
@@ -141,7 +133,7 @@ canvas.addEventListener("mousedown", (e) => {
 	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.visible) continue;
 
-		if (pointWithin(mouseX, mouseY,
+		if (pointWithin(mouse.x, mouse.y,
 			instance.x, instance.y,	instance.w, instance.h)) {
 			
 			instancesUnderCursor.push(instance);
@@ -154,7 +146,7 @@ canvas.addEventListener("mousedown", (e) => {
 	
 	// If dragging titlebar
 	if (pointWithin(
-		mouseX,		mouseY,
+		mouse.x,	mouse.y,
 		instance.x,	instance.y,
 		instance.w,	SYNTH_TITLEBAR_HEIGHT)
 	) {
@@ -164,7 +156,7 @@ canvas.addEventListener("mousedown", (e) => {
 		}
 	} else {
 		// Otherwise, pass control to the plugin
-		instance.onClick(mouseX, mouseY, false, e.button);
+		instance.onClick(mouse.x, mouse.y, false, e.button);
 	}
 });
 
@@ -180,7 +172,7 @@ canvas.addEventListener("mouseup", (e) => {
 	for (const instance of [...activePlugins].reverse()) {
 		if (!instance.visible) continue;
 
-		if (pointWithin(mouseX, mouseY,
+		if (pointWithin(mouse.x, mouse.y,
 			instance.x, instance.y,	instance.w, instance.h)) {
 			
 			instancesUnderCursor.push(instance);
@@ -193,12 +185,12 @@ canvas.addEventListener("mouseup", (e) => {
 	
 	// If NOT dragging titlebar
 	if (!pointWithin(
-		mouseX,		mouseY,
+		mouse.x,	mouse.y,
 		instance.x,	instance.y,
 		instance.w,	SYNTH_TITLEBAR_HEIGHT)
 	) {
 		// Pass control to the plugin
-		instance.onClick(mouseX, mouseY, true, e.button);
+		instance.onClick(mouse.x, mouse.y, true, e.button);
 	}
 });
 
