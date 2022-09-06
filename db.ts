@@ -7,7 +7,7 @@ import {Ranks}				from "./classes";
 // Delete old table in debug, to get rid of old data.
 // DISABLE IN PRODUCTION!
 
-const PURGE_DATABASE = false;
+const PURGE_DATABASE = true;
 
 if (PURGE_DATABASE) {
 	try {

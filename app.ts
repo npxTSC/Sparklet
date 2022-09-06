@@ -160,7 +160,7 @@ app.post("/login", async (req, res) => {
 			if (!row) return fail("l-nameNotFound");
 			
 			// Compare password to hash
-			const correct = bcrypt.compare(pass, row.passHash);
+			const correct = await bcrypt.compare(pass, row.passHash);
 			
 			// If password is wrong, reject
 			if (!correct) return fail("l-wrongPassword");
@@ -184,7 +184,7 @@ app.post("/login", async (req, res) => {
 			
 			statements.editLoginToken.run(null, user);
 			
-			res.redirect("/login");
+			return res.redirect("/login");
 			break;
 
 		default:

@@ -29,7 +29,10 @@ export const ctx	= new AudioContext();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
-const mixer			= new Mixer(ctx);
+
+// The mixer is mutable, since the user might want
+// to load up their own custom mixer plugin
+let mixer			= new Mixer(ctx);
 
 const activePlugins: SWPlugin[]		= [];
 
@@ -44,9 +47,7 @@ resizeHandler();
 
 // Debug pre-initialized plugins
 activePlugins.push(
-//	mixer,
 //	new Cloudy(ctx)
-	new RePlay(ctx),
 	new RePlay(ctx),
 );
 

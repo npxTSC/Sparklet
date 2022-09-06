@@ -64,7 +64,7 @@ export default class RePlay extends Synth {
 		
 
 		const titletext = new Text(
-			"RePlay Sampler",
+			"Mixer Rack",
 			15,
 			50
 		);
