@@ -1,7 +1,6 @@
 "use strict";
 
 import {rand, elem, str}	from "libdx";
-import {Howl, Howler}		from "howler";
 import Cloudy				from "./synths/cloudy";
 import RePlay				from "./synths/replay";
 import Mixer				from "./synths/mixer";

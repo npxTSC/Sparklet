@@ -54,6 +54,10 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+app.get("/pets", (req, res) => {
+	res.render("pets-info");
+});
+
 app.get("/about", (req, res) => {
 	res.render("about");
 });

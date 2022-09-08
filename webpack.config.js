@@ -10,11 +10,13 @@ module.exports = {
 		"login":			cd + "/src/js/login.ts",
 		"quiz":				cd + "/src/js/quiz.ts",
 		"quizplay":			cd + "/src/js/quizplay.ts",
+		"pets":				cd + "/src/js/pets.ts",
 		"capsules":			cd + "/src/js/capsules.ts",
 		"host-room":		cd + "/src/js/host-room.ts",
 		
 		"bootstrap.min":	cd + "/src/js/bootstrap.min.js",
 		"sass-main":		cd + "/src/css/main.scss",
+		"sass-pets":		cd + "/src/css/pets.scss",
 		"sass-quizplay":	cd + "/src/css/quizplay.scss",
 		
 		"sparks/sparkwave":	cd + "/src/js/sparks/sparkwave/main.ts",
