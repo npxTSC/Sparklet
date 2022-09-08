@@ -3,3 +3,40 @@
 body {
 	background: black;
 }
+
+div#bottombar {
+	//overflow: hidden;
+	position: fixed;
+	bottom: 0;
+	pointer-events: none;
+	height: 10vh;
+	width: 100%;
+	background-image: linear-gradient(to top,	orange 0%,
+												rgba(255, 165, 0, 20) 5%,
+												rgba(255, 165, 0, 0) 50%);
+}
+
+div#bottombar > img {
+	margin-bottom: 0;
+	bottom: 50%;
+	vertical-align: bottom;
+	position: relative;
+	animation-name: slide;
+	animation-duration: 20s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+
+	image-rendering: pixelated;
+
+	width: 10%;
+}
+
+@keyframes slide {
+	from {
+		left: 110%;
+	}
+
+	to {
+		left: -100%;
+	}
+}
