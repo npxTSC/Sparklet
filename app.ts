@@ -54,6 +54,17 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+// Well-known URIs
+app.get("/.well-known/change-password", (req, res) => {
+	res.redirect("/login");
+});
+
+app.get("/.well-known/security.txt", (req, res) => {
+	res.redirect(
+		"https://github.com/Lamby777/SparkletX/blob/master/SECURITY.md"
+	);
+});
+
 app.get("/pets", (req, res) => {
 	res.render("pets-info");
 });
