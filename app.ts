@@ -29,6 +29,7 @@ import accountParser				from "./middleware/accounts";
 // CONSTANTS
 const PORT			= 3000;
 const QP_NAME_LIMIT	= 20;
+const GITHUB_PAGE	= "https://github.com/Lamby777/SparkletX";
 
 // App
 export const app			= Express();
@@ -60,9 +61,7 @@ app.get("/.well-known/change-password", (req, res) => {
 });
 
 app.get("/.well-known/security.txt", (req, res) => {
-	res.redirect(
-		"https://github.com/Lamby777/SparkletX/blob/master/SECURITY.md"
-	);
+	res.redirect(`${GITHUB_PAGE}/blob/master/SECURITY.md`);
 });
 
 app.get("/pets", (req, res) => {
