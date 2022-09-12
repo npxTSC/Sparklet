@@ -19,6 +19,11 @@ export class Sample {
 	}
 }
 
+export interface MixerTrack {
+	volume:		number;
+	effects:	Effect[];
+}
+
 export class SWPlugin {
 	constructor(protected ctx: AudioContext) {}
 	

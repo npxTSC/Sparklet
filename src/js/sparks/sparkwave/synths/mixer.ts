@@ -11,21 +11,26 @@ import {
 	SYNTH_BORDERS,
 	SYNTH_TITLEBAR_HEIGHT,
 	pointWithin
-}									from "../main";
-import {Synth, Sample, Vec2_i}		from "../classes";
+}								from "../main";
+import {
+	Synth, Effect, Vec2_i,
+	MixerTrack
+}								from "../classes";
 import {Rectangle, Text,
-		UIComponent, PianoWidget}	from "../dtools";
-import {dman}						from "libdx";
+		UIComponent}			from "../dtools";
+import {dman}					from "libdx";
 
-export default class RePlay extends Synth {
-	public ui:		Record<string, UIComponent>	= {};
-	private sample:	Sample | null;
-	private piano:	PianoWidget;
+const OUTSET_W			= 4;
+const TRACK_BORDER_W	= 1;
+const TRACK_BORDER_COL	= "gray";
+const TRACK_BG_COL		= "darkslategray";
+
+export default class Mixer extends Synth {
+	public ui:				Record<string, UIComponent>	= {};
+	public tracks:			MixerTrack[] = [];
 	
-	constructor(ctx: AudioContext, smp?: Sample) {
+	constructor(ctx: AudioContext) {
 		super(ctx);
-
-		this.sample = smp ?? null;
 		
 		const bg = new Rectangle(
 			0, 0,
@@ -33,34 +38,23 @@ export default class RePlay extends Synth {
 			this.h,
 		);
 		
-		bg.color	= "#87ceeb";
-		bg.borderWidth = 4;
-		bg.borderColor = "black";
+		bg.color		= "lightgray";
+		bg.borderWidth	= OUTSET_W;
+		bg.borderColor	= "black";
 		
 		dman.ptr(bg, "w", () => this.w);
 		dman.ptr(bg, "h", () => this.h);
 
 		this.ui.bg = bg;
 
-		
 
-		this.piano = new PianoWidget(
-			4,
-			-1,
-			-1,
-			-1,
-		);
-
-		dman.ptr(this.piano, "w", () => this.w-8);
-		dman.ptr(this.piano, "h", () => this.h/6);
-		dman.ptr(this.piano, "y", () => this.h-(this.piano.h+4));
-
-		this.piano.keyCount = 48;
-		this.piano.z = 10;
-		this.refreshPiano();
-
-		this.ui.piano = this.piano;
-
+		const mxCmp = new MixerUI(0, 0, 0, 0);
+		dman.ptr(mxCmp, "w", () => this.w*0.7 - (2*OUTSET_W));
+		dman.ptr(mxCmp, "h", () => this.h*0.75 - (2*OUTSET_W));
+		dman.ptr(mxCmp, "x", () => OUTSET_W + this.x);
+		dman.ptr(mxCmp, "y", () => OUTSET_W + this.y+(this.h*0.25));
+		dman.ptr(mxCmp, "trackPtr", () => this.tracks);
+		this.ui.mixer = mxCmp;
 		
 
 		const titletext = new Text(
@@ -74,19 +68,6 @@ export default class RePlay extends Synth {
 
 		this.ui.title = titletext;
 	}
-
-	async loadSample(buf: AudioBuffer) {
-		if (!(this.sample)) this.sample = new Sample();
-		this.sample.buffer = buf;
-	}
-
-	refreshPiano() {
-		this.piano.updateKeys();
-		this.piano.updateKeyActions(
-			(note) => this.noteOn(note, 127),
-			(note) => this.noteOff(note),
-		);
-	}
 	
 	override draw(c: CanvasRenderingContext2D) {
 		const sorted = Object.values(this.ui)
@@ -95,57 +76,52 @@ export default class RePlay extends Synth {
 		const offset = new Vec2_i(this.x, this.y);
 		sorted.forEach(cmp => cmp.draw(c, offset));
 	}
+}
 
-	override updateDisplay() {}
+class MixerUI extends Rectangle
+		implements UIComponent {
+	private trackWidgets:	MixerTrackUI[] = [];
+	private trackCount:		number	= 16;
+	
+	updateTrackWidgets() {
+		// Clear the array
+		this.trackWidgets = [];
 
-	override onMidiInput(	command:	number,
-						 	note:		number,
-							velocity:	number) {
-		switch (command) {
-			case 144: // Note ON
-				if (velocity > 0) this.noteOn(note, velocity);
-				else this.noteOff(note);
-				break;
-				
-			case 128: // Note OFF
-				this.noteOff(note);
-				break;
+		// Make new keys
+		for (let i = 0; i < this.trackCount; i++) {
+			const track = new MixerTrackUI(
+				this.x + (i * (this.w / this.trackCount)),
+				this.y,
+				this.w / this.trackCount,
+				this.h,
+			);
+			
+			this.trackWidgets.push(track);
 		}
 	}
+	
+	draw(c: CanvasRenderingContext2D) {
+		this.updateTrackWidgets();
+		this.trackWidgets.forEach((v) => v.draw(c));
+	}
+}
 
-	override onClick(
-		x:		number,
-		y:		number,
-		rel:	boolean,
-		mb:		number,
+class MixerTrackUI extends Rectangle
+		implements UIComponent {
+	
+	constructor(
+		x:	number,
+		y:	number,
+		w:	number,
+		h:	number,
 	) {
-		const w = this;
-		const p = this.piano
-
-		// If clicked on piano, pass click to widget code
-		if (pointWithin(
-			x, y,
-			w.x+p.x, w.y+p.y,
-			p.w, p.h
-		)) {
-			p.onClick(x, y, new Vec2_i(this.x, this.y), rel, mb);
-		}
+		super(x, y, w, h);
+		this.color = TRACK_BG_COL;
+		this.borderWidth = TRACK_BORDER_W;
+		this.borderColor = TRACK_BORDER_COL;
 	}
 
-	override noteOn(note: number, velocity: number) {
-		if (!this.sample) return;
-
-		const buf = this.sample.buffer;
-		const rootDiff = note - this.sample.root;
-		
-		const source = new AudioBufferSourceNode(this.ctx, {
-			buffer: buf,
-			detune: rootDiff * 100,
-		});
-		
-		source.connect(this.ctx.destination);
-		source.start();
+	draw(c: CanvasRenderingContext2D) {
+		super.draw(c, Vec2_i.ZEROES());
 	}
-
-	override noteOff(note: number) {}
 }

@@ -29,9 +29,11 @@ const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
 const c				= canvas.getContext("2d");
 const FPS			= 60;
 
-// The mixer is mutable, since the user might want
-// to load up their own custom mixer plugin
-let mixer			= new Mixer(ctx);
+// The synth in this slot is the one that renders audio
+// There's pretty much no reason to edit this unless you
+// are using a custom mixer plugin, in which case
+// you're free to do so (the variable is mutable).
+let master			= new Mixer(ctx);
 
 const activePlugins: SWPlugin[]		= [];
 
@@ -46,13 +48,13 @@ resizeHandler();
 
 // Debug pre-initialized plugins
 activePlugins.push(
-//	new Cloudy(ctx)
+	master,
 	new RePlay(ctx),
 );
 
-activePlugins[0].w = 1000;
-activePlugins[0].h = 600;
-(<RePlay>activePlugins[0]).refreshPiano();
+activePlugins[1].w = 1000;
+activePlugins[1].h = 600;
+(<RePlay>activePlugins[1]).refreshPiano();
 
 if (navigator.requestMIDIAccess) {
 	navigator.requestMIDIAccess().then((midi) => {
