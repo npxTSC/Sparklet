@@ -24,7 +24,7 @@ can't because it includes something unrelated.
 	Useful scripts:
 
 	>>> npm run tsc
-	Runs TypeScript in watch mode (for backend)
+	Runs TypeScript transpiler in watch mode (for backend)
  
 	>>> npm run pw
 	Runs webpack in watch mode (for frontend)
