@@ -21,5 +21,10 @@ pull requests, since I might want to accept one, but I
 can't because it includes something unrelated.
 
 ## FOR DEVS
-If you find a security vulnerability, you can DM me on
-Twitter @Carbonado870 or on Discord (Dexie With Drip#8426)
+	Useful scripts:
+
+	>>> npm run tsc
+	Runs TypeScript in watch mode (for backend)
+ 
+	>>> npm run pw
+	Runs webpack in watch mode (for frontend)
