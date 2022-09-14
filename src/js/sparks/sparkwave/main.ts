@@ -130,19 +130,7 @@ canvas.addEventListener("mousedown", (e) => {
 	
 	mouseDown = true;
 
-	let instancesUnderCursor: SWPlugin[] = [];
-	
-	for (const instance of [...activePlugins].reverse()) {
-		if (!instance.visible) continue;
-
-		if (pointWithin(mouse.x, mouse.y,
-			instance.x, instance.y,	instance.w, instance.h)) {
-			
-			instancesUnderCursor.push(instance);
-		}
-	}
-
-	const instance = instancesUnderCursor[0];
+	const instance = instancesUnderCursor()[0];
 	if (!instance) return;
 
 	
@@ -168,20 +156,8 @@ canvas.addEventListener("mouseup", (e) => {
 	for (const instance of activePlugins) {
 		instance.isBeingDragged = false;
 	}
-
-	let instancesUnderCursor: SWPlugin[] = [];
 	
-	for (const instance of [...activePlugins].reverse()) {
-		if (!instance.visible) continue;
-
-		if (pointWithin(mouse.x, mouse.y,
-			instance.x, instance.y,	instance.w, instance.h)) {
-			
-			instancesUnderCursor.push(instance);
-		}
-	}
-	
-	const instance = instancesUnderCursor[0];
+	const instance = instancesUnderCursor()[0];
 	if (!instance) return;
 
 	
@@ -218,6 +194,18 @@ export function pointWithin(x: number,	y: number,
 			((y>=ry) && (y<ry+rh));
 }
 
+export function pointWithinV(
+	pt:		Vec2_i<number>,
+	rpos:	Vec2_i<number>,
+	rsize:	Vec2_i<number>
+) {
+	return pointWithin(
+		pt.x, pt.y,
+		rpos.x, rpos.y,
+		rsize.x, rsize.y
+	);
+}
+
 // Get frequency in hertz from MIDI note value
 export function noteHz(note: number) {
 	return (440 / 32) * (2 ** ((note - 9) / 12));
@@ -238,4 +226,25 @@ export function whiteKeyBelow(note: number) {
 	const offset = [3, 10].includes(rel) ? 1 : -1;
 
 	return note + offset;
+}
+
+// returns array of instances under cursor position
+// sorted by Z order (first element is highest)
+function instancesUnderCursor() {
+	let res: SWPlugin[] = [];
+	
+	for (const instance of [...activePlugins].reverse()) {
+		if (!instance.visible) continue;
+
+		if (pointWithin(
+			mouse.x,	mouse.y,
+			instance.x,	instance.y,
+			instance.w,	instance.h
+		)) {
+			
+			res.push(instance);
+		}
+	}
+
+	return res;
 }
