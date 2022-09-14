@@ -71,28 +71,30 @@ export class Effect extends SWPlugin {
 
 export type Rhythm = boolean[];
 
+export type OrderedPair = Vec2_i<number>;
+
 // Immutable Vector2
 export class Vec2_i<CT> {
 	constructor(private _x: CT, private _y: CT) {}
 
 	static ZEROES() {
-		return new Vec2_i<number>(0, 0);
+		return new Vec2_i(0, 0);
 	}
 	
 	static from<T>(arr: [T, T]) {
 		return new Vec2_i<T>(arr[0], arr[1]);
 	}
 
-	static add(v1: Vec2_i<number>, v2: Vec2_i<number>) {
-		return new Vec2_i<number>(v1.x + v2.x, v1.y + v2.y);
+	static add(v1: OrderedPair, v2: OrderedPair) {
+		return new Vec2_i(v1.x + v2.x, v1.y + v2.y);
 	}
 
-	static subtract(v1: Vec2_i<number>, v2: Vec2_i<number>) {
-		return new Vec2_i<number>(v1.x - v2.x, v1.y - v2.y);
+	static subtract(v1: OrderedPair, v2: OrderedPair) {
+		return new Vec2_i(v1.x - v2.x, v1.y - v2.y);
 	}
 
-	static negate(v: Vec2_i<number>) {
-		return new Vec2_i<number>(-v.x, -v.y);
+	static negate(v: OrderedPair) {
+		return new Vec2_i(-v.x, -v.y);
 	}
 	
 	get x() {

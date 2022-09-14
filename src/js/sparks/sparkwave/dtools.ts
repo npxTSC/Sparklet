@@ -1,13 +1,13 @@
 // Classes for use in developing plugins
 "use strict";
 
-import {isBlackKey, whiteKeyBelow}	from "./main";
-import {Vec2_i, MOUSEBUTTONS}		from "./classes";
+import {isBlackKey, whiteKeyBelow}			from "./main";
+import {Vec2_i, OrderedPair, MOUSEBUTTONS}	from "./classes";
 
 const BLACK_KEY_HEIGHT_COEFFICIENT = 0.6;
 
 export interface UIComponent {
-	draw:	(c: CanvasRenderingContext2D, offset?: Vec2_i<number>) => void;
+	draw:	(c: CanvasRenderingContext2D, offset?: OrderedPair) => void;
 	z:		number;
 }
 
@@ -20,7 +20,7 @@ export class Point implements UIComponent {
 		public y:	number,
 	) {}
 
-	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {}
+	draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {}
 }
 
 export class Rectangle extends Point
@@ -37,7 +37,7 @@ export class Rectangle extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
+	draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {
 		// Draw border
 		c.fillStyle = this.borderColor;
 		c.fillRect(
@@ -71,7 +71,7 @@ export class Text extends Point
 		super(x, y);
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
+	draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {
 		c.font = `${this.fontSize}px ${this.font}`;
 		c.fillStyle = this.color;
 		c.fillText(this.text, this.x+offset.x, this.y+offset.y);
@@ -131,7 +131,7 @@ export class PianoWidget extends Rectangle
 	onClick(	
 		mx:		number,
 		my:		number,
-		hostPos: Vec2_i<number>,
+		hostPos: OrderedPair,
 		rel:	boolean,
 		mb:		number,
 	) {
@@ -160,7 +160,7 @@ export class PianoWidget extends Rectangle
 		}
 	}
 
-	draw(c: CanvasRenderingContext2D, offset: Vec2_i<number> = Vec2_i.ZEROES()) {
+	draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {
 		c.fillStyle	= this.color;
 		c.fillRect(
 			this.x+offset.x,
@@ -194,7 +194,7 @@ export class PianoKey extends NotePlayerWidget
 		implements UIComponent {
 	
 	draw(	c: CanvasRenderingContext2D,
-			offset: Vec2_i<number> = Vec2_i.ZEROES(),
+			offset: OrderedPair = Vec2_i.ZEROES(),
 			keyColors: string[] = ["white", "black"]) {
 		
 		c.fillStyle = isBlackKey(this.note) ? keyColors[1] : keyColors[0];

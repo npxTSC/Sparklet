@@ -7,7 +7,7 @@ import Mixer				from "./synths/mixer";
 import {
 	Sample,	Rhythm,
 	Synth, theme, SWPlugin,
-	MOUSEBUTTONS, Vec2_i
+	MOUSEBUTTONS, Vec2_i, OrderedPair
 }	from "./classes";
 
 // Constants
@@ -195,9 +195,9 @@ export function pointWithin(x: number,	y: number,
 }
 
 export function pointWithinV(
-	pt:		Vec2_i<number>,
-	rpos:	Vec2_i<number>,
-	rsize:	Vec2_i<number>
+	pt:		OrderedPair,
+	rpos:	OrderedPair,
+	rsize:	OrderedPair
 ) {
 	return pointWithin(
 		pt.x, pt.y,
