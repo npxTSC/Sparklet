@@ -7,7 +7,8 @@ import Mixer				from "./synths/mixer";
 import {
 	Sample,	Rhythm,
 	Synth, theme, SWPlugin,
-	MOUSEBUTTONS, Vec2_i, OrderedPair
+	MOUSEBUTTONS, Vec2_i, OrderedPair,
+	CURSOR_STYLES
 }	from "./classes";
 
 // Constants
@@ -121,6 +122,28 @@ canvas.addEventListener("mousemove", (e) => {
 		instance.x += (mx-mouse.x);
 		instance.y += (my-mouse.y);
 		instance.updateDisplay();
+	}
+
+	const instance = instancesUnderCursor()[0];
+	if (instance) {
+		const mouseStyleOverride = instance.mouseStyle();
+
+		// If the plugin has specific style rules for
+		// the current position, use them
+		if (mouseStyleOverride) {
+			setCursorStyle(mouseStyleOverride);
+		} else {
+			// If point within titlebar, change cursor to drag icon
+			if (pointWithin(
+				mouse.x,	mouse.y,
+				instance.x,	instance.y,
+				instance.w,	SYNTH_TITLEBAR_HEIGHT)
+			) {
+				setCursorStyle(CURSOR_STYLES.Drag);
+			}
+		}
+	} else {
+		setCursorStyle(CURSOR_STYLES.Arrow);
 	}
 	
 	mouse = Vec2_i.from([mx, my]);
@@ -247,4 +270,8 @@ function instancesUnderCursor() {
 	}
 
 	return res;
+}
+
+function setCursorStyle(style: `${CURSOR_STYLES}`) {
+	document.body.style.cursor = style;
 }

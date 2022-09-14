@@ -37,6 +37,9 @@ export class SWPlugin {
 
 	draw(c: CanvasRenderingContext2D) {}
 	updateDisplay() {}
+	mouseStyle(): (`${CURSOR_STYLES}` | null) {
+		return null;
+	}
 	
 	acceptsMidiInput:	boolean	= true;
 	
@@ -120,4 +123,10 @@ export const theme = {
 	PLUGIN_TITLEBAR:	"#333",
 	PLUGIN_BACKGROUND:	"#4f4f4f",
 	PLUGIN_EMPTY:		"aliceblue", //"#fff",
+}
+
+export const enum CURSOR_STYLES {
+	Drag	= "move",
+	Auto	= "auto",
+	Arrow	= "default",
 }
