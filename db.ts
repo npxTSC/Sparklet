@@ -4,6 +4,9 @@ import bcrypt	 			from "bcrypt";
 import fs					from "fs";
 import {Ranks}				from "./classes";
 
+// First-time setup
+fs.mkdirSync("db");
+
 // Delete old table in debug, to get rid of old data.
 // DISABLE IN PRODUCTION!
 
