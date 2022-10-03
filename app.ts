@@ -6,7 +6,6 @@ import crypto						from "crypto";
 import cparse						from "cookie-parser";
 import bcrypt						from "bcrypt";
 import path							from "path";
-import ejs							from "ejs";
 import http							from "http";
 import {Server as ioServer}			from "socket.io";
 import {v4 as newUUID}				from "uuid";
@@ -14,13 +13,18 @@ import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
 import {config as loadEnv}			from "dotenv";
-import {assert}						from "console";
+
+import "ejs";
+
+
 
 loadEnv();
 
+// Prevent running without ENV file admin password
 if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
 	throw new Error("Provide an ADMIN_PASSWORD in .env!");
 }
+
 
 // Local Modules
 import {
