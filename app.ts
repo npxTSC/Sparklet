@@ -14,8 +14,13 @@ import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
 import {config as loadEnv}			from "dotenv";
+import {assert}						from "console";
 
 loadEnv();
+
+if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
+	throw new Error("Provide an ADMIN_PASSWORD in .env!");
+}
 
 // Local Modules
 import {
