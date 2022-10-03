@@ -27,7 +27,7 @@ export const octx	= new OfflineAudioContext({
 
 export const ctx	= new AudioContext();
 const canvas		= <HTMLCanvasElement> document.getElementById("mainCanvas");
-const c				= canvas.getContext("2d");
+const c				= canvas.getContext("2d")!;
 const FPS			= 60;
 
 // The synth in this slot is the one that renders audio
@@ -140,6 +140,8 @@ canvas.addEventListener("mousemove", (e) => {
 				instance.w,	SYNTH_TITLEBAR_HEIGHT)
 			) {
 				setCursorStyle(CURSOR_STYLES.Drag);
+			} else {
+				setCursorStyle(CURSOR_STYLES.Arrow);
 			}
 		}
 	} else {
