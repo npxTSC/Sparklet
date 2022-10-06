@@ -21,6 +21,11 @@ pull requests, since I might want to accept one, but I
 can't because it includes something unrelated.
 
 ## FOR DEVS
+BEFORE YOU START WORKING ON ANYTHING, make sure you have a symlink for
+`/src/js/bootstrap.min.js` to `/node_modules/bootstrap/dist/js/bootstrap.min.js`.
+I might make a script for doing this later, but I'll probably have to make separate
+scripts for each platform.
+
 	Useful scripts:
 
 	>>> npm run tsc
