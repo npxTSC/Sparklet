@@ -37,6 +37,11 @@ body {
 	}
 }
 
+p.formal-text {
+	font-size: 1.5em;
+	text-indent: 2em;
+}
+
 .center {
 	text-align: center;
 }
@@ -191,7 +196,10 @@ ul#topbar {
 	}
 }
 
-
+.vert-border-black {
+	border:			0.5em #000;
+	border-style:	solid none;
+}
 
 /* Mobile-friendly CSS */
 @media only screen and (max-width: $mobile-max-width) {
