@@ -191,7 +191,10 @@ ul#topbar {
 	}
 }
 
-
+.vert-border-black {
+	border:			0.5em #000;
+	border-style:	solid none;
+}
 
 /* Mobile-friendly CSS */
 @media only screen and (max-width: $mobile-max-width) {
