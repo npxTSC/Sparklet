@@ -4,6 +4,7 @@
 		"target": "esnext",
 		"removeComments": true,
 		"noImplicitAny": true,
+		"noImplicitThis": true,
 		"sourceMap": false,
 		"esModuleInterop": true,
 	},

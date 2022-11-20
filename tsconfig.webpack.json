@@ -5,6 +5,7 @@
 		"target": "es2017",
 		"removeComments": true,
 		"noImplicitAny": true,
+		"noImplicitThis": true,
 		"sourceMap": false,
 		"esModuleInterop": true,
 		"lib": ["esnext", "DOM"],
