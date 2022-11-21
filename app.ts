@@ -435,7 +435,13 @@ const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	},
 
 	ban:		(args, room) => {
-		const name = room.players.find((v) => v.uuid === args[0]).username;
+		const userToBan = room.players.find((v) => v.uuid === args[0]);
+		
+		if (!userToBan) return {
+			alert: `Could not find user!`
+		}
+
+		const name = userToBan.username;
 		room.players = room.players.filter((v) => v.uuid !== args[0]);
 		
 		return {

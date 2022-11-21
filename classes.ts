@@ -41,7 +41,7 @@ export interface QuizHostResponse {
 }
 
 export type QuizHostCmdFn = (
-	(args: string[], room?: Room) =>
+	(args: string[], room: Room) =>
 		QuizHostResponse
 );
 
