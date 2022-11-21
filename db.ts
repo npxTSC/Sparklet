@@ -130,7 +130,11 @@ export namespace accs {
 	"Sparklet",			// Prevents admin impersonation
 	"Anonymous",		// Reserved for default name in DB
 ].forEach(async (v) => {
-	await accs.registerIfNotExists(v, process.env["ADMIN_PASSWORD"]);
+	const adm = process.env["ADMIN_PASSWORD"];
+
+	console.assert(adm, "NO ADMIN_PASSWORD IN ENV FILE!");
+
+	await accs.registerIfNotExists(v, adm!);
 	accs.setAdminRank(v, Ranks.Operator);
 	accs.updateBio(v, "This account is reserved for admin use only.");
 });
