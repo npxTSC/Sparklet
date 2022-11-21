@@ -414,15 +414,16 @@ function findRoom(code: string) {
 // For quiz hosts
 function runHostCommand(cmdf: QuizHostCommand) {
 	const {room, auth}	= cmdf;
+	const echo = HOST_CMDS.echo;
 
 	// Find room where owner's token matches
 	const found = activeRooms.find(v => v.authToken === auth);
-	if (!found) return HOST_CMDS.echo(["???"]);
+	if (!found) return echo(["???"]);
 	
 	const args = cmdf.cmd.split(":");
 	const cmd = args.shift();
 
-	if (!HOST_CMDS[cmd]) return HOST_CMDS.echo(["Invalid Command!"]);
+	if (!(cmd && HOST_CMDS[cmd])) return echo(["Invalid Command!"]);
 	
 	return HOST_CMDS[cmd](args, found);
 }
@@ -430,13 +431,19 @@ function runHostCommand(cmdf: QuizHostCommand) {
 const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
 		return {
-			players: room.players
+			players: room!.players
 		}
 	},
 
 	ban:		(args, room) => {
-		const name = room.players.find((v) => v.uuid === args[0]).username;
-		room.players = room.players.filter((v) => v.uuid !== args[0]);
+		const userToBan = room!.players.find((v) => v.uuid === args[0]);
+		
+		if (!userToBan) return {
+			alert: `Could not find user!`
+		}
+
+		const name = userToBan.username;
+		room!.players = room!.players.filter((v) => v.uuid !== args[0]);
 		
 		return {
 			alert: `Banned player "${name}"`

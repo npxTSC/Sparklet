@@ -24,7 +24,7 @@ const timerE	= <HTMLHeadingElement>
 // Main function, as async to allow await
 (async () => {
 	const {WORDS_LIST, ANSWERS_LIST} = await retrieveWords();
-	document.getElementById("lagWarning").remove();
+	document.getElementById("lagWarning")!.remove();
 	
 	let gameRunning						= false;
 	let lastGuessTime:		number		= 0;

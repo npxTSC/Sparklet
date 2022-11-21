@@ -6,26 +6,26 @@ import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
 const socket = io();
 
-const loginForm		= document.getElementById("quizLoginForm");
+const loginForm		= document.getElementById("quizLoginForm")!;
 const RIDElement	=
-	<HTMLInputElement> document.getElementById("RID-input");
+	<HTMLInputElement> document.getElementById("RID-input")!;
 const unameElement	=
-	<HTMLInputElement> document.getElementById("username-input");
+	<HTMLInputElement> document.getElementById("username-input")!;
 
-const joinModalE	= document.getElementById("joinModal");
+const joinModalE	= document.getElementById("joinModal")!;
 const joinModal		= new Modal(joinModalE);
 
-const joinCarouselE	= document.getElementById("joinCarousel");
+const joinCarouselE	= document.getElementById("joinCarousel")!;
 const joinCarousel	= new Carousel(joinCarouselE);
 
-const joinCodeSlide	= document.getElementById("joinCodeSlide");
-const usernameSlide	= document.getElementById("usernameSlide");
-const submitButton	= document.getElementById("quizJoinSubmit");
+const joinCodeSlide	= document.getElementById("joinCodeSlide")!;
+const usernameSlide	= document.getElementById("usernameSlide")!;
+const submitButton	= document.getElementById("quizJoinSubmit")!;
 
 
 
-let phase					= "entering join code";
-let lastEnteredRID: string	= null;
+let phase							= "entering join code";
+let lastEnteredRID: string | null	= null;
 
 
 RIDElement.focus();
@@ -58,7 +58,7 @@ loginForm.addEventListener("submit", (e) => {
 				}, 500);
 				
 				setTimeout(() => {
-					document.getElementById("slowInternetWarning")
+					document.getElementById("slowInternetWarning")!
 						.classList.remove("invisible");
 				}, 15000);
 			}
