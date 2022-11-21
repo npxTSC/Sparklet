@@ -422,7 +422,7 @@ function runHostCommand(cmdf: QuizHostCommand) {
 	const args = cmdf.cmd.split(":");
 	const cmd = args.shift();
 
-	if (!HOST_CMDS[cmd]) return HOST_CMDS.echo(["Invalid Command!"]);
+	if (!(cmd && HOST_CMDS[cmd])) return HOST_CMDS.echo(["Invalid Command!"]);
 	
 	return HOST_CMDS[cmd](args, found);
 }
