@@ -20,9 +20,9 @@ const loginECs: Record<string, string> = {
 
 // If there's an error code in the Qstr, tell the user why that is
 if (parsedQ?.ecode) {
-	document.getElementById("ecText")
+	document.getElementById("ecText")!
 		.innerText = loginECs[parsedQ.ecode] ?? "What have you done???";
-	document.getElementById("ecBox")
+	document.getElementById("ecBox")!
 		.classList.remove("invisible");
 }
 
