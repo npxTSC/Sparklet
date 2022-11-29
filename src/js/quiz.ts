@@ -4,6 +4,8 @@
 import {str, cmon, elem}	from "libdx";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
+import "./global.d";
+
 const socket = io();
 
 const loginForm		= document.getElementById("quizLoginForm")!;
