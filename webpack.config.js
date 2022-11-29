@@ -24,6 +24,9 @@ module.exports = {
 		
 		"sparks/wordle":	cd + "/src/js/sparks/wordle/main.ts",
 		"sass-wordle":		cd + "/src/css/sparks/wordle.scss",
+		
+		"sparks/sudoku":	cd + "/src/js/sparks/sudoku/main.ts",
+		"sass-sudoku":		cd + "/src/css/sparks/sudoku.scss",
 	},
 	
 	module: {

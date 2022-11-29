@@ -35,6 +35,14 @@ namespace statements {
 		`),
 		
 		db.prepare(`
+			INSERT INTO games(title, creator, id) VALUES (
+				'Sudoku Bot',
+				'Dexie',
+				'sudoku-solve'
+			);
+		`),
+		
+		db.prepare(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (
 				'f4499af5-edad-48e0-b485-d7f99f57042c',
