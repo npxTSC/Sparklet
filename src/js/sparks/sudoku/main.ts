@@ -83,18 +83,6 @@ const gframe	= <HTMLDivElement>
 	}
 })();
 
-async function retrieveWords() {
-	// Request data from server
-	return {
-		WORDS_LIST:		await fetch("/public/sparks/wordle/words.txt")
-							.then(data => data.text())
-							.then(str => str.toUpperCase().split(/\s+/)),
-		ANSWERS_LIST:	await fetch("/public/sparks/wordle/answers.txt")
-							.then(data => data.text())
-							.then(str => str.toUpperCase().split(/\s+/)),
-	}
-}
-
 interface RowData {
 	rowE:		HTMLDivElement;
 	cellsE:		HTMLDivElement[];
