@@ -13,6 +13,7 @@ import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
 import {config as loadEnv}			from "dotenv";
+import sanitize						from "sanitize-filename";
 
 import "ejs";
 
@@ -284,24 +285,26 @@ app.get("/news", (req, res) => {
 	res.render("news", {qposts});
 });
 
-app.get("/sparks/:GameID", (req, res) => {
-	let postId = req.params["GameID"];
-	if (!postId) {
+app.get("/sparks/:SparkID", (req, res) => {
+	let sparkId = req.params["SparkID"];
+	if (!sparkId) {
 		return throw404(res);
 	}
 
-	let post = statements.getGame.get(postId);
+	sparkId = sanitize(sparkId);
+
+	let post = statements.getGame.get(sparkId);
 
 	if (!post) return throw404(res);
 	
 	post.date = new Date(post.date);
 
 	let passed = {
-		postId: postId,
+		postId: sparkId,
 		post: post,
 	}
 
-	res.render("sparks/"+postId, passed);
+	res.render("sparks/"+sparkId, passed);
 });
 
 app.get("/sparks", (req, res) => {
