@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "dex",
-  "license": "GPLV3",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "better-sqlite3": "^8.1.0",
