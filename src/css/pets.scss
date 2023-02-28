@@ -4,6 +4,10 @@ body {
 	background: black;
 }
 
+body img {
+	image-rendering: pixelated;
+}
+
 div#bottombar {
 	//overflow: hidden;
 	position: fixed;
@@ -18,15 +22,13 @@ div#bottombar {
 
 div#bottombar > img {
 	margin-bottom: 0;
-	bottom: 50%;
+	bottom: 80%;
 	vertical-align: bottom;
 	position: relative;
 	animation-name: slide;
 	animation-duration: 20s;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
-
-	image-rendering: pixelated;
 
 	width: 10%;
 }
