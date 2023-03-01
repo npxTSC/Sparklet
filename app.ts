@@ -162,6 +162,7 @@ app.post("/login", async (req, res) => {
 
 	if (str.containsSpecials(user))	return fail("l-specialChars");
 	if (user.length > 30)			return fail("l-tooLong");
+	if (pass.length > 100)			return fail("l-passTooLong");
 
 	let row = accs.getFromUsername(user);
 

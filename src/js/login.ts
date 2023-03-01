@@ -14,6 +14,7 @@ const loginECs: Record<string, string> = {
 	"l-wrongPassword":	"Your password was incorrect. Maybe you forgot it?",
 	"l-specialChars":	"Usernames can not contain special characters.",
 	"l-tooLong":		"That name is way too long! (>30 chars)",
+	"l-passTooLong":	"That password is way too long! (>100 chars)",
 	"r-nameExists":		"Couldn't register, because that name is taken!",
 	"l-noInput":		"You can't log in without credentials, genius!",
 }
