@@ -7,23 +7,20 @@
 
 <body>
 	<%- include("parts/topbar") %>
-	<div class="bb1" style="margin-bottom: 10%;">
-		<h1 class="title center text-white">Whoops!</h1>
-		<h2 class="bigsubtitle center">What Happened...?</h2>
+	<div class="container pb-5">
+		<h1 class="display-6 text-center text-white">Error 404!</h1>
+		<h2 class="display-1 text-center text-white">Oops...?</h2>
 	</div>
 
-	<div class="bb1" style="margin-bottom: 10%; padding-bottom: 10%;">
-		<h2 class="header">&emsp;- I don't have to explain it, do I?</h2>
-		<a class="nodec" href="javascript:history.back();"><article>
-			<p>
-				You screwed up. Something happened. Error 404. Big sad. You might have been
-				trying to act smart and find hidden articles, or maybe we made a mistake and
-				there's a problem with our site. Either way, you can't do much about it.<br>
-
+	<a class="nodec" href="javascript:history.back();">
+		<div class="container-fluid mt-6 pt-6 pb-8 bg-primary vert-border-black border-bottom-0">
+			<p class="formal-text text-center">
+				The resource could not be found.<br>
+				The site's under development, so this is to be expected...<br><br>
 				Click anywhere on this pile o' text to go back to where you came from.
 			</p>
-		</article></a>
-	</div>
+		</div>
+	</a>
 </body>
 
 </html>
