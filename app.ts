@@ -86,6 +86,10 @@ app.get("/rooms/quiz", (req, res) => {
 	res.render("quiz");
 });
 
+app.get("/rooms/stratus", (req, res) => {
+	res.render("stratus");
+});
+
 /*app.get("/rooms/breakout", (req, res) => {
 	res.render("breakout");
 });*/
