@@ -1,3 +1,5 @@
+"use strict";
+
 import {qstr}		from "libdx";
 
 // Get query string, then clear it

@@ -10,6 +10,7 @@ module.exports = {
 		"login":			cd + "/src/js/login.ts",
 		"quiz":				cd + "/src/js/quiz.ts",
 		"quizplay":			cd + "/src/js/quizplay.ts",
+		"stratus":			cd + "/src/js/stratus.ts",
 		"pets":				cd + "/src/js/pets.ts",
 		"capsules":			cd + "/src/js/capsules.ts",
 		"host-room":		cd + "/src/js/host-room.ts",

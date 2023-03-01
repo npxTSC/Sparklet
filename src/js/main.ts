@@ -1,4 +1,5 @@
 // JS that runs on almost ALL pages on the site.
+"use strict";
 
 import {cmon}		from "libdx";
 
