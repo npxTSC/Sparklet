@@ -155,6 +155,11 @@ app.post("/login", async (req, res) => {
 		loginAction:	action,
 	} = req.body;
 	
+	// Empty usernames, specially crafted requests with missing fields, etc.
+	if ([user, pass, action].some(v => (typeof v === "undefined" || v.length === 0))) {
+		return fail("l-noInput");
+	}
+
 	if (str.containsSpecials(user))	return fail("l-specialChars");
 	if (user.length > 30)			return fail("l-tooLong");
 
@@ -164,9 +169,6 @@ app.post("/login", async (req, res) => {
 		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
-
-			if (!pass || (pass.length === 0))
-				return fail("r-noPassword");
 
 			const hashed = await accs.register(user, pass);
 
