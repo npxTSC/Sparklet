@@ -60,6 +60,11 @@ app.locals.Ranks = Ranks;
 app.set("view engine", "ejs");
 
 
+app.use((req, res, next) => {
+	console.log(`${req.method} @ ${req.originalUrl}`);
+	next();
+});
+
 // Routes
 app.get("/", (req, res) => {
 	res.render("home");
