@@ -35,6 +35,7 @@ import {
 import {db, accs}					from "./db";
 import statements					from "./statements";
 import accountParser				from "./middleware/accounts";
+import * as routes					from "./routes/all";
 
 // CONSTANTS
 const PORT			= 3000;
@@ -87,17 +88,7 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.get("/rooms/quiz", (req, res) => {
-	res.render("quiz");
-});
-
-app.get("/rooms/stratus", (req, res) => {
-	res.render("stratus");
-});
-
-/*app.get("/rooms/breakout", (req, res) => {
-	res.render("breakout");
-});*/
+app.use("/rooms", routes.rooms);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;
@@ -259,15 +250,6 @@ app.get("/conductors/:profile", async (req, res) => {
 	return res.render("profile", {profileInfo: row});
 });
 
-app.get("/rooms/quiz/:room", (req, res) => {
-	const room = findRoom(req.params.room);
-
-	// Guard clause for invalid inputs
-	if (!room) return throw404(res);
-	
-	res.render("quizplay", {room: room});
-});
-
 app.get("/news/:PostID", (req, res) => {
 	let postId = parseInt(req.params["PostID"], 10);
 	if (typeof postId !== "number" || isNaN(postId))
@@ -407,12 +389,16 @@ io.on("connection", (socket) => {
 	});
 });
 
+
+
+
+
 const {} = server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
 // Functions
-function throw404(res: Express.Response) {
+export function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
 }
@@ -421,7 +407,7 @@ function generateToken(len: number) {
 	return crypto.randomBytes(len).toString("hex");
 }
 
-function findRoom(code: string) {
+export function findRoom(code: string) {
 	return activeRooms.find(v => v.joinHash === code);
 }
 
