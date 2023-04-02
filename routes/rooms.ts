@@ -13,7 +13,7 @@ router.get("/stratus", (req, res) => {
 	res.render("stratus");
 });
 
-/*router.get("/rooms/breakout", (req, res) => {
+/*router.get("/breakout", (req, res) => {
 	res.render("breakout");
 });*/
 

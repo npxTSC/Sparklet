@@ -1,9 +1,13 @@
 import { Socket }			from "socket.io";
 import { v4 as newUUID }	from "uuid";
 
-import { findRoom, generateToken }					from "./app";
-import { AccountPublic, QuizHostCmdFn, QuizPlayer }	from "./classes";
-import { QP_NAME_LIMIT }							from "./consts";
+import { QP_NAME_LIMIT }	from "./consts";
+import {
+	activeRooms, findRoom, generateToken
+} from "./app";
+import {
+	AccountPublic, QuizHostCmdFn, QuizHostCommand, QuizPlayer
+} from "./classes";
 
 export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
@@ -34,8 +38,30 @@ export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	}
 }
 
-export const QUIZ_SOCKET_HANDLERS = {
-	joinRoom: function(socket: Socket) {
+type SocketHandlerFactory = (socket: Socket) => ((...args: any[]) => any);
+
+export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
+	quizHostAction: function(socket) {
+		return (command: QuizHostCommand) => {
+			socket.emit("quizHostResponse", runHostCommand(command));
+		}
+	},
+
+	queryRoom: function(socket) {
+		return (id: string) => {
+			const room = findRoom(id);
+			
+			if (!room) {
+				socket.emit("quizNotFound");
+				console.log("Invalid quiz " + id);
+			} else {
+				socket.emit("quizFound");
+				console.log("Successful quiz " + id);
+			}
+		}
+	},
+
+	joinRoom: function(socket) {
 		return (data: {
 			username:	string;
 			account:	AccountPublic
@@ -70,4 +96,21 @@ export const QUIZ_SOCKET_HANDLERS = {
 			});
 		}
 	}
+}
+
+// For quiz hosts
+function runHostCommand(cmdf: QuizHostCommand) {
+	const {room, auth}	= cmdf;
+	const echo = HOST_CMDS.echo;
+
+	// Find room where owner's token matches
+	const found = activeRooms.find(v => v.authToken === auth);
+	if (!found) return echo(["???"]);
+	
+	const args = cmdf.cmd.split(":");
+	const cmd = args.shift();
+
+	if (!(cmd && HOST_CMDS[cmd])) return echo(["Invalid Command!"]);
+	
+	return HOST_CMDS[cmd](args, found);
 }

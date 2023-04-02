@@ -28,20 +28,20 @@ if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer, QuizHostCommand,
+	Room, Ranks, QuizPlayer,
 } from "./classes";
-import {db, accs}							from "./db";
-import statements							from "./statements";
-import accountParser						from "./middleware/accounts";
-import { HOST_CMDS, QUIZ_SOCKET_HANDLERS }	from "./quiz-utils";
-import * as routes							from "./routes/all";
-import { GITHUB_PAGE, PORT }				from "./consts";
+import {db, accs}					from "./db";
+import statements					from "./statements";
+import accountParser				from "./middleware/accounts";
+import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils";
+import * as routes					from "./routes/all";
+import { PORT }						from "./consts";
 
 // App
-export const app			= Express();
-const server				= http.createServer(app);
-const io					= new ioServer(server);
-const activeRooms: Room[]	= [];
+export const app					= Express();
+export const activeRooms: Room[]	= [];
+const server						= http.createServer(app);
+const io							= new ioServer(server);
 
 // Middleware
 app.use(cparse());
@@ -317,38 +317,23 @@ app.get("/capsules", async (req, res) => {
 });
 
 // 404 other routes
-app.get("*", (req, res) => {
-	return throw404(res);
-});
+app.get("*", (req, res) => throw404(res));
 
 
 // Socket.IO handlers
 io.on("connection", (socket) => {
 	//socket.on("disconnect", () => {});
-	socket.on("quizHostAction", (command: QuizHostCommand) => {
-		socket.emit("quizHostResponse", runHostCommand(command));
-	});
 
-	socket.on("queryRoom", (id) => {
-		const room = findRoom(id);
-		
-		if (!room) {
-			socket.emit("quizNotFound");
-			console.log("Invalid quiz " + id);
-		} else {
-			socket.emit("quizFound");
-			console.log("Successful quiz " + id);
-		}
-	});
-
-	socket.on("joinRoom", QUIZ_SOCKET_HANDLERS.joinRoom(socket));
+	socket.on("quizHostAction",	QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
+	socket.on("queryRoom",		QUIZ_SOCKET_HANDLERS.queryRoom(socket));
+	socket.on("joinRoom",		QUIZ_SOCKET_HANDLERS.joinRoom(socket));
 });
 
 
 
 
 
-const {} = server.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
@@ -364,22 +349,4 @@ export function generateToken(len: number) {
 
 export function findRoom(code: string) {
 	return activeRooms.find(v => v.joinHash === code);
-}
-
-
-// For quiz hosts
-function runHostCommand(cmdf: QuizHostCommand) {
-	const {room, auth}	= cmdf;
-	const echo = HOST_CMDS.echo;
-
-	// Find room where owner's token matches
-	const found = activeRooms.find(v => v.authToken === auth);
-	if (!found) return echo(["???"]);
-	
-	const args = cmdf.cmd.split(":");
-	const cmd = args.shift();
-
-	if (!(cmd && HOST_CMDS[cmd])) return echo(["Invalid Command!"]);
-	
-	return HOST_CMDS[cmd](args, found);
 }
