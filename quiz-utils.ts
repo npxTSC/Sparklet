@@ -38,7 +38,7 @@ export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	}
 }
 
-type SocketHandlerFactory = (socket: Socket) => ((...args: any[]) => any);
+type SocketHandlerFactory = (socket: Socket) => ((...args: any[]) => void);
 
 export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
 	quizHostAction: function(socket) {
