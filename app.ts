@@ -35,11 +35,12 @@ import {
 import {db, accs}					from "./db";
 import statements					from "./statements";
 import accountParser				from "./middleware/accounts";
+import { HOST_CMDS, QUIZ_SOCKET_HANDLERS }				from "./quiz-utils";
 import * as routes					from "./routes/all";
 
 // CONSTANTS
 const PORT			= 3000;
-const QP_NAME_LIMIT	= 20;
+export const QP_NAME_LIMIT	= 20;
 const GITHUB_PAGE	= "https://github.com/Lamby777/SparkletX";
 
 // App
@@ -354,39 +355,7 @@ io.on("connection", (socket) => {
 		}
 	});
 
-	socket.on("joinRoom", (data: {
-		username:	string;
-		account:	AccountPublic
-		roomcode:	string;
-	}) => {
-		// If quiz invalid
-		const room = findRoom(data.roomcode);
-		const username = data.username.trim().substring(0, QP_NAME_LIMIT);
-		
-		if (!room || username.length === 0) {
-			console.log("Attempt to join finished quiz :P");
-			return socket.emit("quizNotFound on step 2");
-		}
-		
-		// Add user to quiz
-		console.log(`User ${username} joined code ${data.roomcode}`);
-
-		const ply: QuizPlayer = {
-			username,
-			uuid:			newUUID(),
-			account:		data.account,
-			correctQs:		0,
-
-			// Less secure token, due to less motivation to hack it
-			tempToken:		generateToken(96)
-		}
-
-		room.players.push(ply);
-		
-		socket.emit("joinRoomSuccess", {
-			quizToken: ply.tempToken,
-		});
-	});
+	socket.on("joinRoom", QUIZ_SOCKET_HANDLERS.joinRoom(socket));
 });
 
 
@@ -403,7 +372,7 @@ export function throw404(res: Express.Response) {
 	res.render("404");
 }
 
-function generateToken(len: number) {
+export function generateToken(len: number) {
 	return crypto.randomBytes(len).toString("hex");
 }
 
@@ -427,33 +396,4 @@ function runHostCommand(cmdf: QuizHostCommand) {
 	if (!(cmd && HOST_CMDS[cmd])) return echo(["Invalid Command!"]);
 	
 	return HOST_CMDS[cmd](args, found);
-}
-
-const HOST_CMDS: Record<string, QuizHostCmdFn> = {
-	getPlayers:	(args, room) => {
-		return {
-			players: room!.players
-		}
-	},
-
-	ban:		(args, room) => {
-		const userToBan = room!.players.find((v) => v.uuid === args[0]);
-		
-		if (!userToBan) return {
-			alert: `Could not find user!`
-		}
-
-		const name = userToBan.username;
-		room!.players = room!.players.filter((v) => v.uuid !== args[0]);
-		
-		return {
-			alert: `Banned player "${name}"`
-		}
-	},
-	
-	echo:		(args) => {
-		return {
-			alert: args[0]
-		}
-	}
 }
