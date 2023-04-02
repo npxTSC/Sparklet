@@ -8,7 +8,6 @@ import bcrypt						from "bcrypt";
 import path							from "path";
 import http							from "http";
 import {Server as ioServer}			from "socket.io";
-import {v4 as newUUID}				from "uuid";
 import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
@@ -29,8 +28,7 @@ if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer, AccountPublic,
-	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
+	Room, Ranks, QuizPlayer, QuizHostCommand,
 } from "./classes";
 import {db, accs}							from "./db";
 import statements							from "./statements";
@@ -68,15 +66,6 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
-// Well-known URIs
-app.get("/.well-known/change-password", (req, res) => {
-	res.redirect("/login");
-});
-
-app.get("/.well-known/security.txt", (req, res) => {
-	res.redirect(`${GITHUB_PAGE}/blob/master/SECURITY.md`);
-});
-
 app.get("/pets", (req, res) => {
 	res.render("pets-info");
 });
@@ -85,7 +74,8 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.use("/rooms", routes.rooms);
+app.use("/rooms",		routes.rooms);
+app.use("/.well-known",	routes.wk);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;
