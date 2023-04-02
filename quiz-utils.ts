@@ -91,7 +91,7 @@ export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
 
 			room.players.push(ply);
 			
-			socket.emit("joinRoomSuccess", {
+			return socket.emit("joinRoomSuccess", {
 				quizToken: ply.tempToken,
 			});
 		}

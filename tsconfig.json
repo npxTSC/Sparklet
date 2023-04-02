@@ -9,7 +9,9 @@
 		"sourceMap": false,
 		"esModuleInterop": true,
 		"noUnusedLocals": false,
-		"allowUnreachableCode": false
+		"allowUnreachableCode": false,
+		"strict": true,
+		"noImplicitReturns": true
 	},
 	"exclude": [
 		"node_modules",
