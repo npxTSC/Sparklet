@@ -8,7 +8,8 @@
 		"strictNullChecks": true,
 		"sourceMap": false,
 		"esModuleInterop": true,
-		"noUnusedLocals": false
+		"noUnusedLocals": false,
+		"allowUnreachableCode": false
 	},
 	"exclude": [
 		"node_modules",

@@ -199,7 +199,6 @@ app.post("/login", async (req, res) => {
 			statements.editLoginToken.run(null, user);
 			
 			return res.redirect("/login");
-			break;
 
 		default:
 			// Malformed requests should be rejected
