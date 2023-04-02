@@ -32,16 +32,12 @@ import {
 	Room, Ranks, QuizPlayer, AccountPublic,
 	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
 } from "./classes";
-import {db, accs}					from "./db";
-import statements					from "./statements";
-import accountParser				from "./middleware/accounts";
-import { HOST_CMDS, QUIZ_SOCKET_HANDLERS }				from "./quiz-utils";
-import * as routes					from "./routes/all";
-
-// CONSTANTS
-const PORT			= 3000;
-export const QP_NAME_LIMIT	= 20;
-const GITHUB_PAGE	= "https://github.com/Lamby777/SparkletX";
+import {db, accs}							from "./db";
+import statements							from "./statements";
+import accountParser						from "./middleware/accounts";
+import { HOST_CMDS, QUIZ_SOCKET_HANDLERS }	from "./quiz-utils";
+import * as routes							from "./routes/all";
+import { GITHUB_PAGE, PORT }				from "./consts";
 
 // App
 export const app			= Express();

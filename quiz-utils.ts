@@ -1,8 +1,9 @@
 import { Socket }			from "socket.io";
 import { v4 as newUUID }	from "uuid";
 
-import { QP_NAME_LIMIT, findRoom, generateToken }					from "./app";
+import { findRoom, generateToken }					from "./app";
 import { AccountPublic, QuizHostCmdFn, QuizPlayer }	from "./classes";
+import { QP_NAME_LIMIT }							from "./consts";
 
 export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
