@@ -8,7 +8,6 @@ import bcrypt						from "bcrypt";
 import path							from "path";
 import http							from "http";
 import {Server as ioServer}			from "socket.io";
-import {v4 as newUUID}				from "uuid";
 import {str, rand}					from "libdx";
 import gzipCompression				from "compression";
 import fs							from "fs";
@@ -29,23 +28,20 @@ if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer, AccountPublic,
-	QuizHostCommand, QuizHostResponse, QuizHostCmdFn
+	Room, Ranks, QuizPlayer,
 } from "./classes";
 import {db, accs}					from "./db";
 import statements					from "./statements";
 import accountParser				from "./middleware/accounts";
-
-// CONSTANTS
-const PORT			= 3000;
-const QP_NAME_LIMIT	= 20;
-const GITHUB_PAGE	= "https://github.com/Lamby777/SparkletX";
+import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils";
+import * as routes					from "./routes/all";
+import { PORT }						from "./consts";
 
 // App
-export const app			= Express();
-const server				= http.createServer(app);
-const io					= new ioServer(server);
-const activeRooms: Room[]	= [];
+export const app					= Express();
+export const activeRooms: Room[]	= [];
+const server						= http.createServer(app);
+const io							= new ioServer(server);
 
 // Middleware
 app.use(cparse());
@@ -60,18 +56,14 @@ app.locals.Ranks = Ranks;
 app.set("view engine", "ejs");
 
 
+app.use((req, res, next) => {
+	console.log(`${req.method} @ ${req.originalUrl}`);
+	next();
+});
+
 // Routes
 app.get("/", (req, res) => {
 	res.render("home");
-});
-
-// Well-known URIs
-app.get("/.well-known/change-password", (req, res) => {
-	res.redirect("/login");
-});
-
-app.get("/.well-known/security.txt", (req, res) => {
-	res.redirect(`${GITHUB_PAGE}/blob/master/SECURITY.md`);
 });
 
 app.get("/pets", (req, res) => {
@@ -82,17 +74,8 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.get("/rooms/quiz", (req, res) => {
-	res.render("quiz");
-});
-
-app.get("/rooms/stratus", (req, res) => {
-	res.render("stratus");
-});
-
-/*app.get("/rooms/breakout", (req, res) => {
-	res.render("breakout");
-});*/
+app.use("/rooms",		routes.rooms);
+app.use("/.well-known",	routes.wk);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;
@@ -216,7 +199,6 @@ app.post("/login", async (req, res) => {
 			statements.editLoginToken.run(null, user);
 			
 			return res.redirect("/login");
-			break;
 
 		default:
 			// Malformed requests should be rejected
@@ -252,15 +234,6 @@ app.get("/conductors/:profile", async (req, res) => {
 	if (!row) return throw404(res);
 	
 	return res.render("profile", {profileInfo: row});
-});
-
-app.get("/rooms/quiz/:room", (req, res) => {
-	const room = findRoom(req.params.room);
-
-	// Guard clause for invalid inputs
-	if (!room) return throw404(res);
-	
-	res.render("quizplay", {room: room});
 });
 
 app.get("/news/:PostID", (req, res) => {
@@ -343,126 +316,36 @@ app.get("/capsules", async (req, res) => {
 });
 
 // 404 other routes
-app.get("*", (req, res) => {
-	return throw404(res);
-});
+app.get("*", (req, res) => throw404(res));
 
 
 // Socket.IO handlers
 io.on("connection", (socket) => {
 	//socket.on("disconnect", () => {});
-	socket.on("quizHostAction", (command: QuizHostCommand) => {
-		socket.emit("quizHostResponse", runHostCommand(command));
-	});
 
-	socket.on("queryRoom", (id) => {
-		const room = findRoom(id);
-		
-		if (!room) {
-			socket.emit("quizNotFound");
-			console.log("Invalid quiz " + id);
-		} else {
-			socket.emit("quizFound");
-			console.log("Successful quiz " + id);
-		}
-	});
-
-	socket.on("joinRoom", (data: {
-		username:	string;
-		account:	AccountPublic
-		roomcode:	string;
-	}) => {
-		// If quiz invalid
-		const room = findRoom(data.roomcode);
-		const username = data.username.trim().substring(0, QP_NAME_LIMIT);
-		
-		if (!room || username.length === 0) {
-			console.log("Attempt to join finished quiz :P");
-			return socket.emit("quizNotFound on step 2");
-		}
-		
-		// Add user to quiz
-		console.log(`User ${username} joined code ${data.roomcode}`);
-
-		const ply: QuizPlayer = {
-			username,
-			uuid:			newUUID(),
-			account:		data.account,
-			correctQs:		0,
-
-			// Less secure token, due to less motivation to hack it
-			tempToken:		generateToken(96)
-		}
-
-		room.players.push(ply);
-		
-		socket.emit("joinRoomSuccess", {
-			quizToken: ply.tempToken,
-		});
-	});
+	socket.on("quizHostAction",	QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
+	socket.on("queryRoom",		QUIZ_SOCKET_HANDLERS.queryRoom(socket));
+	socket.on("joinRoom",		QUIZ_SOCKET_HANDLERS.joinRoom(socket));
 });
 
-const {} = server.listen(PORT, () => {
+
+
+
+
+server.listen(PORT, () => {
 	console.log("Listening on port " + PORT);
 });
 
 // Functions
-function throw404(res: Express.Response) {
+export function throw404(res: Express.Response) {
 	res.status(404);
 	res.render("404");
 }
 
-function generateToken(len: number) {
+export function generateToken(len: number) {
 	return crypto.randomBytes(len).toString("hex");
 }
 
-function findRoom(code: string) {
+export function findRoom(code: string) {
 	return activeRooms.find(v => v.joinHash === code);
-}
-
-
-// For quiz hosts
-function runHostCommand(cmdf: QuizHostCommand) {
-	const {room, auth}	= cmdf;
-	const echo = HOST_CMDS.echo;
-
-	// Find room where owner's token matches
-	const found = activeRooms.find(v => v.authToken === auth);
-	if (!found) return echo(["???"]);
-	
-	const args = cmdf.cmd.split(":");
-	const cmd = args.shift();
-
-	if (!(cmd && HOST_CMDS[cmd])) return echo(["Invalid Command!"]);
-	
-	return HOST_CMDS[cmd](args, found);
-}
-
-const HOST_CMDS: Record<string, QuizHostCmdFn> = {
-	getPlayers:	(args, room) => {
-		return {
-			players: room!.players
-		}
-	},
-
-	ban:		(args, room) => {
-		const userToBan = room!.players.find((v) => v.uuid === args[0]);
-		
-		if (!userToBan) return {
-			alert: `Could not find user!`
-		}
-
-		const name = userToBan.username;
-		room!.players = room!.players.filter((v) => v.uuid !== args[0]);
-		
-		return {
-			alert: `Banned player "${name}"`
-		}
-	},
-	
-	echo:		(args) => {
-		return {
-			alert: args[0]
-		}
-	}
 }
