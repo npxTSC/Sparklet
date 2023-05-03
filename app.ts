@@ -79,8 +79,9 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.use("/rooms",		routes.rooms);
-app.use("/.well-known",	routes.wk);
+app.use("/rooms",			routes.rooms);
+app.use("/.well-known",		routes.wk);
+app.use("/api/scrapegoat",	routes.scrapegoat);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;
