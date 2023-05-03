@@ -30,7 +30,7 @@ router.get("/namemc", async (req, res) => {
 
 async function scrapeNameHistory(uuid: string) {
 	const browser = await puppeteer.launch({
-		headless: false,
+		headless: true,
 		executablePath: CHROME_EXEC_PATH,
 		ignoreDefaultArgs: ['--enable-automation'],
 	});
