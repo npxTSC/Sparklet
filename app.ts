@@ -81,7 +81,6 @@ app.get("/about", (req, res) => {
 
 app.use("/rooms",			routes.rooms);
 app.use("/.well-known",		routes.wk);
-app.use("/api/scrapegoat",	routes.scrapegoat);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;
