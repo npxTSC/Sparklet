@@ -57,13 +57,18 @@ app.set("view engine", "ejs");
 
 
 app.use((req, res, next) => {
-	console.log(`${req.method} @ ${req.originalUrl}`);
+	const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+	console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
 	next();
 });
 
 // Routes
 app.get("/", (req, res) => {
 	res.render("home");
+});
+
+app.get("/info(/*)?", (req, res) => {
+	res.render("sussy");
 });
 
 app.get("/pets", (req, res) => {
@@ -74,8 +79,9 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.use("/rooms",		routes.rooms);
-app.use("/.well-known",	routes.wk);
+app.use("/rooms",			routes.rooms);
+app.use("/.well-known",		routes.wk);
+app.use("/api/scrapegoat",	routes.scrapegoat);
 
 app.get("/api/capsules", (req, res) => {
 	let rows;

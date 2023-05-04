@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "esnext",
+		"skipLibCheck": true,
 		"removeComments": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
