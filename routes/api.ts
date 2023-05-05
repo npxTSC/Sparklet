@@ -19,4 +19,13 @@ router.get("/capsules", (req, res) => {
 	return res.status(200).json(rows);
 });
 
+
+router.get("/tea-capes", (req, res) => {
+	// TODO admin portal for changing capes
+	res.json({
+		"4772c57f-ca43-440c-be84-d5a97b676792":
+			"https://user-images.githubusercontent.com/10100202/203159684-08e62b4d-3b63-4f39-a4fc-21fc4960f346.png"
+	})
+});
+
 export default router;
