@@ -21,9 +21,8 @@ pull requests, since I might want to accept one, but I
 can't because it includes something unrelated.
 
 ## FOR DEVS
-To get started, run `npm run prep` to install dependencies
-and create the required links. That's it! Now, you can
-start typing away!
+To get started, run `npm i` to install dependencies
+That's it! Now, you can start typing away!
 
 	Useful scripts:
 
