@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "npx nodemon",
+	"prep": "npm i && node _setup.js",
     "build": "npx tsc && npx webpack",
     "pw": "npx webpack --watch",
     "tsc": "npx tsc -w"

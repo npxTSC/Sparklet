@@ -21,10 +21,9 @@ pull requests, since I might want to accept one, but I
 can't because it includes something unrelated.
 
 ## FOR DEVS
-BEFORE YOU START WORKING ON ANYTHING, make sure you have a symlink for
-`/src/js/bootstrap.min.js` to `/node_modules/bootstrap/dist/js/bootstrap.min.js`.
-I might make a script for doing this later, but I'll probably have to make separate
-scripts for each platform.
+To get started, run `npm run prep` to install dependencies
+and create the required links. That's it! Now, you can
+start typing away!
 
 	Useful scripts:
 
@@ -33,3 +32,5 @@ scripts for each platform.
  
 	>>> npm run pw
 	Runs webpack in watch mode (for frontend)
+
+VS Code tasks are set up, if you'd like to use those instead.
