@@ -1,9 +1,16 @@
-const path = require("path");
-const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const cd = path.resolve(__dirname);
+"use strict";
+import path					from "path";
+import CleanTerminalPlugin	from "clean-terminal-webpack-plugin";
+import CopyPlugin			from "copy-webpack-plugin";
+import { fileURLToPath }	from 'url';
 
-module.exports = {
+const cd = path.resolve(
+	path.dirname(
+		fileURLToPath(import.meta.url)
+	)
+);
+
+export default {
 	mode: "development",
 	entry: {
 		"main":				cd + "/src/js/main.ts",
@@ -15,7 +22,6 @@ module.exports = {
 		"capsules":			cd + "/src/js/capsules.ts",
 		"host-room":		cd + "/src/js/host-room.ts",
 		
-		"bootstrap.min":	cd + "/src/js/bootstrap.min.js",
 		"sass-main":		cd + "/src/css/main.scss",
 		"sass-pets":		cd + "/src/css/pets.scss",
 		"sass-quizplay":	cd + "/src/css/quizplay.scss",
