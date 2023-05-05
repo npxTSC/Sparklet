@@ -1,16 +1,11 @@
 "use strict";
-import path					from "path";
-import CleanTerminalPlugin	from "clean-terminal-webpack-plugin";
-import CopyPlugin			from "copy-webpack-plugin";
-import { fileURLToPath }	from 'url';
+const path					= require("path");
+const CleanTerminalPlugin	= require("clean-terminal-webpack-plugin");
+const CopyPlugin			= require("copy-webpack-plugin");
 
-const cd = path.resolve(
-	path.dirname(
-		fileURLToPath(import.meta.url)
-	)
-);
+const cd = __dirname;
 
-export default {
+module.exports = {
 	mode: "development",
 	entry: {
 		"main":				cd + "/src/js/main.ts",
