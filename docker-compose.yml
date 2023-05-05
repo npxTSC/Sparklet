@@ -6,3 +6,16 @@ services:
     ports:
       - "3000:3000"
     restart: always
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+    env_file:
+    - .env
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3001:3001"
