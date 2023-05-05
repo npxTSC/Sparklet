@@ -79,22 +79,9 @@ app.get("/about", (req, res) => {
 	res.render("about");
 });
 
-app.use("/rooms",			routes.rooms);
-app.use("/.well-known",		routes.wk);
-
-app.get("/api/capsules", (req, res) => {
-	let rows;
-	
-	if (req.query.q) {
-		const spaced = (<string>req.query.q).replace(/\+/g, " ");
-		const searchQuery = decodeURIComponent(spaced);
-		rows = statements.searchCapsules.all(searchQuery);
-	} else {
-		rows = statements.capsuleQPosts.all();
-	}
-	
-	return res.status(200).json(rows);
-});
+app.use("/rooms",		routes.rooms);
+app.use("/.well-known",	routes.wk);
+app.use("/api",			routes.api);
 
 app.post("/create-room/:roomType", (req, res) => {
 	const {roomType}	= req.params;
