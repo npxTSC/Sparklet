@@ -10,10 +10,10 @@ util.checkEnvReady([
 ])
 
 const con = mysql.createConnection({
-	host: "localhost",
-	port: 3001,
-	user: "yourusername",
-	password: "yourpassword"
+	host:		"localhost",
+	port:		3001,
+	user:		"root",
+	password:	process.env["MYSQL_ROOT_PASSWORD"],
 });
 
 con.connect((err) => {
