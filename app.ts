@@ -67,6 +67,11 @@ app.get("/", (req, res) => {
 	res.render("home");
 });
 
+// robots.txt -> /public/robots.txt
+app.get("/robots.txt", (req, res) => {
+	res.sendFile(path.join(__dirname, "dist/public/robots.txt"));
+});
+
 app.get("/info(/*)?", (req, res) => {
 	res.render("sussy");
 });
