@@ -1,38 +1,28 @@
-import bsqlite3 			from "better-sqlite3";
-import {v4 as newUUID}		from "uuid";
-import bcrypt	 			from "bcrypt";
-import fs					from "fs";
-import {Ranks}				from "./classes";
+import mysql 			from "mysql2";
+import {v4 as newUUID}	from "uuid";
+import bcrypt	 		from "bcrypt";
+import {Ranks}			from "./classes";
 
-// First-time setup
-fs.mkdirSync("db", {recursive: true});
+const con = mysql.createConnection({
+	host: "localhost",
+	user: "yourusername",
+	password: "yourpassword"
+});
 
-// Delete old table in debug, to get rid of old data.
-// DISABLE IN PRODUCTION!
-
-const PURGE_DATABASE = true;
-
-if (PURGE_DATABASE) {
-	try {
-		fs.unlinkSync("./db/db.sqlite3");
-	} catch (e) {
-		console.error(e);
-	}
-}
+con.connect((err) => {
+	if (err) throw err;
+	console.log("Connected!");
+});
 
 
 
-
-export const db = bsqlite3("./db/db.sqlite3");
 
 // WAL mode, improves performance
 db.pragma("journal_mode = WAL");
 
 
 
-
-if (PURGE_DATABASE) {
-	// Make tables
+{
 	db.prepare(`
 		CREATE TABLE IF NOT EXISTS users(
 			name			TEXT		NOT NULL,
@@ -47,7 +37,7 @@ if (PURGE_DATABASE) {
 			bio				TEXT
 		);
 	`).run();
-	
+
 	db.prepare(`
 		CREATE TABLE IF NOT EXISTS news(
 			title		TEXT		NOT NULL,
@@ -57,7 +47,7 @@ if (PURGE_DATABASE) {
 			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
 	`).run();
-	
+
 	db.prepare(`
 		CREATE TABLE IF NOT EXISTS games(
 			id			TEXT		PRIMARY KEY,
@@ -68,7 +58,7 @@ if (PURGE_DATABASE) {
 			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
 	`).run();
-	
+
 	db.prepare(`
 		CREATE TABLE IF NOT EXISTS capsules(
 			uuid		TEXT		PRIMARY KEY,
