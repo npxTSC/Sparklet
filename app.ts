@@ -1,18 +1,18 @@
 "use strict";
 
 // Modules
-import Express						from "express";
-import crypto						from "crypto";
-import cparse						from "cookie-parser";
-import bcrypt						from "bcrypt";
-import path							from "path";
-import http							from "http";
-import {Server as ioServer}			from "socket.io";
-import {str, rand}					from "libdx";
-import gzipCompression				from "compression";
-import fs							from "fs";
-import {config as loadEnv}			from "dotenv";
-import sanitize						from "sanitize-filename";
+import Express				from "express";
+import crypto				from "crypto";
+import cparse				from "cookie-parser";
+import bcrypt				from "bcrypt";
+import path					from "path";
+import http					from "http";
+import {Server as ioServer}	from "socket.io";
+import {str, rand}			from "libdx";
+import gzipCompression		from "compression";
+import fs					from "fs";
+import {config as loadEnv}	from "dotenv";
+import sanitize				from "sanitize-filename";
 
 import "ejs";
 
@@ -20,10 +20,11 @@ import "ejs";
 
 loadEnv();
 
-// Prevent running without ENV file admin password
-if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
-	throw new Error("Provide an ADMIN_PASSWORD in .env!");
-}
+// Check if env file has all required stuff filled out
+util.checkEnvReady([
+	"ADMIN_PASSWORD",
+	"MYSQL_ROOT_PASSWORD",
+]);
 
 
 // Local Modules
@@ -36,6 +37,7 @@ import accountParser				from "./middleware/accounts";
 import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils";
 import * as routes					from "./routes/all";
 import { PORT }						from "./consts";
+import * as util					from "./util";
 
 // App
 export const app					= Express();

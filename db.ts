@@ -3,8 +3,11 @@ import {v4 as newUUID}	from "uuid";
 import bcrypt	 		from "bcrypt";
 import {Ranks}			from "./classes";
 
+loadEnv();
+
 const con = mysql.createConnection({
 	host: "localhost",
+	port: 3001,
 	user: "yourusername",
 	password: "yourpassword"
 });
@@ -13,13 +16,6 @@ con.connect((err) => {
 	if (err) throw err;
 	console.log("Connected!");
 });
-
-
-
-
-// WAL mode, improves performance
-db.pragma("journal_mode = WAL");
-
 
 
 {

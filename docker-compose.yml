@@ -9,10 +9,8 @@ services:
   db:
     image: mariadb
     environment:
+      MYSQL_DATABASE: main
       MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
     env_file:
     - .env
     volumes:
