@@ -21,8 +21,7 @@ util.loadEnv();
 import {
 	Room, Ranks, QuizPlayer,
 } from "./classes";
-import {accs}					from "./db";
-import statements				from "./statements";
+import db						from "./db";
 import accountParser			from "./middleware/accounts";
 import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils";
 import * as routes				from "./routes/all";
@@ -80,12 +79,12 @@ app.use("/rooms",		routes.rooms);
 app.use("/.well-known",	routes.wk);
 app.use("/api",			routes.api);
 
-app.post("/create-room/:roomType", (req, res) => {
+app.post("/create-room/:roomType", async (req, res) => {
 	const {roomType}	= req.params;
 	const {cuuid}		= req.body;
 
 	
-	const row = statements.getCapsule.get(cuuid);
+	const row = await db.getCapsule(cuuid);
 	if (!row) return res.status(400).json({
 		bruhmoment:	"Invalid capsule! You shouldn't be here...",
 	});

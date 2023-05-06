@@ -120,16 +120,16 @@ export namespace db {
 		`, [user]);
 	}
 
-	export function setAdminRank(user: string, rank: number) {
-		conn.execute(`
+	export async function setAdminRank(user: string, rank: number) {
+		return await conn.execute(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE name = ? COLLATE NOCASE;
 		`, [rank, user]);
 	}
 
-	export function updateBio(user: string, bio: string) {
-		conn.execute(`
+	export async function updateBio(user: string, bio: string) {
+		return await conn.execute(`
 			UPDATE users
 			SET bio = ?
 			WHERE name = ? COLLATE NOCASE;
@@ -140,11 +140,13 @@ export namespace db {
 
 
 	
-	export const editLoginToken = conn.execute(`
-		UPDATE users
-		SET authToken = ?
-		WHERE name = ? COLLATE NOCASE;
-	`);
+	export async function editLoginToken(user: string, newToken: string) {
+		return await conn.execute(`
+			UPDATE users
+			SET authToken = ?
+			WHERE name = ? COLLATE NOCASE;
+		`, [newToken, user]);
+	}
 
 	export const getUser = conn.execute(`
 		SELECT name, uuid, adminRank, bio FROM users
@@ -156,10 +158,12 @@ export namespace db {
 		VALUES (?, ?, ?, ?, ?);
 	`);
 
-	export const getCapsule = conn.execute(`
-		SELECT rowid, * FROM capsules
-		WHERE uuid = (?) AND visible = 1;
-	`);
+	export async function getCapsule(capsuleUuid: string) {
+		return await conn.execute(`
+			SELECT rowid, * FROM capsules
+			WHERE uuid = (?) AND visible = 1;
+		`, [capsuleUuid]);
+	}
 
 	export const searchCapsules = conn.execute(`
 		SELECT rowid, *
