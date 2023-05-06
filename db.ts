@@ -2,8 +2,12 @@ import mysql 			from "mysql2";
 import {v4 as newUUID}	from "uuid";
 import bcrypt	 		from "bcrypt";
 import {Ranks}			from "./classes";
+import * as util		from "./util";
 
-loadEnv();
+util.checkEnvReady([
+	"ADMIN_PASSWORD",
+	"MYSQL_ROOT_PASSWORD",
+])
 
 const con = mysql.createConnection({
 	host: "localhost",

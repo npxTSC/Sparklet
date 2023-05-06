@@ -11,21 +11,11 @@ import {Server as ioServer}	from "socket.io";
 import {str, rand}			from "libdx";
 import gzipCompression		from "compression";
 import fs					from "fs";
-import {config as loadEnv}	from "dotenv";
 import sanitize				from "sanitize-filename";
 
 import "ejs";
 
-
-
-loadEnv();
-
-// Check if env file has all required stuff filled out
-util.checkEnvReady([
-	"ADMIN_PASSWORD",
-	"MYSQL_ROOT_PASSWORD",
-]);
-
+util.loadEnv();
 
 // Local Modules
 import {

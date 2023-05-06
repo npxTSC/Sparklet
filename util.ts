@@ -1,3 +1,5 @@
+export {config as loadEnv}	from "dotenv";
+
 export function checkEnvReady(requiredVars: string[]) {
 	const ENV_READY = requiredVars.every(
 		v => typeof process.env[v] === "string"
