@@ -21,13 +21,13 @@ util.loadEnv();
 import {
 	Room, Ranks, QuizPlayer,
 } from "./classes";
-import {db, accs}					from "./db";
-import statements					from "./statements";
-import accountParser				from "./middleware/accounts";
-import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils";
-import * as routes					from "./routes/all";
-import { PORT }						from "./consts";
-import * as util					from "./util";
+import {accs}					from "./db";
+import statements				from "./statements";
+import accountParser			from "./middleware/accounts";
+import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils";
+import * as routes				from "./routes/all";
+import { PORT }					from "./consts";
+import * as util				from "./util";
 
 // App
 export const app					= Express();

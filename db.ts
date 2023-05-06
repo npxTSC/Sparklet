@@ -1,4 +1,4 @@
-import mysql 			from "mysql2";
+import mysql 			from "mysql2/promise";
 import {v4 as newUUID}	from "uuid";
 import bcrypt	 		from "bcrypt";
 import {Ranks}			from "./classes";
@@ -9,21 +9,17 @@ util.checkEnvReady([
 	"MYSQL_ROOT_PASSWORD",
 ])
 
-const con = mysql.createConnection({
+const db = await mysql.createConnection({
 	host:		"localhost",
 	port:		3001,
 	user:		"root",
 	password:	process.env["MYSQL_ROOT_PASSWORD"],
 });
 
-con.connect((err) => {
-	if (err) throw err;
-	console.log("Connected!");
-});
-
+db.connect()
 
 {
-	db.prepare(`
+	db.execute(`
 		CREATE TABLE IF NOT EXISTS users(
 			name			TEXT		NOT NULL,
 			uuid			TEXT		NOT NULL,
@@ -36,9 +32,9 @@ con.connect((err) => {
 			authToken		TEXT,
 			bio				TEXT
 		);
-	`).run();
+	`);
 
-	db.prepare(`
+	db.execute(`
 		CREATE TABLE IF NOT EXISTS news(
 			title		TEXT		NOT NULL,
 			author		TEXT		NOT NULL DEFAULT 'Anonymous',
@@ -46,9 +42,9 @@ con.connect((err) => {
 			visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
-	`).run();
+	`);
 
-	db.prepare(`
+	db.execute(`
 		CREATE TABLE IF NOT EXISTS games(
 			id			TEXT		PRIMARY KEY,
 			title		TEXT		NOT NULL,
@@ -57,9 +53,9 @@ con.connect((err) => {
 			visible		BOOLEAN		NOT NULL DEFAULT 1 CHECK (visible IN (0, 1)),
 			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
-	`).run();
+	`);
 
-	db.prepare(`
+	db.execute(`
 		CREATE TABLE IF NOT EXISTS capsules(
 			uuid		TEXT		PRIMARY KEY,
 			name		TEXT		NOT NULL,
@@ -70,17 +66,12 @@ con.connect((err) => {
 			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			likes		INTEGER		NOT NULL DEFAULT 0
 		);
-	`).run();
+	`);
 }
 
 
 
 import statements			from "./statements";
-if (PURGE_DATABASE) {
-	statements.prepopulate.forEach(v => v.run());
-}
-
-
 
 export namespace accs {
 	export async function register(user: string, pass: string) {
@@ -120,11 +111,6 @@ export namespace accs {
 	"Sparklet",			// Prevents admin impersonation
 	"Anonymous",		// Reserved for default name in DB
 ].forEach(async (v) => {
-	const adm = process.env["ADMIN_PASSWORD"];
-
-	console.assert(adm, "NO ADMIN_PASSWORD IN ENV FILE!");
-
-	await accs.registerIfNotExists(v, adm!);
 	accs.setAdminRank(v, Ranks.Operator);
 	accs.updateBio(v, "This account is reserved for admin use only.");
 });
