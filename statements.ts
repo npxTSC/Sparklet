@@ -1,68 +1,19 @@
 import {db}			from "./db";
 
+/*
+* This SHOULD be the external interface for accessing
+* database stuff... Clearly, it's not, though, and that
+* needs to change soon. Code outside db.ts and statements.ts
+* should not be able to do anything with the DB except
+* calling the provided methods. Maintaining code like this
+* in its current state is really annoying when requirements
+* are constantly changing.
+*
+* tl;dr git gud at encapsulation
+*/
+
 // SQL prepared statements
 namespace statements {
-	export const prepopulate = [
-		db.prepare(`
-			INSERT INTO news(title, author, content) VALUES (
-				'Test Article',
-				'Dexie',
-				'<p>This was written to test SQL queries.</p>'
-			);
-		`),
-		
-		db.prepare(`
-			INSERT INTO news(title, content) VALUES (
-				'Test Article 2',
-				'<p>This was written to test CSS with multiple articles.</p>'
-			);
-		`),
-		
-		db.prepare(`
-			INSERT INTO games(title, creator, id) VALUES (
-				'Speedrun Wordle',
-				'Dexie',
-				'hackathon-wordle'
-			);
-		`),
-		
-		db.prepare(`
-			INSERT INTO games(title, creator, id) VALUES (
-				'Sparkwave',
-				'Dexie',
-				'sparkwave'
-			);
-		`),
-		
-		db.prepare(`
-			INSERT INTO games(title, creator, id) VALUES (
-				'Sudoku Bot',
-				'Dexie',
-				'sudoku-solve'
-			);
-		`),
-		
-		db.prepare(`
-			INSERT INTO capsules(uuid, name, creator, version, content)
-			VALUES (
-				'f4499af5-edad-48e0-b485-d7f99f57042c',
-				'The Amogus Quiz',
-				'Dexie',
-				'1.1.0',
-				'
-{
-	"questions": {
-		"Who Vented?": "Red",
-		"Where is the button?": "Cafeteria",
-		"What color is the button?": "Red",
-		"How many players are there?": "10"
-	}
-}
-				'
-			);
-		`),
-	];
-
 	export const updateBio = db.prepare(`
 		UPDATE users
 		SET bio = ?
