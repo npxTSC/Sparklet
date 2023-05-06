@@ -7,12 +7,15 @@ them responsibly).
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, you can DM me on:
-Twitter: `@__Carbonado870`
-Discord: `Dexie With Drip#4213`
+To report a vulnerability, you can message me on:
+Email: `cherry@example.com`
+Discord: `Cherry#1984`
 
-(I've been getting contacted by a lot of bots lately, so I had to obfuscate the contact info. For the Twitter, remove the leading _s, and for the Discord, double each digit in my # tag to get the real version. If you still don't get it, just check the version history for this file and you'll find the unobfuscated version)
+I've been getting lots of spambots lately, so I had to obfuscate the contact info.
+To get the real information:
 
+- Replace the domain in the email with sparklet.org
+- Put an ampersand (&) before the Discord name
 ---
 
 Sometimes I'll be too busy to work on a patch, but usually I'll try and fix it as soon as
