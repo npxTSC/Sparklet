@@ -1,7 +1,7 @@
 "use strict";
 
 import Express					from "express";
-import { GITHUB_PAGE }			from "../consts";
+import { GITHUB_PAGE }			from "../consts.js";
 
 const router			= Express.Router();
 

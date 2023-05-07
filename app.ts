@@ -1,41 +1,32 @@
 "use strict";
 
 // Modules
-import Express						from "express";
-import crypto						from "crypto";
-import cparse						from "cookie-parser";
-import bcrypt						from "bcrypt";
-import path							from "path";
-import http							from "http";
-import {Server as ioServer}			from "socket.io";
-import {str, rand}					from "libdx";
-import gzipCompression				from "compression";
-import fs							from "fs";
-import {config as loadEnv}			from "dotenv";
-import sanitize						from "sanitize-filename";
+import Express				from "express";
+import crypto				from "crypto";
+import cparse				from "cookie-parser";
+import bcrypt				from "bcrypt";
+import path					from "path";
+import http					from "http";
+import {Server as ioServer}	from "socket.io";
+import {str, rand}			from "libdx";
+import gzipCompression		from "compression";
+import fs					from "fs";
+import sanitize				from "sanitize-filename";
 
 import "ejs";
 
-
-
-loadEnv();
-
-// Prevent running without ENV file admin password
-if (typeof process.env["ADMIN_PASSWORD"] !== "string") {
-	throw new Error("Provide an ADMIN_PASSWORD in .env!");
-}
-
+util.loadEnv();
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer,
-} from "./classes";
-import {db, accs}					from "./db";
-import statements					from "./statements";
-import accountParser				from "./middleware/accounts";
-import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils";
-import * as routes					from "./routes/all";
-import { PORT }						from "./consts";
+	Room, AdminRank, QuizPlayer, SparkletDB,
+} from "./classes.js";
+import db						from "./db.js";
+import accountParser			from "./middleware/accounts.js";
+import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
+import * as routes				from "./routes/all.js";
+import { PORT }					from "./consts.js";
+import * as util				from "./util.js";
 
 // App
 export const app					= Express();
@@ -52,7 +43,7 @@ app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 
 // App config
-app.locals.Ranks = Ranks;
+app.locals.Ranks = AdminRank;
 app.set("view engine", "ejs");
 
 
@@ -88,12 +79,12 @@ app.use("/rooms",		routes.rooms);
 app.use("/.well-known",	routes.wk);
 app.use("/api",			routes.api);
 
-app.post("/create-room/:roomType", (req, res) => {
+app.post("/create-room/:roomType", async (req, res) => {
 	const {roomType}	= req.params;
 	const {cuuid}		= req.body;
 
 	
-	const row = statements.getCapsule.get(cuuid);
+	const row = await db.getCapsule(cuuid);
 	if (!row) return res.status(400).json({
 		bruhmoment:	"Invalid capsule! You shouldn't be here...",
 	});
@@ -148,19 +139,19 @@ app.post("/login", async (req, res) => {
 	if (user.length > 30)			return fail("l-tooLong");
 	if (pass.length > 100)			return fail("l-passTooLong");
 
-	let row = accs.getFromUsername(user);
+	let row = await db.getFromUsername(user);
 
 	switch (action) {
 		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
-			const hashed = await accs.register(user, pass);
+			const hashed = await db.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 
-			// Prevents unnecessary DB calls...
-			row = { passHash: hashed }
+			// Reassign row to new user object
+			row = await db.getFromUsername(user);
 			
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
@@ -193,7 +184,7 @@ app.post("/login", async (req, res) => {
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			statements.editLoginToken.run(null, user);
+			db.editLoginToken(user, null);
 			
 			return res.redirect("/login");
 
@@ -211,7 +202,7 @@ app.post("/login", async (req, res) => {
 	function makeNewTokenFor(user: string) {
 		const token = generateToken(512);
 
-		statements.editLoginToken.run(token, user);
+		db.editLoginToken(user, token);
 		return token;
 	}
 });
@@ -226,24 +217,21 @@ app.get("/conductors/:profile", async (req, res) => {
 	
 	if (str.containsSpecials(profile)) return throw404(res);
 	
-	let row = statements.getUser.get(profile);
+	let row = db.getUser(profile);
 
 	if (!row) return throw404(res);
 	
 	return res.render("profile", {profileInfo: row});
 });
 
-app.get("/news/:PostID", (req, res) => {
-	let postId = parseInt(req.params["PostID"], 10);
+app.get("/news/:PostID", async (req, res) => {
+	let postId = req.params["PostID"];
 	if (typeof postId !== "number" || isNaN(postId))
 		return throw404(res);
 	
-	let post = statements.getNews.get(postId);
+	let post = await db.getNews(postId);
 
 	if (!post) return throw404(res);
-
-	
-	post.date = new Date(post.date);
 
 	let passed = {
 		postId: postId,
@@ -253,28 +241,20 @@ app.get("/news/:PostID", (req, res) => {
 	res.render("article", passed);
 });
 
-app.get("/news", (req, res) => {
-	let qposts = statements.newsQPosts.all().map(v => {
-		v.date = new Date(v.date);
-		return v;
-	});
-
+app.get("/news", async (req, res) => {
+	let qposts = await db.newsQPosts();
 	res.render("news", {qposts});
 });
 
 app.get("/sparks/:SparkID", (req, res) => {
 	let sparkId = req.params["SparkID"];
-	if (!sparkId) {
-		return throw404(res);
-	}
+	if (!sparkId) return throw404(res);
 
 	sparkId = sanitize(sparkId);
 
-	let post = statements.getGame.get(sparkId);
+	let post = db.getGame(sparkId);
 
 	if (!post) return throw404(res);
-	
-	post.date = new Date(post.date);
 
 	let passed = {
 		postId: sparkId,
@@ -284,17 +264,14 @@ app.get("/sparks/:SparkID", (req, res) => {
 	res.render("sparks/"+sparkId, passed);
 });
 
-app.get("/sparks", (req, res) => {
-	let qposts = statements.gameQPosts.all().map(v => {
-		v.date = new Date(v.date);
-		return v;
-	});
+app.get("/sparks", async (req, res) => {
+	let qposts = await db.gameQPosts();
 
 	res.render("catalog", {qposts});
 });
 
 app.get("/capsules", async (req, res) => {
-	const qposts = statements.capsuleQPosts.all().map(v => {
+	const qposts = (await db.capsuleQPosts()).map(v => {
 		const jsondata = fs.readFileSync(
 			`./dist/public/capsules/${v.uuid}.json`
 		).toString();
@@ -304,8 +281,8 @@ app.get("/capsules", async (req, res) => {
 			
 			// PLUS the following information:
 
-			uuid: v.uuid,
-			date: new Date(v.date),
+			uuid:	v.uuid,
+			date:	v.date,
 		}
 	});
 

@@ -1,13 +1,13 @@
 import { Socket }			from "socket.io";
 import { v4 as newUUID }	from "uuid";
 
-import { QP_NAME_LIMIT }	from "./consts";
+import { QP_NAME_LIMIT }	from "./consts.js";
 import {
 	activeRooms, findRoom, generateToken
-} from "./app";
+} from "./app.js";
 import {
-	AccountPublic, QuizHostCmdFn, QuizHostCommand, QuizPlayer
-} from "./classes";
+	QuizHostCmdFn, QuizHostCommand, QuizPlayer, SparkletDB
+} from "./classes.js";
 
 export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {
@@ -64,7 +64,7 @@ export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
 	joinRoom: function(socket) {
 		return (data: {
 			username:	string;
-			account:	AccountPublic
+			account:	SparkletDB.SparkletUser
 			roomcode:	string;
 		}) => {
 			// If quiz invalid

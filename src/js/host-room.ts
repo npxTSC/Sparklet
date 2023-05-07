@@ -4,8 +4,7 @@
 import {cmon}	from "libdx";
 import {io}		from "socket.io-client";
 import {
-	Capsule, CapsuleContent, QuizPlayer,
-	QuizHostCommand, QuizHostResponse
+	QuizPlayer, QuizHostResponse
 }	from "../../classes";
 
 const socket = io();

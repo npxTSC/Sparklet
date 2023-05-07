@@ -1,7 +1,7 @@
 // Middleware to add account data to req
 "use strict";
 
-import {db}		from "../db";
+import {db}		from "../db.js";
 
 import {
 	Request,
@@ -9,9 +9,11 @@ import {
 	NextFunction
 } from "express";
 
-export default function middleware(	req:	Request,
-									res:	Response,
-									next:	NextFunction) {
+export default async function middleware(
+	req:	Request,
+	res:	Response,
+	next:	NextFunction
+) {
 
 	const user = req.cookies?.user;
 	const token = req.cookies?.luster;
@@ -19,10 +21,7 @@ export default function middleware(	req:	Request,
 	res.locals.account = null;
 	if (!user) return next();
 
-	const row = db.prepare(`
-		SELECT name, uuid FROM users
-		WHERE name = (?) COLLATE NOCASE AND authToken = (?);
-	`).get(user, token);
+	const row = await db.verifyLoginToken(user, token);
 
 	if (!row) return next();
 	

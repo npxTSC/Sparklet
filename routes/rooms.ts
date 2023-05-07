@@ -1,7 +1,7 @@
 "use strict";
 
 import Express					from "express";
-import { findRoom, throw404 }	from "../app";
+import { findRoom, throw404 }	from "../app.js";
 
 const router			= Express.Router();
 
