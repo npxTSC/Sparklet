@@ -18,21 +18,6 @@ const conn = await mysql.createPool({
 
 initTables(conn);
 
-[//	Reserved Username	// Reason
-	"Dexie",			// Admin account
-	"DexieTheSheep",	// Prevents admin impersonation
-	"Sparklet",			// Prevents admin impersonation
-	"Anonymous",		// Reserved for default name in DB
-].forEach(async (v) => {
-	db.setAdminRank(v, AdminRank.Operator);
-	db.updateBio(v, "This account is reserved for admin use only.");
-});
-
-
-
-
-
-
 /*
 * This SHOULD be the external interface for accessing
 * database stuff... Clearly, it's not, though, and that
@@ -183,6 +168,19 @@ export namespace db {
 }
 
 export default db;
+
+
+
+[//	Reserved Username	// Reason
+"Dexie",			// Admin account
+"DexieTheSheep",	// Prevents admin impersonation
+"Sparklet",			// Prevents admin impersonation
+"Anonymous",		// Reserved for default name in DB
+].forEach(async (v) => {
+db.setAdminRank(v, AdminRank.Operator);
+db.updateBio(v, "This account is reserved for admin use only.");
+});
+
 
 function initTables(conn: mysql.Pool) {
 	conn.execute(`
