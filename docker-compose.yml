@@ -8,9 +8,6 @@ services:
     restart: always
   db:
     image: mariadb
-    environment:
-      MYSQL_DATABASE: main
-      MYSQL_ROOT_PASSWORD:
     env_file:
     - .env
     volumes:

@@ -1,13 +1,12 @@
-import mysql 				from "mysql2/promise";
-import {v4 as newUUID}		from "uuid";
-import bcrypt	 			from "bcrypt";
+import mysql 							from "mysql2/promise";
+import {v4 as newUUID}					from "uuid";
+import bcrypt	 						from "bcrypt";
 import {AdminRank, Option, SparkletDB}	from "./classes.js";
-import * as util			from "./util.js";
+import * as util						from "./util.js";
 
 util.checkEnvReady([
-	"ADMIN_PASSWORD",
-	"MYSQL_ROOT_PASSWORD",
-])
+	"MARIADB_ROOT_PASSWORD",
+]);
 
 const conn = await mysql.createPool({
 	host:		"localhost",
