@@ -73,34 +73,34 @@ export namespace db {
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [rank, user]))[0];
+		`, [rank, user]))[0][0];
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET bio = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [bio, user]))[0];
+		`, [bio, user]))[0][0];
 	}
 
 	export async function editLoginToken(user: string, newToken: Option<string>) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET authToken = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [newToken, user]))[0];
+		`, [newToken, user]))[0][0];
 	}
 
 	export async function getUser(username: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			SELECT name, uuid, adminRank, bio FROM users
 			WHERE name = ? COLLATE NOCASE;
-		`, [username]))[0];
+		`, [username]))[0][0];
 	}
 
 	export async function postCapsule(
@@ -110,21 +110,21 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.Capsule[]>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
-		`))[0];
+		`, [uuid, name, creator, version, content]))[0][0];
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid]))[0];
+		`, [capsuleUuid]))[0][0];
 	}
 
 	export async function searchCapsules(query: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
 			ORDER BY id DESC
@@ -133,7 +133,8 @@ export namespace db {
 	}
 
 	export async function capsuleQPosts() {
-		return (await conn.execute(`
+		// TODO select less data... qposts are only surface-level overviews
+		return (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
@@ -142,14 +143,14 @@ export namespace db {
 	}
 
 	export async function getGame(uuid: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.Spark[]>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0];
+		`, [uuid]))[0][0];
 	}
 
 	export async function gameQPosts() {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.Spark[]>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY id DESC
@@ -158,14 +159,14 @@ export namespace db {
 	}
 
 	export async function getNews(uuid: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.NewsPost[]>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0];
+		`, [uuid]))[0][0];
 	}
 
 	export async function newsQPosts() {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.NewsPost[]>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
 			ORDER BY id DESC
