@@ -19,4 +19,4 @@ To get the real information:
 ---
 
 Sometimes I'll be too busy to work on a patch, but usually I'll try and fix it as soon as
-possible, if it's important enough that it could reveal passwords or break the site.
+possible, if it's important enough that it could reveal PII / auth tokens or break the site.
