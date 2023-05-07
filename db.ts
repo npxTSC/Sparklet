@@ -4,6 +4,7 @@ import bcrypt	 						from "bcrypt";
 import {AdminRank, Option, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
 
+util.loadEnv();
 util.checkEnvReady([
 	"MARIADB_ROOT_PASSWORD",
 ]);

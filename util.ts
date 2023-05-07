@@ -1,11 +1,11 @@
 export {config as loadEnv}	from "dotenv";
 
 export function checkEnvReady(requiredVars: string[]) {
-	const ENV_READY = requiredVars.every(
-		v => typeof process.env[v] === "string"
-	);
-
-	if (!ENV_READY) {
-		throw new Error("Check your .env file... Some data is missing.");
+	for (let v of requiredVars) {
+		if (typeof process.env[v] !== "string") {
+			throw new Error(`Check your .env file... "${v}" is missing.`);
+		} else {
+			console.log(`Env ${v} loaded...`);
+		}
 	}
 }
