@@ -26,7 +26,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-//	account?:	AccountPublic;
+	account?:	SparkletDB.SparkletUser;
 }
 
 export interface QuizHostCommand {

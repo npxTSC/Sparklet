@@ -1,7 +1,7 @@
 "use strict";
 
-import Express		from "express";
-import statements	from "../statements";
+import Express	from "express";
+import db		from "../db";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";
@@ -12,9 +12,9 @@ router.get("/capsules", (req, res) => {
 	if (req.query.q) {
 		const spaced = (<string>req.query.q).replace(/\+/g, " ");
 		const searchQuery = decodeURIComponent(spaced);
-		rows = statements.searchCapsules.all(searchQuery);
+		rows = db.searchCapsules(searchQuery);
 	} else {
-		rows = statements.capsuleQPosts.all();
+		rows = db.capsuleQPosts();
 	}
 	
 	return res.status(200).json(rows);

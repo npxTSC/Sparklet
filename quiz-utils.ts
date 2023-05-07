@@ -6,7 +6,7 @@ import {
 	activeRooms, findRoom, generateToken
 } from "./app";
 import {
-	AccountPublic, QuizHostCmdFn, QuizHostCommand, QuizPlayer
+	QuizHostCmdFn, QuizHostCommand, QuizPlayer, SparkletDB
 } from "./classes";
 
 export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
@@ -64,7 +64,7 @@ export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
 	joinRoom: function(socket) {
 		return (data: {
 			username:	string;
-			account:	AccountPublic
+			account:	SparkletDB.SparkletUser
 			roomcode:	string;
 		}) => {
 			// If quiz invalid
