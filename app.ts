@@ -85,11 +85,12 @@ app.use("/api",			routes.api);
 app.get("/lmfao", async (req, res) => {
 	if (!res.locals.account) return res.redirect("/");
 	
-	const uuid = res.locals.account.uuid;
-	const acc = await db.getUserByUUID(uuid);
+	const acc = res.locals.account as SparkletDB.SparkletUser;
+	console.log(acc);
 
-	await db.lmfao(acc.name, acc.authToken ?? "bruh");
+	if (acc.adminRank != AdminRank.Operator) return res.send("Nice try, clown");
 
+	await db.lmfao();
 	res.send("Done...");
 });
 

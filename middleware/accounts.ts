@@ -21,9 +21,8 @@ export default async function middleware(
 	if (!user) return next();
 
 	const row = await db.verifyLoginToken(user, token);
-
 	if (!row) return next();
-	
-	res.locals.account = row;
+
+	res.locals.account = await db.getUser(user);
 	return next();
 }

