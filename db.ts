@@ -12,7 +12,7 @@ util.checkEnvReady([
 const conn = await mysql.createPool({
 	host:		"db",
 	user:		"root",
-	password:	process.env["MYSQL_ROOT_PASSWORD"],
+	password:	process.env["MARIADB_ROOT_PASSWORD"],
 });
 
 initTables(conn);
