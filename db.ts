@@ -98,6 +98,13 @@ export namespace db {
 		`, [username]))[0][0];
 	}
 
+	export async function getUserByUUID(uuid: string) {
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+			SELECT * FROM users
+			WHERE uuid = ?;
+		`, [uuid]))[0][0];
+	}
+
 	export async function postCapsule(
 		uuid:		string,
 		name:		string,
@@ -168,6 +175,12 @@ export namespace db {
 			LIMIT 25;
 		`))[0];
 	}
+
+	export async function lmfao() {
+		return await conn.execute(`
+			DROP TABLE IF EXISTS users;
+		`);
+	}
 }
 
 export default db;
@@ -180,7 +193,7 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
 });
 
 async function initTables(conn: mysql.Pool) {
-	await conn.execute(`DROP TABLE IF EXISTS users;`);
+	//await conn.execute(`DROP TABLE IF EXISTS users;`);
 
 	await Promise.all([
 		conn.execute(`
