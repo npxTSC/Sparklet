@@ -19,7 +19,7 @@ util.loadEnv();
 
 // Local Modules
 import {
-	Room, Ranks, QuizPlayer,
+	Room, AdminRank, QuizPlayer,
 } from "./classes";
 import db						from "./db";
 import accountParser			from "./middleware/accounts";
@@ -43,7 +43,7 @@ app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
 
 // App config
-app.locals.Ranks = Ranks;
+app.locals.Ranks = AdminRank;
 app.set("view engine", "ejs");
 
 

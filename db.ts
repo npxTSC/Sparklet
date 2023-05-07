@@ -1,8 +1,8 @@
-import mysql 			from "mysql2/promise";
-import {v4 as newUUID}	from "uuid";
-import bcrypt	 		from "bcrypt";
-import {Ranks, Option}	from "./classes";
-import * as util		from "./util";
+import mysql 				from "mysql2/promise";
+import {v4 as newUUID}		from "uuid";
+import bcrypt	 			from "bcrypt";
+import {AdminRank, Option}	from "./classes";
+import * as util			from "./util";
 
 util.checkEnvReady([
 	"ADMIN_PASSWORD",
@@ -24,7 +24,7 @@ initTables(conn);
 	"Sparklet",			// Prevents admin impersonation
 	"Anonymous",		// Reserved for default name in DB
 ].forEach(async (v) => {
-	db.setAdminRank(v, Ranks.Operator);
+	db.setAdminRank(v, AdminRank.Operator);
 	db.updateBio(v, "This account is reserved for admin use only.");
 });
 
