@@ -217,7 +217,7 @@ app.get("/conductors/:profile", async (req, res) => {
 	
 	if (str.containsSpecials(profile)) return throw404(res);
 	
-	let row = statements.getUser.get(profile);
+	let row = db.getUser(profile);
 
 	if (!row) return throw404(res);
 	
