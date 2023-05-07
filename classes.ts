@@ -1,6 +1,9 @@
 // Module for providing classes/types to app.ts
 "use strict";
 
+// crab noises
+export type Option<T> = T | null;
+
 export interface Conductor {
 	username:	string;
 	id:			number;

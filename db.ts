@@ -1,7 +1,7 @@
 import mysql 			from "mysql2/promise";
 import {v4 as newUUID}	from "uuid";
 import bcrypt	 		from "bcrypt";
-import {Ranks}			from "./classes";
+import {Ranks, Option}	from "./classes";
 import * as util		from "./util";
 
 util.checkEnvReady([
@@ -88,7 +88,7 @@ export namespace db {
 		`, [bio, user]))[0];
 	}
 
-	export async function editLoginToken(user: string, newToken: string | null) {
+	export async function editLoginToken(user: string, newToken: Option<string>) {
 		return (await conn.execute(`
 			UPDATE users
 			SET authToken = ?
