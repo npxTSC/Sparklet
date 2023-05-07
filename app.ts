@@ -139,7 +139,7 @@ app.post("/login", async (req, res) => {
 	if (user.length > 30)			return fail("l-tooLong");
 	if (pass.length > 100)			return fail("l-passTooLong");
 
-	let row = await db.getFromUsername(user) satisfies SparkletDB.SparkletUser;
+	let row = await db.getFromUsername(user);
 
 	switch (action) {
 		case "Register":
@@ -224,17 +224,14 @@ app.get("/conductors/:profile", async (req, res) => {
 	return res.render("profile", {profileInfo: row});
 });
 
-app.get("/news/:PostID", (req, res) => {
+app.get("/news/:PostID", async (req, res) => {
 	let postId = req.params["PostID"];
 	if (typeof postId !== "number" || isNaN(postId))
 		return throw404(res);
 	
-	let post = db.getNews(postId);
+	let post = await db.getNews(postId);
 
 	if (!post) return throw404(res);
-
-	
-	post.date = new Date(post.date);
 
 	let passed = {
 		postId: postId,
@@ -244,12 +241,8 @@ app.get("/news/:PostID", (req, res) => {
 	res.render("article", passed);
 });
 
-app.get("/news", (req, res) => {
-	let qposts = db.newsQPosts().map(v => {
-		v.date = new Date(v.date);
-		return v;
-	});
-
+app.get("/news", async (req, res) => {
+	let qposts = await db.newsQPosts();
 	res.render("news", {qposts});
 });
 
@@ -262,8 +255,6 @@ app.get("/sparks/:SparkID", (req, res) => {
 	let post = db.getGame(sparkId);
 
 	if (!post) return throw404(res);
-	
-	post.date = new Date(post.date);
 
 	let passed = {
 		postId: sparkId,
@@ -273,17 +264,14 @@ app.get("/sparks/:SparkID", (req, res) => {
 	res.render("sparks/"+sparkId, passed);
 });
 
-app.get("/sparks", (req, res) => {
-	let qposts = db.gameQPosts().map(v => {
-		v.date = new Date(v.date);
-		return v;
-	});
+app.get("/sparks", async (req, res) => {
+	let qposts = await db.gameQPosts();
 
 	res.render("catalog", {qposts});
 });
 
 app.get("/capsules", async (req, res) => {
-	const qposts = db.capsuleQPosts().map(v => {
+	const qposts = (await db.capsuleQPosts()).map(v => {
 		const jsondata = fs.readFileSync(
 			`./dist/public/capsules/${v.uuid}.json`
 		).toString();
@@ -293,8 +281,8 @@ app.get("/capsules", async (req, res) => {
 			
 			// PLUS the following information:
 
-			uuid: v.uuid,
-			date: new Date(v.date),
+			uuid:	v.uuid,
+			date:	v.date,
 		}
 	});
 
