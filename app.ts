@@ -13,6 +13,7 @@ import gzipCompression		from "compression";
 import fs					from "fs";
 import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
+import rateLimit			from "express-rate-limit";
 import "ejs";
 
 export const __filename	= fileURLToPath(import.meta.url);
@@ -38,6 +39,17 @@ const server						= http.createServer(app);
 const io							= new ioServer(server);
 
 // Middleware
+app.use(
+	rateLimit({
+		// 60 requests per minute allowed
+		windowMs:			60_000,
+		max:				60,
+
+		// Return rate limit info in the `RateLimit-*` headers
+		standardHeaders:	true,
+	})
+);
+
 app.use(cparse());
 app.use(accountParser);
 app.use(gzipCompression());
