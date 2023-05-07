@@ -1,6 +1,7 @@
 import mysql 							from "mysql2/promise";
 import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
+import waitOn							from "wait-on";
 import {AdminRank, Option, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
 import { ADMINS }						from "./consts.js";
@@ -12,12 +13,24 @@ util.checkEnvReady([
 	"MARIADB_ROOT_PASSWORD",
 ]);
 
+console.log("Waiting for MariaDB container...");
+await waitOn({
+	resources: [
+		"tcp:db:3306"
+	],
+
+	delay: 1000,
+});
+
+console.log("MariaDB container is up! Connecting...");
 const conn = await mysql.createPool({
 	database:	"sparklet_main",
 	host:		"db",
 	user:		"root",
 	password:	process.env["MARIADB_ROOT_PASSWORD"],
 });
+
+console.log("Connected to DB.");
 
 await initTables(conn);
 
