@@ -15,7 +15,8 @@ import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
 import "ejs";
 
-export const __dirname = fileURLToPath(import.meta.url);
+export const __filename	= fileURLToPath(import.meta.url);
+export const __dirname	= path.dirname(__filename);
 
 util.loadEnv();
 
