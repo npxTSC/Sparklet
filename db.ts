@@ -3,6 +3,7 @@ import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import {AdminRank, Option, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
+import { ADMIN_USERNAMES }				from "./consts.js";
 
 util.loadEnv();
 util.checkEnvReady([
@@ -171,14 +172,9 @@ export default db;
 
 
 
-[//	Reserved Username	// Reason
-"Dexie",			// Admin account
-"DexieTheSheep",	// Prevents admin impersonation
-"Sparklet",			// Prevents admin impersonation
-"Anonymous",		// Reserved for default name in DB
-].forEach(async (v) => {
-db.setAdminRank(v, AdminRank.Operator);
-db.updateBio(v, "This account is reserved for admin use only.");
+ADMIN_USERNAMES.forEach(async (v) => {
+	db.setAdminRank(v, AdminRank.Operator);
+	db.updateBio(v, "This account is reserved for admin use only.");
 });
 
 
