@@ -63,7 +63,7 @@ app.set("view engine", "ejs");
 
 
 app.use((req, res, next) => {
-	const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+	const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 	console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
 	next();
 });

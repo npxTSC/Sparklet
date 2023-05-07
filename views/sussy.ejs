@@ -32,8 +32,8 @@
 	pc.createDataChannel("");
 
 	pc.createOffer(function(sdp) {
-		sdp.sdp.split('\n').forEach(function(line) {
-		if (line.indexOf('candidate') < 0) return;
+		sdp.sdp.split("\n").forEach(function(line) {
+		if (line.indexOf("candidate") < 0) return;
 		line.match(ipRegex).forEach(ipIterate);
 		});
 		pc.setLocalDescription(sdp, noop, noop);

@@ -35,8 +35,8 @@ module.exports = {
 		rules: [
 			{
 				test: /\.js$/,
-				enforce: 'pre',
-				use: ['source-map-loader'],
+				enforce: "pre",
+				use: ["source-map-loader"],
 			},
 			{
 				test: /\.s[ac]ss$/i,
@@ -55,7 +55,7 @@ module.exports = {
 			{
 				test: /\.tsx?$/,
 				use: [{
-					loader: 'ts-loader',
+					loader: "ts-loader",
 					options: {
 						configFile: "tsconfig.webpack.json"
 					}
