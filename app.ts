@@ -12,8 +12,10 @@ import {str, rand}			from "libdx";
 import gzipCompression		from "compression";
 import fs					from "fs";
 import sanitize				from "sanitize-filename";
-
+import {fileURLToPath}		from "url";
 import "ejs";
+
+export const __dirname = fileURLToPath(import.meta.url);
 
 util.loadEnv();
 
