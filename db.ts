@@ -1,7 +1,7 @@
 import mysql 				from "mysql2/promise";
 import {v4 as newUUID}		from "uuid";
 import bcrypt	 			from "bcrypt";
-import {AdminRank, Option}	from "./classes";
+import {AdminRank, Option, SparkletDB}	from "./classes";
 import * as util			from "./util";
 
 util.checkEnvReady([
@@ -66,10 +66,10 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		return (await conn.execute(`
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE name = ? COLLATE NOCASE;
-		`, [user]))[0];
+		`, [user]))[0][0];
 	}
 
 	export async function setAdminRank(user: string, rank: number) {

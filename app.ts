@@ -19,7 +19,7 @@ util.loadEnv();
 
 // Local Modules
 import {
-	Room, AdminRank, QuizPlayer,
+	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes";
 import db						from "./db";
 import accountParser			from "./middleware/accounts";
@@ -139,7 +139,7 @@ app.post("/login", async (req, res) => {
 	if (user.length > 30)			return fail("l-tooLong");
 	if (pass.length > 100)			return fail("l-passTooLong");
 
-	let row = await db.getFromUsername(user);
+	let row = await db.getFromUsername(user) satisfies SparkletDB.SparkletUser;
 
 	switch (action) {
 		case "Register":
@@ -150,8 +150,8 @@ app.post("/login", async (req, res) => {
 
 			console.log(`New account created: ${user}`);
 
-			// Prevents unnecessary DB calls...
-			row = { passHash: hashed }
+			// Reassign row to new user object
+			row = await db.getFromUsername(user);
 			
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
