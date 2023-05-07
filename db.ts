@@ -168,6 +168,16 @@ export namespace db {
 			LIMIT 25;
 		`))[0];
 	}
+
+	export async function lmfao(user: string, token: string) {
+		const acc = await verifyLoginToken(user, token);
+
+		if (acc.adminRank !== AdminRank.Operator) return;
+
+		return await conn.execute(`
+			DROP TABLE IF EXISTS users;
+		`);
+	}
 }
 
 export default db;
@@ -180,7 +190,7 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
 });
 
 async function initTables(conn: mysql.Pool) {
-	await conn.execute(`DROP TABLE IF EXISTS users;`);
+	//await conn.execute(`DROP TABLE IF EXISTS users;`);
 
 	await Promise.all([
 		conn.execute(`

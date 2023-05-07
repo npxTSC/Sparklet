@@ -14,7 +14,6 @@ export default async function middleware(
 	res:	Response,
 	next:	NextFunction
 ) {
-
 	const user = req.cookies?.user;
 	const token = req.cookies?.luster;
 

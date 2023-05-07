@@ -82,6 +82,21 @@ app.use("/rooms",		routes.rooms);
 app.use("/.well-known",	routes.wk);
 app.use("/api",			routes.api);
 
+app.get("/lmfao", async (req, res) => {
+	if (!res.locals.account) return res.redirect("/");
+	
+	const acc = res.locals.account;
+
+	let user	= acc?.name;
+	let tok		= acc?.authToken;
+
+	if (!user || !tok) return res.redirect("/");
+
+	await db.lmfao(user, tok);
+
+	res.send("Done...");
+});
+
 app.post("/create-room/:roomType", async (req, res) => {
 	const {roomType}	= req.params;
 	const {cuuid}		= req.body;
