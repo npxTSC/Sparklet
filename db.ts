@@ -216,7 +216,7 @@ async function initTables(conn: mysql.Pool) {
 				uuid			TEXT		NOT NULL,
 				name			TEXT		NOT NULL,
 				passHash		TEXT		NOT	NULL,
-				date			BIGINT		NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				date			BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP()),
 				adminRank		INT			NOT NULL DEFAULT 0,
 				emailVerified	BOOL		NOT NULL DEFAULT 0,
 				emailVToken		TEXT,
@@ -234,7 +234,7 @@ async function initTables(conn: mysql.Pool) {
 				author		TEXT			NOT NULL DEFAULT 'Anonymous',
 				content		TEXT			NOT NULL,
 				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
@@ -246,7 +246,7 @@ async function initTables(conn: mysql.Pool) {
 				creator		TEXT			NOT NULL DEFAULT 'Anonymous',
 				description	TEXT			NOT NULL DEFAULT 'No description given... :(',
 				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
@@ -259,7 +259,7 @@ async function initTables(conn: mysql.Pool) {
 				version		TEXT			NOT NULL,
 				content		TEXT			NOT NULL,
 				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP()),
 				likes		INT				NOT NULL DEFAULT 0
 			);
 		`),
