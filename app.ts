@@ -139,14 +139,14 @@ app.post("/login", async (req, res) => {
 	if (user.length > 30)			return fail("l-tooLong");
 	if (pass.length > 100)			return fail("l-passTooLong");
 
-	let row = accs.getFromUsername(user);
+	let row = await db.getFromUsername(user);
 
 	switch (action) {
 		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
-			const hashed = await accs.register(user, pass);
+			const hashed = await db.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 
@@ -184,7 +184,7 @@ app.post("/login", async (req, res) => {
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			statements.editLoginToken.run(null, user);
+			db.editLoginToken(user, null);
 			
 			return res.redirect("/login");
 
@@ -202,7 +202,7 @@ app.post("/login", async (req, res) => {
 	function makeNewTokenFor(user: string) {
 		const token = generateToken(512);
 
-		statements.editLoginToken.run(token, user);
+		db.editLoginToken(user, token);
 		return token;
 	}
 });
@@ -225,11 +225,11 @@ app.get("/conductors/:profile", async (req, res) => {
 });
 
 app.get("/news/:PostID", (req, res) => {
-	let postId = parseInt(req.params["PostID"], 10);
+	let postId = req.params["PostID"];
 	if (typeof postId !== "number" || isNaN(postId))
 		return throw404(res);
 	
-	let post = statements.getNews.get(postId);
+	let post = db.getNews(postId);
 
 	if (!post) return throw404(res);
 
@@ -245,7 +245,7 @@ app.get("/news/:PostID", (req, res) => {
 });
 
 app.get("/news", (req, res) => {
-	let qposts = statements.newsQPosts.all().map(v => {
+	let qposts = db.newsQPosts().map(v => {
 		v.date = new Date(v.date);
 		return v;
 	});
@@ -255,13 +255,11 @@ app.get("/news", (req, res) => {
 
 app.get("/sparks/:SparkID", (req, res) => {
 	let sparkId = req.params["SparkID"];
-	if (!sparkId) {
-		return throw404(res);
-	}
+	if (!sparkId) return throw404(res);
 
 	sparkId = sanitize(sparkId);
 
-	let post = statements.getGame.get(sparkId);
+	let post = db.getGame(sparkId);
 
 	if (!post) return throw404(res);
 	
@@ -276,7 +274,7 @@ app.get("/sparks/:SparkID", (req, res) => {
 });
 
 app.get("/sparks", (req, res) => {
-	let qposts = statements.gameQPosts.all().map(v => {
+	let qposts = db.gameQPosts().map(v => {
 		v.date = new Date(v.date);
 		return v;
 	});
@@ -285,7 +283,7 @@ app.get("/sparks", (req, res) => {
 });
 
 app.get("/capsules", async (req, res) => {
-	const qposts = statements.capsuleQPosts.all().map(v => {
+	const qposts = db.capsuleQPosts().map(v => {
 		const jsondata = fs.readFileSync(
 			`./dist/public/capsules/${v.uuid}.json`
 		).toString();

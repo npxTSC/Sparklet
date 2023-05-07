@@ -66,41 +66,41 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT name, uuid, passHash FROM users
 			WHERE name = ? COLLATE NOCASE;
-		`, [user]);
+		`, [user]))[0];
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [rank, user]);
+		`, [rank, user]))[0];
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			UPDATE users
 			SET bio = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [bio, user]);
+		`, [bio, user]))[0];
 	}
 
-	export async function editLoginToken(user: string, newToken: string) {
-		return await conn.execute(`
+	export async function editLoginToken(user: string, newToken: string | null) {
+		return (await conn.execute(`
 			UPDATE users
 			SET authToken = ?
 			WHERE name = ? COLLATE NOCASE;
-		`, [newToken, user]);
+		`, [newToken, user]))[0];
 	}
 
 	export async function getUser(username: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT name, uuid, adminRank, bio FROM users
 			WHERE name = ? COLLATE NOCASE;
-		`, [username]);
+		`, [username]))[0];
 	}
 
 	export async function postCapsule(
@@ -110,67 +110,67 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
-		`);
+		`))[0];
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid]);
+		`, [capsuleUuid]))[0];
 	}
 
 	export async function searchCapsules(query: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
 			ORDER BY id DESC
 			LIMIT 25;
-		`, [query])
+		`, [query]))[0];
 	}
 
 	export async function capsuleQPosts() {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
-		`);
+		`))[0];
 	}
 
 	export async function getGame(uuid: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]);
+		`, [uuid]))[0];
 	}
 
 	export async function gameQPosts() {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY id DESC
 			LIMIT 25;
-		`);
+		`))[0];
 	}
 
 	export async function getNews(uuid: string) {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]);
+		`, [uuid]))[0];
 	}
 
 	export async function newsQPosts() {
-		return await conn.execute(`
+		return (await conn.execute(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
 			ORDER BY id DESC
 			LIMIT 25;
-		`);
+		`))[0];
 	}
 }
 
