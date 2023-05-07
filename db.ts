@@ -9,7 +9,7 @@ util.checkEnvReady([
 	"MYSQL_ROOT_PASSWORD",
 ])
 
-const conn = await mysql.createConnection({
+const conn = await mysql.createPool({
 	host:		"localhost",
 	port:		3001,
 	user:		"root",
@@ -176,7 +176,7 @@ export namespace db {
 
 export default db;
 
-function initTables(conn: mysql.Connection) {
+function initTables(conn: mysql.Pool) {
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS users(
 			id				INT			PRIMARY KEY AUTO_INCREMENT,
