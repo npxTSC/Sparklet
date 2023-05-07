@@ -25,7 +25,7 @@ await waitOn({
 
 console.log("MariaDB container is up! Connecting...");
 const conn = await mysql.createPool({
-	database:	"sparklet_main",
+	database:	"main",
 	host:		"db",
 	user:		process.env["DB_USER"],
 	password:	process.env["DB_PASS"],
