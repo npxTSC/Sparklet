@@ -118,23 +118,23 @@ export namespace db {
 
 	export async function getCapsule(capsuleUuid: string) {
 		return await conn.execute(`
-			SELECT rowid, * FROM capsules
+			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid]);
 	}
 
 	export async function searchCapsules(query: string) {
 		return await conn.execute(`
-			SELECT rowid, *
+			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
-			ORDER BY rowid DESC
+			ORDER BY id DESC
 			LIMIT 25;
 		`, [query])
 	}
 
 	export async function capsuleQPosts() {
 		return await conn.execute(`
-			SELECT rowid, *
+			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
@@ -143,32 +143,32 @@ export namespace db {
 
 	export async function getGame(uuid: string) {
 		return await conn.execute(`
-			SELECT rowid, * FROM games
+			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid]);
 	}
 
 	export async function gameQPosts() {
 		return await conn.execute(`
-			SELECT rowid, *
+			SELECT *
 			FROM games WHERE visible = 1
-			ORDER BY rowid DESC
+			ORDER BY id DESC
 			LIMIT 25;
 		`);
 	}
 
 	export async function getNews(uuid: string) {
 		return await conn.execute(`
-			SELECT rowid, * FROM news
+			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid]);
 	}
 
 	export async function newsQPosts() {
 		return await conn.execute(`
-			SELECT title, author, date, rowid
+			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
-			ORDER BY rowid DESC
+			ORDER BY id DESC
 			LIMIT 25;
 		`);
 	}
@@ -179,7 +179,8 @@ export default db;
 function initTables(conn: mysql.Connection) {
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS users(
-			uuid			TEXT		PRIMARY KEY,
+			id				INT			PRIMARY KEY AUTO_INCREMENT,
+			uuid			TEXT		NOT NULL,
 			name			TEXT		NOT NULL,
 			passHash		TEXT		NOT	NULL,
 			date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -193,7 +194,8 @@ function initTables(conn: mysql.Connection) {
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS news(
-			uuid		TEXT		PRIMARY KEY,
+			id			INT			PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT		NOT NULL,
 			title		TEXT		NOT NULL,
 			author		TEXT		NOT NULL DEFAULT 'Anonymous',
 			content		TEXT		NOT NULL,
@@ -204,7 +206,8 @@ function initTables(conn: mysql.Connection) {
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS games(
-			uuid		TEXT		PRIMARY KEY,
+			id			INT			PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT		NOT NULL,
 			title		TEXT		NOT NULL,
 			creator		TEXT		NOT NULL DEFAULT 'Anonymous',
 			description	TEXT		NOT NULL DEFAULT 'No description given... :(',
@@ -215,7 +218,8 @@ function initTables(conn: mysql.Connection) {
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS capsules(
-			uuid		TEXT		PRIMARY KEY,
+			id			INT			PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT		NOT NULL,
 			name		TEXT		NOT NULL,
 			creator		TEXT		NOT NULL,
 			version		TEXT		NOT NULL,
