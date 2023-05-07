@@ -3,7 +3,9 @@ import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import {AdminRank, Option, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
-import { ADMIN_USERNAMES }				from "./consts.js";
+import { ADMINS }						from "./consts.js";
+
+const DEFAULT_PASSWORD_FOR_TESTING = "asdf";
 
 util.loadEnv();
 util.checkEnvReady([
@@ -91,7 +93,7 @@ export namespace db {
 
 	export async function getUser(username: string) {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
-			SELECT name, uuid, adminRank, bio FROM users
+			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username]))[0][0];
 	}
@@ -171,12 +173,11 @@ export namespace db {
 export default db;
 
 
-
-ADMIN_USERNAMES.forEach(async (v) => {
-	db.setAdminRank(v, AdminRank.Operator);
-	db.updateBio(v, "This account is reserved for admin use only.");
+// Remove this once there's a way for user "Mira" to assign ranks.
+Object.entries(ADMINS).forEach(async ([name, rank]) => {
+	db.registerIfNotExists(name, DEFAULT_PASSWORD_FOR_TESTING);
+	db.setAdminRank(name, rank);
 });
-
 
 async function initTables(conn: mysql.Pool) {
 	conn.execute(`
@@ -190,6 +191,7 @@ async function initTables(conn: mysql.Pool) {
 			emailVerified	BOOL		NOT NULL DEFAULT 0,
 			emailVToken		TEXT,
 			authToken		TEXT,
+			pfpSrc			TEXT,
 			bio				TEXT
 		);
 	`);

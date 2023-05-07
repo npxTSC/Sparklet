@@ -76,6 +76,7 @@ export namespace SparkletDB {
 		emailVerified:	boolean,
 		emailVToken?:	string,
 		authToken?:		string,
+		pfpSrc?:		string,
 		bio?:			string,
 	}
 
