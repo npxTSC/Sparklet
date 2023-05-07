@@ -174,7 +174,7 @@ app.post("/login", async (req, res) => {
 			console.log(`User ${user} logged in successfully`);
 
 			// Change login token in DB
-			const token = makeNewTokenFor(user);
+			const token = await makeNewTokenFor(user);
 			
 			res.cookie("user", user);
 			res.cookie("luster", token);
@@ -187,7 +187,7 @@ app.post("/login", async (req, res) => {
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			db.editLoginToken(user, null);
+			await db.editLoginToken(user, null);
 			
 			return res.redirect("/login");
 
@@ -202,10 +202,10 @@ app.post("/login", async (req, res) => {
 		res.redirect("/login?ecode="+code);
 	}
 
-	function makeNewTokenFor(user: string) {
+	async function makeNewTokenFor(user: string) {
 		const token = generateToken(512);
 
-		db.editLoginToken(user, token);
+		await db.editLoginToken(user, token);
 		return token;
 	}
 });
@@ -220,7 +220,7 @@ app.get("/conductors/:profile", async (req, res) => {
 	
 	if (str.containsSpecials(profile)) return throw404(res);
 	
-	let row = db.getUser(profile);
+	let row = await db.getUser(profile);
 
 	if (!row) return throw404(res);
 	
@@ -249,13 +249,13 @@ app.get("/news", async (req, res) => {
 	res.render("news", {qposts});
 });
 
-app.get("/sparks/:SparkID", (req, res) => {
+app.get("/sparks/:SparkID", async (req, res) => {
 	let sparkId = req.params["SparkID"];
 	if (!sparkId) return throw404(res);
 
 	sparkId = sanitize(sparkId);
 
-	let post = db.getGame(sparkId);
+	let post = await db.getGame(sparkId);
 
 	if (!post) return throw404(res);
 
