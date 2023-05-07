@@ -9,7 +9,9 @@ services:
   db:
     image: mariadb
     env_file:
-    - .env
+      - .env
+    environment:
+      - MARIADB_DATABASE=sparklet_main
     volumes:
       - ./data:/var/lib/mysql
     ports:

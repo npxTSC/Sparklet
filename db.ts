@@ -10,6 +10,7 @@ util.checkEnvReady([
 ]);
 
 const conn = await mysql.createPool({
+	database:	"sparklet_main",
 	host:		"db",
 	user:		"root",
 	password:	process.env["MARIADB_ROOT_PASSWORD"],
@@ -182,14 +183,6 @@ db.updateBio(v, "This account is reserved for admin use only.");
 
 
 async function initTables(conn: mysql.Pool) {
-	await conn.execute(`
-		CREATE DATABASE IF NOT EXISTS sparklet_main;
-	`);
-
-	await conn.execute(`
-		USE sparklet_main;
-	`);
-
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS users(
 			id				INT			PRIMARY KEY AUTO_INCREMENT,
