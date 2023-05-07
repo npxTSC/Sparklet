@@ -13,6 +13,9 @@ services:
     environment:
       - MARIADB_DATABASE=sparklet_main
     volumes:
-      - ./data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     ports:
       - "3001:3306"
+
+volumes:
+  db-data: {}
