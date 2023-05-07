@@ -26,12 +26,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-	account?:	AccountPublic;
-}
-
-export interface AccountPublic {
-	name:	string;
-	uuid:	string;
+//	account?:	AccountPublic;
 }
 
 export interface QuizHostCommand {
@@ -50,17 +45,6 @@ export type QuizHostCmdFn = (
 		QuizHostResponse
 );
 
-export interface Capsule {
-	uuid:		string;
-	name:		string;
-	creator:	string;
-	version:	string;
-	content:	string;
-	visible:	boolean;
-	date:		Date;
-	likes:		number;
-}
-
 export interface CapsuleContent {
 	questions:	Record<string, number>;
 	answers:	string[];
@@ -75,53 +59,70 @@ export enum AdminRank {
 }
 
 export namespace SparkletDB {
-	interface SparkletUser extends RowDataPacket {
+	/*
+	* These interfaces should all contain only primitives...
+	*
+	* Maybe create classes that have methods to access
+	* data in a more dev-friendly way later?
+	*/
+
+	export interface SparkletUser extends RowDataPacket {
 		id:				number,
 		uuid:			string,
 		name:			string,
 		passHash:		string,
 		date:			number,
-		adminRank:		AdminRank,
+		adminRank:		number,
 		emailVerified:	boolean,
 		emailVToken?:	string,
 		authToken?:		string,
 		bio?:			string,
 	}
 
-	export type SparkletUserPrivate =
+	export type SparkletUserPublic =
 		Omit<SparkletUser, "id" | "passHash" | "emailVToken" | "authToken">;
+	
+	export interface Capsule {
+		id:			number,
+		uuid:		string;
+		name:		string;
+		creator:	string;
+		version:	string;
+		content:	string;
+		visible:	boolean;
+		date:		number;
+		likes:		number;
+	}
 
-	/*
-		CREATE TABLE IF NOT EXISTS news(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			title		TEXT		NOT NULL,
-			author		TEXT		NOT NULL DEFAULT 'Anonymous',
-			content		TEXT		NOT NULL,
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
-		);
+	export type CapsulePublic =
+		Omit<Capsule, "id">;
+	
+	export interface NewsPost {
+		id:			number,
+		uuid:		string;
+		title:		string;
+		author:		string;
+		content:	string;
+		visible:	boolean;
+		date:		number;
 
-		CREATE TABLE IF NOT EXISTS games(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			title		TEXT		NOT NULL,
-			creator		TEXT		NOT NULL DEFAULT 'Anonymous',
-			description	TEXT		NOT NULL DEFAULT 'No description given... :(',
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
-		);
-		
-		CREATE TABLE IF NOT EXISTS capsules(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			name		TEXT		NOT NULL,
-			creator		TEXT		NOT NULL,
-			version		TEXT		NOT NULL,
-			content		TEXT		NOT NULL,
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			likes		INTEGER		NOT NULL DEFAULT 0
-		);
-	*/
+//		possible new feature?
+//		likes:		number;
+	}
+
+	export type NewsPostPublic =
+		Omit<Capsule, "id">;
+
+	export interface Spark {
+		id:				number,
+		uuid:			string;
+		title:			string;
+		creator:		string;
+		description:	string;
+		visible:		boolean;
+		date:			number;
+	}
+
+	export type SparkPublic =
+		Omit<Capsule, "id">;
 }
