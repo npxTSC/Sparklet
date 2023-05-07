@@ -13,4 +13,4 @@ services:
     volumes:
       - ./data:/var/lib/mysql
     ports:
-      - "3001:3001"
+      - "3001:3306"

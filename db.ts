@@ -10,8 +10,7 @@ util.checkEnvReady([
 ]);
 
 const conn = await mysql.createPool({
-	host:		"0.0.0.0",
-	port:		3001,
+	host:		"db",
 	user:		"root",
 	password:	process.env["MYSQL_ROOT_PASSWORD"],
 });
