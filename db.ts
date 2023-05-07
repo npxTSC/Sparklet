@@ -95,8 +95,13 @@ export namespace db {
 			WHERE LOWER(name) = LOWER(?);
 		`, [newToken, user]))[0][0];
 	}
-	//SELECT name, uuid FROM users
-	//WHERE LOWER(name) = LOWER(?) AND authToken = (?);
+
+	export async function verifyLoginToken(user: string, token: string) {
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+			SELECT name, uuid FROM users
+			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
+		`, [user, token]))[0][0];
+	}
 
 	export async function getUser(username: string) {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
