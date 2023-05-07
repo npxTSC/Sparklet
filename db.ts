@@ -183,9 +183,9 @@ function initTables(conn: mysql.Pool) {
 			uuid			TEXT		NOT NULL,
 			name			TEXT		NOT NULL,
 			passHash		TEXT		NOT	NULL,
-			date			DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			adminRank		INTEGER		NOT NULL DEFAULT 0,
-			emailVerified	BOOLEAN		NOT NULL DEFAULT 0,
+			date			BIGINT		NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			adminRank		INT			NOT NULL DEFAULT 0,
+			emailVerified	BOOL		NOT NULL DEFAULT 0,
 			emailVToken		TEXT,
 			authToken		TEXT,
 			bio				TEXT,
@@ -194,39 +194,39 @@ function initTables(conn: mysql.Pool) {
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS news(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			title		TEXT		NOT NULL,
-			author		TEXT		NOT NULL DEFAULT 'Anonymous',
-			content		TEXT		NOT NULL,
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
+			id			INT				PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT			NOT NULL,
+			title		TEXT			NOT NULL,
+			author		TEXT			NOT NULL DEFAULT 'Anonymous',
+			content		TEXT			NOT NULL,
+			visible		BOOL			NOT NULL DEFAULT 1,
+			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
 	`);
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS games(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			title		TEXT		NOT NULL,
-			creator		TEXT		NOT NULL DEFAULT 'Anonymous',
-			description	TEXT		NOT NULL DEFAULT 'No description given... :(',
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP
+			id			INT				PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT			NOT NULL,
+			title		TEXT			NOT NULL,
+			creator		TEXT			NOT NULL DEFAULT 'Anonymous',
+			description	TEXT			NOT NULL DEFAULT 'No description given... :(',
+			visible		BOOL			NOT NULL DEFAULT 1,
+			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
 		);
 	`);
 
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS capsules(
-			id			INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT		NOT NULL,
-			name		TEXT		NOT NULL,
-			creator		TEXT		NOT NULL,
-			version		TEXT		NOT NULL,
-			content		TEXT		NOT NULL,
-			visible		BOOLEAN		NOT NULL DEFAULT 1,
-			date		DATETIME	NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			likes		INTEGER		NOT NULL DEFAULT 0
+			id			INT				PRIMARY KEY AUTO_INCREMENT,
+			uuid		TEXT			NOT NULL,
+			name		TEXT			NOT NULL,
+			creator		TEXT			NOT NULL,
+			version		TEXT			NOT NULL,
+			content		TEXT			NOT NULL,
+			visible		BOOL			NOT NULL DEFAULT 1,
+			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			likes		INT				NOT NULL DEFAULT 0
 		);
 	`);
 }
