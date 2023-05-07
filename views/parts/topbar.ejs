@@ -30,7 +30,7 @@
 
 		<a href="<%= account?.name ?
 			`/conductors/${account.name.toLowerCase()}` : "/login" %>">
-			<img <%- include("pfp-src", {pfpOwner: account?.name}); %>
+			<img <%- include("pfp-src", {pfpSrc: account?.pfpSrc}); %>
 			width="50" height="50" class="profile-picture me-3" alt="PFP">
 		</a>
 		
