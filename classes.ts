@@ -82,7 +82,7 @@ export namespace SparkletDB {
 	export type SparkletUserPublic =
 		Omit<SparkletUser, "id" | "passHash" | "emailVToken" | "authToken">;
 	
-	export interface Capsule {
+	export interface Capsule extends RowDataPacket {
 		id:			number,
 		uuid:		string;
 		name:		string;
@@ -97,7 +97,7 @@ export namespace SparkletDB {
 	export type CapsulePublic =
 		Omit<Capsule, "id">;
 	
-	export interface NewsPost {
+	export interface NewsPost extends RowDataPacket {
 		id:			number,
 		uuid:		string;
 		title:		string;
@@ -113,7 +113,7 @@ export namespace SparkletDB {
 	export type NewsPostPublic =
 		Omit<Capsule, "id">;
 
-	export interface Spark {
+	export interface Spark extends RowDataPacket {
 		id:				number,
 		uuid:			string;
 		title:			string;
