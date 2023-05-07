@@ -134,7 +134,8 @@ app.post("/login", async (req, res) => {
 	} = req.body;
 	
 	// Empty usernames, specially crafted requests with missing fields, etc.
-	if ([user, pass, action].some(v => (typeof v === "undefined" || v.length === 0))) {
+	if (action !== "Log Out" &&
+		[user, pass, action].some(v => (typeof v === "undefined" || v.length === 0))) {
 		return fail("l-noInput");
 	}
 
