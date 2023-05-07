@@ -10,7 +10,8 @@ const DEFAULT_PASSWORD_FOR_TESTING = "asdf";
 
 util.loadEnv();
 util.checkEnvReady([
-	"MARIADB_ROOT_PASSWORD",
+	"DB_USER",
+	"DB_PASS",
 ]);
 
 console.log("Waiting for MariaDB container...");
@@ -26,8 +27,8 @@ console.log("MariaDB container is up! Connecting...");
 const conn = await mysql.createPool({
 	database:	"sparklet_main",
 	host:		"db",
-	user:		"root",
-	password:	process.env["MARIADB_ROOT_PASSWORD"],
+	user:		process.env["DB_USER"],
+	password:	process.env["DB_PASS"],
 });
 
 console.log("Connected to DB.");
