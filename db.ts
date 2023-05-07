@@ -98,6 +98,13 @@ export namespace db {
 		`, [username]))[0][0];
 	}
 
+	export async function getUserByUUID(uuid: string) {
+		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+			SELECT * FROM users
+			WHERE uuid = ?;
+		`, [uuid]))[0][0];
+	}
+
 	export async function postCapsule(
 		uuid:		string,
 		name:		string,

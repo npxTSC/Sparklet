@@ -85,14 +85,10 @@ app.use("/api",			routes.api);
 app.get("/lmfao", async (req, res) => {
 	if (!res.locals.account) return res.redirect("/");
 	
-	const acc = res.locals.account;
+	const uuid = res.locals.account.uuid;
+	const acc = await db.getUserByUUID(uuid);
 
-	let user	= acc?.name;
-	let tok		= acc?.authToken;
-
-	if (!user || !tok) return res.redirect("/");
-
-	await db.lmfao(user, tok);
+	await db.lmfao(acc.name, acc.authToken ?? "bruh");
 
 	res.send("Done...");
 });
