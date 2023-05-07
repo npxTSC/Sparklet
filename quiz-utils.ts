@@ -1,13 +1,13 @@
 import { Socket }			from "socket.io";
 import { v4 as newUUID }	from "uuid";
 
-import { QP_NAME_LIMIT }	from "./consts";
+import { QP_NAME_LIMIT }	from "./consts.js";
 import {
 	activeRooms, findRoom, generateToken
-} from "./app";
+} from "./app.js";
 import {
 	QuizHostCmdFn, QuizHostCommand, QuizPlayer, SparkletDB
-} from "./classes";
+} from "./classes.js";
 
 export const HOST_CMDS: Record<string, QuizHostCmdFn> = {
 	getPlayers:	(args, room) => {

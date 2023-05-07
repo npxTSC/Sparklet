@@ -1,7 +1,7 @@
 "use strict";
 
 import Express	from "express";
-import db		from "../db";
+import db		from "../db.js";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";

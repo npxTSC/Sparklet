@@ -20,13 +20,13 @@ util.loadEnv();
 // Local Modules
 import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
-} from "./classes";
-import db						from "./db";
-import accountParser			from "./middleware/accounts";
-import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils";
-import * as routes				from "./routes/all";
-import { PORT }					from "./consts";
-import * as util				from "./util";
+} from "./classes.js";
+import db						from "./db.js";
+import accountParser			from "./middleware/accounts.js";
+import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
+import * as routes				from "./routes/all.js";
+import { PORT }					from "./consts.js";
+import * as util				from "./util.js";
 
 // App
 export const app					= Express();

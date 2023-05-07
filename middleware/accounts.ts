@@ -1,7 +1,7 @@
 // Middleware to add account data to req
 "use strict";
 
-import {db}		from "../db";
+import {db}		from "../db.js";
 
 import {
 	Request,

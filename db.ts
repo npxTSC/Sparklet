@@ -1,8 +1,8 @@
 import mysql 				from "mysql2/promise";
 import {v4 as newUUID}		from "uuid";
 import bcrypt	 			from "bcrypt";
-import {AdminRank, Option, SparkletDB}	from "./classes";
-import * as util			from "./util";
+import {AdminRank, Option, SparkletDB}	from "./classes.js";
+import * as util			from "./util.js";
 
 util.checkEnvReady([
 	"ADMIN_PASSWORD",
