@@ -15,7 +15,7 @@ const conn = await mysql.createPool({
 	password:	process.env["MARIADB_ROOT_PASSWORD"],
 });
 
-initTables(conn);
+await initTables(conn);
 
 /*
 * This SHOULD be the external interface for accessing
@@ -181,7 +181,15 @@ db.updateBio(v, "This account is reserved for admin use only.");
 });
 
 
-function initTables(conn: mysql.Pool) {
+async function initTables(conn: mysql.Pool) {
+	await conn.execute(`
+		CREATE DATABASE IF NOT EXISTS sparklet_main;
+	`);
+
+	await conn.execute(`
+		USE sparklet_main;
+	`);
+
 	conn.execute(`
 		CREATE TABLE IF NOT EXISTS users(
 			id				INT			PRIMARY KEY AUTO_INCREMENT,
@@ -193,7 +201,7 @@ function initTables(conn: mysql.Pool) {
 			emailVerified	BOOL		NOT NULL DEFAULT 0,
 			emailVToken		TEXT,
 			authToken		TEXT,
-			bio				TEXT,
+			bio				TEXT
 		);
 	`);
 
