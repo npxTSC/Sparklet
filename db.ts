@@ -212,8 +212,7 @@ async function initTables(conn: mysql.Pool) {
 	await Promise.all([
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS users(
-				id				INT			PRIMARY KEY AUTO_INCREMENT,
-				uuid			TEXT		NOT NULL,
+				uuid			UUID		PRIMARY KEY DEFAULT (UUID()),
 				name			TEXT		NOT NULL,
 				passHash		TEXT		NOT	NULL,
 				date			BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP()),
@@ -228,39 +227,36 @@ async function initTables(conn: mysql.Pool) {
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS news(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				title		TEXT			NOT NULL,
-				author		TEXT			NOT NULL DEFAULT 'Anonymous',
-				content		TEXT			NOT NULL,
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP())
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				title		TEXT		NOT NULL,
+				author		TEXT		NOT NULL DEFAULT 'Anonymous',
+				content		TEXT		NOT NULL,
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS games(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				title		TEXT			NOT NULL,
-				creator		TEXT			NOT NULL DEFAULT 'Anonymous',
-				description	TEXT			NOT NULL DEFAULT 'No description given... :(',
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP())
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				title		TEXT		NOT NULL,
+				creator		TEXT		NOT NULL DEFAULT 'Anonymous',
+				description	TEXT		NOT NULL DEFAULT 'No description given... :(',
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS capsules(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				name		TEXT			NOT NULL,
-				creator		TEXT			NOT NULL,
-				version		TEXT			NOT NULL,
-				content		TEXT			NOT NULL,
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT (UNIX_TIMESTAMP()),
-				likes		INT				NOT NULL DEFAULT 0
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				name		TEXT		NOT NULL,
+				creator		TEXT		NOT NULL,
+				version		TEXT		NOT NULL,
+				content		TEXT		NOT NULL,
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+				likes		INT			NOT NULL DEFAULT 0
 			);
 		`),
 	]);
