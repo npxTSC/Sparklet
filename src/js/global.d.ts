@@ -1,7 +1,7 @@
-import {AccountPublic}	from "../../classes";
+import {SparkletDB}	from "../../classes";
 export {}
 
 declare global {
 	//var EJS: any;
-	var currentAccount: AccountPublic;
+	var currentAccount: SparkletDB.SparkletUser;
 }

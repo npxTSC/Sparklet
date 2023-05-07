@@ -1,7 +1,7 @@
 // Capsule search page
 "use strict";
 
-import {Capsule, CapsuleContent}	from "../../classes";
+import {SparkletDB, CapsuleContent}	from "../../classes";
 import {cmon}						from "libdx";
 
 // Elements
@@ -13,7 +13,7 @@ const noResultsE	= document.getElementById("noresults")		as HTMLDivElement;
 
 
 const listingBlueprint = resultsbox.lastElementChild as HTMLDivElement;
-function makeListingE(	capsule: Capsule,
+function makeListingE(	capsule: SparkletDB.Capsule,
 						content: CapsuleContent	): HTMLDivElement {
 	
 	const el = <HTMLDivElement>listingBlueprint.cloneNode(true);
@@ -70,7 +70,7 @@ function fetchCapsules(query?: string) {
 		.then(updateListings);
 }
 
-function updateListings(rows: Capsule[]) {
+function updateListings(rows: SparkletDB.Capsule[]) {
 	// Clear previous results
 	listingsDiv.innerHTML = "";
 
