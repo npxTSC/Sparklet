@@ -68,7 +68,7 @@ export namespace db {
 	export async function getFromUsername(user: string) {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			SELECT name, uuid, passHash FROM users
-			WHERE name = ? COLLATE NOCASE;
+			WHERE LOWER(name) = LOWER(?);
 		`, [user]))[0][0];
 	}
 
@@ -76,7 +76,7 @@ export namespace db {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET adminRank = ?
-			WHERE name = ? COLLATE NOCASE;
+			WHERE LOWER(name) = LOWER(?);
 		`, [rank, user]))[0][0];
 	}
 
@@ -84,7 +84,7 @@ export namespace db {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET bio = ?
-			WHERE name = ? COLLATE NOCASE;
+			WHERE LOWER(name) = LOWER(?);
 		`, [bio, user]))[0][0];
 	}
 
@@ -92,14 +92,16 @@ export namespace db {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET authToken = ?
-			WHERE name = ? COLLATE NOCASE;
+			WHERE LOWER(name) = LOWER(?);
 		`, [newToken, user]))[0][0];
 	}
+	//SELECT name, uuid FROM users
+	//WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 
 	export async function getUser(username: string) {
 		return (await conn.execute<SparkletDB.SparkletUser[]>(`
 			SELECT name, uuid, adminRank, bio FROM users
-			WHERE name = ? COLLATE NOCASE;
+			WHERE LOWER(name) = LOWER(?);
 		`, [username]))[0][0];
 	}
 
