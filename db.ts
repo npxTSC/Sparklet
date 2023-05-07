@@ -180,57 +180,61 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
 });
 
 async function initTables(conn: mysql.Pool) {
-	conn.execute(`
-		CREATE TABLE IF NOT EXISTS users(
-			id				INT			PRIMARY KEY AUTO_INCREMENT,
-			uuid			TEXT		NOT NULL,
-			name			TEXT		NOT NULL,
-			passHash		TEXT		NOT	NULL,
-			date			BIGINT		NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			adminRank		INT			NOT NULL DEFAULT 0,
-			emailVerified	BOOL		NOT NULL DEFAULT 0,
-			emailVToken		TEXT,
-			authToken		TEXT,
-			pfpSrc			TEXT,
-			bio				TEXT
-		);
-	`);
+	await conn.execute(`DROP TABLE IF EXISTS users;`);
 
-	conn.execute(`
-		CREATE TABLE IF NOT EXISTS news(
-			id			INT				PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT			NOT NULL,
-			title		TEXT			NOT NULL,
-			author		TEXT			NOT NULL DEFAULT 'Anonymous',
-			content		TEXT			NOT NULL,
-			visible		BOOL			NOT NULL DEFAULT 1,
-			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
-		);
-	`);
+	await Promise.all([
+		conn.execute(`
+			CREATE TABLE IF NOT EXISTS users(
+				id				INT			PRIMARY KEY AUTO_INCREMENT,
+				uuid			TEXT		NOT NULL,
+				name			TEXT		NOT NULL,
+				passHash		TEXT		NOT	NULL,
+				date			BIGINT		NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				adminRank		INT			NOT NULL DEFAULT 0,
+				emailVerified	BOOL		NOT NULL DEFAULT 0,
+				emailVToken		TEXT,
+				authToken		TEXT,
+				pfpSrc			TEXT,
+				bio				TEXT
+			);
+		`),
 
-	conn.execute(`
-		CREATE TABLE IF NOT EXISTS games(
-			id			INT				PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT			NOT NULL,
-			title		TEXT			NOT NULL,
-			creator		TEXT			NOT NULL DEFAULT 'Anonymous',
-			description	TEXT			NOT NULL DEFAULT 'No description given... :(',
-			visible		BOOL			NOT NULL DEFAULT 1,
-			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
-		);
-	`);
+		conn.execute(`
+			CREATE TABLE IF NOT EXISTS news(
+				id			INT				PRIMARY KEY AUTO_INCREMENT,
+				uuid		TEXT			NOT NULL,
+				title		TEXT			NOT NULL,
+				author		TEXT			NOT NULL DEFAULT 'Anonymous',
+				content		TEXT			NOT NULL,
+				visible		BOOL			NOT NULL DEFAULT 1,
+				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+			);
+		`),
 
-	conn.execute(`
-		CREATE TABLE IF NOT EXISTS capsules(
-			id			INT				PRIMARY KEY AUTO_INCREMENT,
-			uuid		TEXT			NOT NULL,
-			name		TEXT			NOT NULL,
-			creator		TEXT			NOT NULL,
-			version		TEXT			NOT NULL,
-			content		TEXT			NOT NULL,
-			visible		BOOL			NOT NULL DEFAULT 1,
-			date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			likes		INT				NOT NULL DEFAULT 0
-		);
-	`);
+		conn.execute(`
+			CREATE TABLE IF NOT EXISTS games(
+				id			INT				PRIMARY KEY AUTO_INCREMENT,
+				uuid		TEXT			NOT NULL,
+				title		TEXT			NOT NULL,
+				creator		TEXT			NOT NULL DEFAULT 'Anonymous',
+				description	TEXT			NOT NULL DEFAULT 'No description given... :(',
+				visible		BOOL			NOT NULL DEFAULT 1,
+				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+			);
+		`),
+
+		conn.execute(`
+			CREATE TABLE IF NOT EXISTS capsules(
+				id			INT				PRIMARY KEY AUTO_INCREMENT,
+				uuid		TEXT			NOT NULL,
+				name		TEXT			NOT NULL,
+				creator		TEXT			NOT NULL,
+				version		TEXT			NOT NULL,
+				content		TEXT			NOT NULL,
+				visible		BOOL			NOT NULL DEFAULT 1,
+				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				likes		INT				NOT NULL DEFAULT 0
+			);
+		`),
+	]);
 }
