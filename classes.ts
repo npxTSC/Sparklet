@@ -67,7 +67,6 @@ export namespace SparkletDB {
 	*/
 
 	export interface SparkletUser extends RowDataPacket {
-		id:				number,
 		uuid:			string,
 		name:			string,
 		passHash:		string,
@@ -84,7 +83,6 @@ export namespace SparkletDB {
 		Omit<SparkletUser, "id" | "passHash" | "emailVToken" | "authToken">;
 	
 	export interface Capsule extends RowDataPacket {
-		id:			number,
 		uuid:		string;
 		name:		string;
 		creator:	string;
@@ -94,12 +92,8 @@ export namespace SparkletDB {
 		date:		number;
 		likes:		number;
 	}
-
-	export type CapsulePublic =
-		Omit<Capsule, "id">;
 	
 	export interface NewsPost extends RowDataPacket {
-		id:			number,
 		uuid:		string;
 		title:		string;
 		author:		string;
@@ -111,11 +105,7 @@ export namespace SparkletDB {
 //		likes:		number;
 	}
 
-	export type NewsPostPublic =
-		Omit<Capsule, "id">;
-
 	export interface Spark extends RowDataPacket {
-		id:				number,
 		uuid:			string;
 		title:			string;
 		creator:		string;
@@ -123,7 +113,4 @@ export namespace SparkletDB {
 		visible:		boolean;
 		date:			number;
 	}
-
-	export type SparkPublic =
-		Omit<Capsule, "id">;
 }

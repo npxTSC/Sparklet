@@ -143,7 +143,7 @@ export namespace db {
 		return (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`, [query]))[0];
 	}
@@ -169,7 +169,7 @@ export namespace db {
 		return (await conn.execute<SparkletDB.Spark[]>(`
 			SELECT *
 			FROM games WHERE visible = 1
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
 	}
@@ -185,7 +185,7 @@ export namespace db {
 		return (await conn.execute<SparkletDB.NewsPost[]>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
 	}
