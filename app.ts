@@ -41,9 +41,9 @@ const io							= new ioServer(server);
 // Middleware
 app.use(
 	rateLimit({
-		// 60 requests per minute allowed
+		// 600 requests per minute allowed
 		windowMs:			60_000,
-		max:				60,
+		max:				600,
 
 		// Return rate limit info in the `RateLimit-*` headers
 		standardHeaders:	true,
