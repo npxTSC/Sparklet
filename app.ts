@@ -14,6 +14,7 @@ import fs					from "fs";
 import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
 import rateLimit			from "express-rate-limit";
+import helmet				from "helmet";
 import "ejs";
 
 export const __filename	= fileURLToPath(import.meta.url);
@@ -51,6 +52,7 @@ app.use(
 );
 
 app.use(cparse());
+app.use(helmet());
 app.use(accountParser);
 app.use(gzipCompression());
 app.use(Express.json());
