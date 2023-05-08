@@ -14,6 +14,6 @@ export function checkEnvReady(requiredVars: string[]) {
 export function dateify<T extends Dateable>(obj: T): TimestampIntoDate<T> {
 	return {
 		...obj,
-		date: new Date(obj.date),
+		date: new Date(obj.date * 1000),
 	}
 }
