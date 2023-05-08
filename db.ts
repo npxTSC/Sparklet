@@ -52,9 +52,7 @@ async function executeGetDateify<T extends mysql.RowDataPacket & Dateable>(
 	conn:	mysql.Pool,
 	nth:	number,
 ): Promise<Option<TimestampIntoDate<T>>> {
-	const res = await conn.execute<T[]>(sql, values);
-	const atNth = res[0][nth];
-
+	const atNth = await executeGet<T>(sql, values, conn, nth);
 	return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
 }
 
