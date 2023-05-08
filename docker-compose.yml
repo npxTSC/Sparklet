@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     environment:
-      - MARIADB_DATABASE=sparklet_main
+      - MARIADB_DATABASE=main
     volumes:
       - db-data:/var/lib/mysql
     ports:

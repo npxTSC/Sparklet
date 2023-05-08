@@ -2,7 +2,7 @@ import mysql 							from "mysql2/promise";
 import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import waitOn							from "wait-on";
-import {AdminRank, Option, SparkletDB}	from "./classes.js";
+import {Option, Nullable, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
 import { ADMINS }						from "./consts.js";
 
@@ -25,7 +25,7 @@ await waitOn({
 
 console.log("MariaDB container is up! Connecting...");
 const conn = await mysql.createPool({
-	database:	"sparklet_main",
+	database:	"main",
 	host:		"db",
 	user:		process.env["DB_USER"],
 	password:	process.env["DB_PASS"],
@@ -35,17 +35,16 @@ console.log("Connected to DB.");
 
 await initTables(conn);
 
-/*
-* This SHOULD be the external interface for accessing
-* database stuff... Clearly, it's not, though, and that
-* needs to change soon. Code outside db.ts and statements.ts
-* should not be able to do anything with the DB except
-* calling the provided methods. Maintaining code like this
-* in its current state is really annoying when requirements
-* are constantly changing.
-*
-* tl;dr git gud at encapsulation
-*/
+// type-safe shorthand for doing execute()[0][n]
+async function executeGet<T extends mysql.RowDataPacket>(
+	sql:	string,
+	values:	any[],
+	conn:	mysql.Pool,
+	nth:	number,
+): Promise<Option<T>> {
+	const res = await conn.execute<T[]>(sql, values);
+	return res[0][nth];
+}
 
 export namespace db {
 	export async function register(user: string, pass: string) {
@@ -68,55 +67,63 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
-		`, [user]))[0][0];
+		`, [user], conn, 0);
+
+		return util.dateify(res) as Option<SparkletDB.SparkletUser<Date>>;
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		return await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [rank, user]))[0][0];
+		`, [rank, user]);
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET bio = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [bio, user]))[0][0];
+		`, [bio, user]);
 	}
 
-	export async function editLoginToken(user: string, newToken: Option<string>) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+	export async function editLoginToken(user: string, newToken: Nullable<string>) {
+		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET authToken = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [newToken, user]))[0][0];
+		`, [newToken, user]);
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
-		`, [user, token]))[0][0];
+		`, [user, token], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function getUser(username: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
-		`, [username]))[0][0];
+		`, [username], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function postCapsule(
@@ -126,68 +133,84 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = await executeGet<SparkletDB.Capsule<number>>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
-		`, [uuid, name, creator, version, content]))[0][0];
+		`, [uuid, name, creator, version, content], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = await executeGet<SparkletDB.Capsule<number>>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid]))[0][0];
+		`, [capsuleUuid], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function searchCapsules(query: string) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`, [query]))[0];
+		
+		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
 	}
 
 	export async function capsuleQPosts() {
 		// TODO select less data... qposts are only surface-level overviews
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
 	}
 
 	export async function getGame(uuid: string) {
-		return (await conn.execute<SparkletDB.Spark[]>(`
+		const res = await executeGet<SparkletDB.Spark<number>>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function gameQPosts() {
-		return (await conn.execute<SparkletDB.Spark[]>(`
+		const res = (await conn.execute<SparkletDB.Spark<number>[]>(`
 			SELECT *
 			FROM games WHERE visible = 1
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify) as unknown as SparkletDB.Spark<Date>[];
 	}
 
 	export async function getNews(uuid: string) {
-		return (await conn.execute<SparkletDB.NewsPost[]>(`
+		const res = await executeGet<SparkletDB.NewsPost<number>>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
+
+		return util.dateify(res);
 	}
 
 	export async function newsQPosts() {
-		return (await conn.execute<SparkletDB.NewsPost[]>(`
+		const res = (await conn.execute<SparkletDB.NewsPost<number>[]>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
-			ORDER BY id DESC
+			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify) as unknown as SparkletDB.NewsPost<Date>[];
 	}
 
 	export async function lmfao() {
@@ -212,11 +235,10 @@ async function initTables(conn: mysql.Pool) {
 	await Promise.all([
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS users(
-				id				INT			PRIMARY KEY AUTO_INCREMENT,
-				uuid			TEXT		NOT NULL,
+				uuid			UUID		PRIMARY KEY DEFAULT (UUID()),
 				name			TEXT		NOT NULL,
 				passHash		TEXT		NOT	NULL,
-				date			BIGINT		NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				date			BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP()),
 				adminRank		INT			NOT NULL DEFAULT 0,
 				emailVerified	BOOL		NOT NULL DEFAULT 0,
 				emailVToken		TEXT,
@@ -228,39 +250,36 @@ async function initTables(conn: mysql.Pool) {
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS news(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				title		TEXT			NOT NULL,
-				author		TEXT			NOT NULL DEFAULT 'Anonymous',
-				content		TEXT			NOT NULL,
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				title		TEXT		NOT NULL,
+				author		TEXT		NOT NULL DEFAULT 'Anonymous',
+				content		TEXT		NOT NULL,
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS games(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				title		TEXT			NOT NULL,
-				creator		TEXT			NOT NULL DEFAULT 'Anonymous',
-				description	TEXT			NOT NULL DEFAULT 'No description given... :(',
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				title		TEXT		NOT NULL,
+				creator		TEXT		NOT NULL DEFAULT 'Anonymous',
+				description	TEXT		NOT NULL DEFAULT 'No description given... :(',
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP())
 			);
 		`),
 
 		conn.execute(`
 			CREATE TABLE IF NOT EXISTS capsules(
-				id			INT				PRIMARY KEY AUTO_INCREMENT,
-				uuid		TEXT			NOT NULL,
-				name		TEXT			NOT NULL,
-				creator		TEXT			NOT NULL,
-				version		TEXT			NOT NULL,
-				content		TEXT			NOT NULL,
-				visible		BOOL			NOT NULL DEFAULT 1,
-				date		BIGINT			NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				likes		INT				NOT NULL DEFAULT 0
+				uuid		UUID		PRIMARY KEY DEFAULT (UUID()),
+				name		TEXT		NOT NULL,
+				creator		TEXT		NOT NULL,
+				version		TEXT		NOT NULL,
+				content		TEXT		NOT NULL,
+				visible		BOOL		NOT NULL DEFAULT 1,
+				date		BIGINT		NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+				likes		INT			NOT NULL DEFAULT 0
 			);
 		`),
 	]);

@@ -4,7 +4,14 @@
 import { RowDataPacket }	from "mysql2/promise";
 
 // crab noises
-export type Option<T> = T | null;
+export type Nullable<T>		= T | null;
+
+// Like Option<T>, but for values that may be undefined.
+export type Option<T>		= T | undefined;
+
+// Wow, okay... Calm down, Satan. We're using **types**, here.
+// Named after the ?? operator. Maybe there's a better name for this?
+export type MaybeNullish<T>	= T | null | undefined;
 
 export interface Conductor {
 	username:	string;
@@ -26,7 +33,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-	account?:	SparkletDB.SparkletUser;
+	account?:	SparkletDB.SparkletUser<Date>;
 }
 
 export interface QuizHostCommand {
@@ -58,20 +65,21 @@ export enum AdminRank {
 	Operator
 }
 
-export namespace SparkletDB {
-	/*
-	* These interfaces should all contain only primitives...
-	*
-	* Maybe create classes that have methods to access
-	* data in a more dev-friendly way later?
-	*/
+// Use `number` only when getting values out of DB
+// Otherwise, Date is preferred.
+export type DateLike = number | Date;
+export interface HasDateLike {
+	date: DateLike;
+}
 
-	export interface SparkletUser extends RowDataPacket {
-		id:				number,
+export namespace SparkletDB {
+	export interface SparkletUser<D extends DateLike>
+		extends RowDataPacket, HasDateLike {
+		
 		uuid:			string,
 		name:			string,
 		passHash:		string,
-		date:			number,
+		date:			D,
 		adminRank:		number,
 		emailVerified:	boolean,
 		emailVToken?:	string,
@@ -80,50 +88,44 @@ export namespace SparkletDB {
 		bio?:			string,
 	}
 
-	export type SparkletUserPublic =
-		Omit<SparkletUser, "id" | "passHash" | "emailVToken" | "authToken">;
+	export type SparkletUserPublic<D extends DateLike> =
+		Omit<SparkletUser<D>, "passHash" | "emailVToken" | "authToken">;
 	
-	export interface Capsule extends RowDataPacket {
-		id:			number,
+	export interface Capsule<D extends DateLike>
+		extends RowDataPacket, HasDateLike {
+
 		uuid:		string;
 		name:		string;
 		creator:	string;
 		version:	string;
 		content:	string;
 		visible:	boolean;
-		date:		number;
+		date:		D;
 		likes:		number;
 	}
-
-	export type CapsulePublic =
-		Omit<Capsule, "id">;
 	
-	export interface NewsPost extends RowDataPacket {
-		id:			number,
+	export interface NewsPost<D extends DateLike>
+		extends RowDataPacket, HasDateLike {
+
 		uuid:		string;
 		title:		string;
 		author:		string;
 		content:	string;
 		visible:	boolean;
-		date:		number;
+		date:		D;
 
 //		possible new feature?
 //		likes:		number;
 	}
 
-	export type NewsPostPublic =
-		Omit<Capsule, "id">;
-
-	export interface Spark extends RowDataPacket {
-		id:				number,
+	export interface Spark<D extends DateLike>
+		extends RowDataPacket, HasDateLike {
+		
 		uuid:			string;
 		title:			string;
 		creator:		string;
 		description:	string;
 		visible:		boolean;
-		date:			number;
+		date:			D;
 	}
-
-	export type SparkPublic =
-		Omit<Capsule, "id">;
 }
