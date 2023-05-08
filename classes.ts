@@ -66,25 +66,17 @@ export enum AdminRank {
 }
 
 export namespace SparkletDB {
-	export interface SparkletUser extends Omit<SparkletUserRow, "date"> {
-		date: Date,
-	}
+	// unfortunately i do not implement this type irl
+	export type Dateable<Inner> = Omit<Inner, "date"> & {date: Date};
+
+	// Row stuff, except date goes from number -> Date
+	export type SparkletUser	= Dateable<SparkletUserRow>;
+	export type Capsule			= Dateable<CapsuleRow>;
+	export type NewsPost		= Dateable<NewsPostRow>;
+	export type Spark			= Dateable<SparkRow>;
 
 	export type SparkletUserPublic =
 		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
-
-	export interface Capsule extends Omit<CapsuleRow, "date"> {
-		date: Date,
-	}
-
-	export interface NewsPost extends Omit<NewsPostRow, "date"> {
-		date: Date,
-	}
-
-	export interface Spark extends Omit<SparkRow, "date"> {
-		date: Date,
-	}
-
 
 	/*
 	* These types should only be used by code in db.ts!!!!

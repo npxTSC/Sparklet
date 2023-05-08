@@ -9,3 +9,5 @@ export function checkEnvReady(requiredVars: string[]) {
 		}
 	}
 }
+
+
