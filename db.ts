@@ -40,6 +40,13 @@ await initTables(conn);
 
 
 namespace dbGet {
+	/*
+	* Ideally, we only use conn.execute() for tasks that don't
+	* return anything related to the SQL command...
+	*
+	* Think of stuff like updating tokens, setting passwords, etc.
+	*/
+
 	export async function executeGetArr<T extends mysql.RowDataPacket>(
 		sql:	string,
 		values:	any[],
@@ -69,6 +76,25 @@ namespace dbGet {
 	): Promise<Option<TimestampIntoDate<T>>> {
 		const atNth = await executeGet<T>(sql, values, conn, nth);
 		return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
+	}
+
+	// shorthand to executeGet() and then dateify
+	export async function executeGetArrDateify<T extends DateablePacket>(
+		sql:	string,
+		values:	any[],
+		conn:	mysql.Pool,
+	): Promise<TimestampIntoDate<T>[]> {
+		const res = await executeGetArr<T>(sql, values, conn);
+
+		/*
+		* we can safely say it's not an Option<T>[] because...
+		* well, that'd be stupid. The only reason we used
+		* Option<T> earlier was because there was a chance
+		* that row 0 doesn't exist, but if someone calls this
+		* function, it's their responsibility to check length.
+		*/
+
+		return res.map(util.dateify);
 	}
 }
 
@@ -102,7 +128,7 @@ export namespace db {
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return await conn.execute<SparkletDB.SparkletUserRow[]>(`
+		return conn.execute(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -110,7 +136,7 @@ export namespace db {
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return conn.execute<SparkletDB.SparkletUserRow[]>(`
+		return conn.execute(`
 			UPDATE users
 			SET bio = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -118,7 +144,7 @@ export namespace db {
 	}
 
 	export async function editLoginToken(user: string, newToken: Nullable<string>) {
-		return conn.execute<SparkletDB.SparkletUserRow[]>(`
+		return conn.execute(`
 			UPDATE users
 			SET authToken = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -167,26 +193,22 @@ export namespace db {
 	}
 
 	export async function searchCapsules(query: string) {
-		const res = (await conn.execute<SparkletDB.CapsuleRow[]>(`
+		return await dbGet.executeGetArrDateify<SparkletDB.CapsuleRow>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
 			ORDER BY date DESC
 			LIMIT 25;
-		`, [query]))[0];
-		
-		return res;
+		`, [query], conn);
 	}
 
 	export async function capsuleQPosts() {
 		// TODO select less data... qposts are only surface-level overviews
-		const res = (await conn.execute<SparkletDB.CapsuleRow[]>(`
+		return await dbGet.executeGetArrDateify<SparkletDB.CapsuleRow>(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
-		`))[0];
-		
-		return res;
+		`, [], conn);
 	}
 
 	export async function getGame(uuid: string) {
@@ -197,14 +219,12 @@ export namespace db {
 	}
 
 	export async function gameQPosts() {
-		const res = (await conn.execute<SparkletDB.SparkRow[]>(`
+		return await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
-		`))[0];
-		
-		return res;
+		`, [], conn);
 	}
 
 	export async function getNews(uuid: string) {
@@ -215,14 +235,12 @@ export namespace db {
 	}
 
 	export async function newsQPosts() {
-		const res = (await conn.execute<SparkletDB.NewsPostRow[]>(`
+		return await dbGet.executeGetArrDateify<SparkletDB.NewsPostRow>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
-		`))[0];
-		
-		return res;
+		`, [], conn);
 	}
 
 	export async function lmfao() {
