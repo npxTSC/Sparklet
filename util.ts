@@ -13,9 +13,9 @@ export function checkEnvReady(requiredVars: string[]) {
 
 export function dateify<T extends Option<HasDateLike>>(obj: T) {
 	if (typeof obj === "undefined") return;
-	
+
 	const nobj = obj;
-	nobj.date = new Date(obj.date);
+	nobj.date = new Date((obj.date as number) * 1000);
 
 	return nobj;
 }

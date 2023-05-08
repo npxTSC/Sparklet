@@ -21,8 +21,8 @@
 			</h2>
 			<h3 class="newsdescription text-white">
 				from <%= qpost.author %>.<br><br>
-				Posted on <%= new Date(qpost.date*1000).toLocaleDateString() %> at
-				<%= new Date(qpost.date*1000).toLocaleTimeString(undefined,
+				Posted on <%= qpost.date.toLocaleDateString() %> at
+				<%= qpost.date.toLocaleTimeString(undefined,
 					{timeZone: "America/New_York"}) %>
 			</h3>
 		</a></div>
