@@ -66,7 +66,31 @@ export enum AdminRank {
 }
 
 export namespace SparkletDB {
-	export interface SparkletUser extends RowDataPacket {
+	export interface SparkletUser extends Omit<SparkletUserRow, "date"> {
+		date: Date,
+	}
+
+	export type SparkletUserPublic =
+		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
+
+	export interface Capsule extends Omit<CapsuleRow, "date"> {
+		date: Date,
+	}
+
+	export interface NewsPost extends Omit<NewsPostRow, "date"> {
+		date: Date,
+	}
+
+	export interface Spark extends Omit<SparkRow, "date"> {
+		date: Date,
+	}
+
+
+	/*
+	* These types should only be used by code in db.ts!!!!
+	*/
+
+	export interface SparkletUserRow extends RowDataPacket {
 		uuid:			string,
 		name:			string,
 		passHash:		string,
@@ -78,11 +102,8 @@ export namespace SparkletDB {
 		pfpSrc?:		string,
 		bio?:			string,
 	}
-
-	export type SparkletUserPublic =
-		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
 	
-	export interface Capsule extends RowDataPacket {
+	export interface CapsuleRow extends RowDataPacket {
 		uuid:		string;
 		name:		string;
 		creator:	string;
@@ -93,7 +114,7 @@ export namespace SparkletDB {
 		likes:		number;
 	}
 	
-	export interface NewsPost extends RowDataPacket {
+	export interface NewsPostRow extends RowDataPacket {
 		uuid:		string,
 		title:		string,
 		author:		string,
@@ -102,7 +123,7 @@ export namespace SparkletDB {
 		date:		number,
 	}
 
-	export interface Spark extends RowDataPacket {
+	export interface SparkRow extends RowDataPacket {
 		uuid:			string,
 		title:			string,
 		creator:		string,
