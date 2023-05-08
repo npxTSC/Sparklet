@@ -14,7 +14,6 @@ import fs					from "fs";
 import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
 import rateLimit			from "express-rate-limit";
-import helmet				from "helmet";
 import "ejs";
 
 export const __filename	= fileURLToPath(import.meta.url);
@@ -28,7 +27,7 @@ import {
 } from "./classes.js";
 import db						from "./db.js";
 import accountParser			from "./middleware/accounts.js";
-import cspNonce					from "./middleware/csp-nonce.js";
+import helmetCsp				from "./middleware/helmet-csp.js";
 import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
 import * as routes				from "./routes/all.js";
 import { PORT }					from "./consts.js";
@@ -53,17 +52,8 @@ app.use(
 );
 
 app.use(cparse());
-app.use(helmet.contentSecurityPolicy({
-	directives: {
-		...helmet.contentSecurityPolicy.getDefaultDirectives(),
-		"script-src": [
-			"'self'",
-			"https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js",
-		],
-	},
-}));
+app.use(helmetCsp);
 app.use(accountParser);
-app.use(cspNonce);
 app.use(gzipCompression());
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
