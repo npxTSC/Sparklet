@@ -33,7 +33,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-	account?:	SparkletDB.SparkletUser<Date>;
+	account?:	SparkletDB.SparkletUser;
 }
 
 export interface QuizHostCommand {
@@ -65,21 +65,12 @@ export enum AdminRank {
 	Operator
 }
 
-// Use `number` only when getting values out of DB
-// Otherwise, Date is preferred.
-export type DateLike = number | Date;
-export interface HasDateLike {
-	date: DateLike;
-}
-
 export namespace SparkletDB {
-	export interface SparkletUser<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-		
+	export interface SparkletUser extends RowDataPacket {
 		uuid:			string,
 		name:			string,
 		passHash:		string,
-		date:			D,
+		date:			number,
 		adminRank:		number,
 		emailVerified:	boolean,
 		emailVToken?:	string,
@@ -88,44 +79,35 @@ export namespace SparkletDB {
 		bio?:			string,
 	}
 
-	export type SparkletUserPublic<D extends DateLike> =
-		Omit<SparkletUser<D>, "passHash" | "emailVToken" | "authToken">;
+	export type SparkletUserPublic =
+		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
 	
-	export interface Capsule<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-
+	export interface Capsule extends RowDataPacket {
 		uuid:		string;
 		name:		string;
 		creator:	string;
 		version:	string;
 		content:	string;
 		visible:	boolean;
-		date:		D;
+		date:		number,
 		likes:		number;
 	}
 	
-	export interface NewsPost<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-
-		uuid:		string;
-		title:		string;
-		author:		string;
-		content:	string;
-		visible:	boolean;
-		date:		D;
-
-//		possible new feature?
-//		likes:		number;
+	export interface NewsPost extends RowDataPacket {
+		uuid:		string,
+		title:		string,
+		author:		string,
+		content:	string,
+		visible:	boolean,
+		date:		number,
 	}
 
-	export interface Spark<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-		
-		uuid:			string;
-		title:			string;
-		creator:		string;
-		description:	string;
-		visible:		boolean;
-		date:			D;
+	export interface Spark extends RowDataPacket {
+		uuid:			string,
+		title:			string,
+		creator:		string,
+		description:	string,
+		visible:		boolean,
+		date:			number,
 	}
 }

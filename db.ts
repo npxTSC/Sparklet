@@ -67,16 +67,16 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
+		const res = await executeGet<SparkletDB.SparkletUser>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [user], conn, 0);
 
-		return util.dateify(res) as Option<SparkletDB.SparkletUser<Date>>;
+		return res;
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return await conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		return await conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -84,7 +84,7 @@ export namespace db {
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		return conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET bio = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -92,7 +92,7 @@ export namespace db {
 	}
 
 	export async function editLoginToken(user: string, newToken: Nullable<string>) {
-		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		return conn.execute<SparkletDB.SparkletUser[]>(`
 			UPDATE users
 			SET authToken = ?
 			WHERE LOWER(name) = LOWER(?);
@@ -100,30 +100,30 @@ export namespace db {
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
+		const res = await executeGet<SparkletDB.SparkletUser>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 		`, [user, token], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function getUser(username: string) {
-		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
+		const res = await executeGet<SparkletDB.SparkletUser>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
+		const res = await executeGet<SparkletDB.SparkletUser>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
 		`, [uuid], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function postCapsule(
@@ -133,84 +133,84 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		const res = await executeGet<SparkletDB.Capsule<number>>(`
+		const res = await executeGet<SparkletDB.Capsule>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
 		`, [uuid, name, creator, version, content], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		const res = await executeGet<SparkletDB.Capsule<number>>(`
+		const res = await executeGet<SparkletDB.Capsule>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function searchCapsules(query: string) {
-		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
 			ORDER BY date DESC
 			LIMIT 25;
 		`, [query]))[0];
 		
-		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
+		return res;
 	}
 
 	export async function capsuleQPosts() {
 		// TODO select less data... qposts are only surface-level overviews
-		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
+		return res;
 	}
 
 	export async function getGame(uuid: string) {
-		const res = await executeGet<SparkletDB.Spark<number>>(`
+		const res = await executeGet<SparkletDB.Spark>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function gameQPosts() {
-		const res = (await conn.execute<SparkletDB.Spark<number>[]>(`
+		const res = (await conn.execute<SparkletDB.Spark[]>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify) as unknown as SparkletDB.Spark<Date>[];
+		return res;
 	}
 
 	export async function getNews(uuid: string) {
-		const res = await executeGet<SparkletDB.NewsPost<number>>(`
+		const res = await executeGet<SparkletDB.NewsPost>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
 
-		return util.dateify(res);
+		return res;
 	}
 
 	export async function newsQPosts() {
-		const res = (await conn.execute<SparkletDB.NewsPost<number>[]>(`
+		const res = (await conn.execute<SparkletDB.NewsPost[]>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify) as unknown as SparkletDB.NewsPost<Date>[];
+		return res;
 	}
 
 	export async function lmfao() {

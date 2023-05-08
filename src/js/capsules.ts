@@ -13,7 +13,7 @@ const noResultsE	= document.getElementById("noresults")		as HTMLDivElement;
 
 
 const listingBlueprint = resultsbox.lastElementChild as HTMLDivElement;
-function makeListingE(	capsule: SparkletDB.Capsule<Date>,
+function makeListingE(	capsule: SparkletDB.Capsule,
 						content: CapsuleContent	): HTMLDivElement {
 	
 	const el = <HTMLDivElement>listingBlueprint.cloneNode(true);
@@ -70,7 +70,7 @@ function fetchCapsules(query?: string) {
 		.then(updateListings);
 }
 
-function updateListings(rows: SparkletDB.Capsule<Date>[]) {
+function updateListings(rows: SparkletDB.Capsule[]) {
 	// Clear previous results
 	listingsDiv.innerHTML = "";
 
