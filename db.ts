@@ -1,9 +1,9 @@
-import mysql 							from "mysql2/promise";
-import {v4 as newUUID}					from "uuid";
-import bcrypt	 						from "bcrypt";
-import waitOn							from "wait-on";
-import * as util						from "./util.js";
-import { ADMINS }						from "./consts.js";
+import mysql 				from "mysql2/promise";
+import {v4 as newUUID}		from "uuid";
+import bcrypt	 			from "bcrypt";
+import waitOn				from "wait-on";
+import * as util			from "./util.js";
+import { ADMINS }			from "./consts.js";
 import {
 	Option, Nullable, SparkletDB,
 	TimestampIntoDate, DateablePacket
@@ -17,6 +17,13 @@ util.checkEnvReady([
 	"DB_PASS",
 ]);
 
+const CONN_OPTIONS = {
+	database:	"main",
+	host:		"db",
+	user:		process.env["DB_USER"]!,
+	password:	process.env["DB_PASS"]!,
+};
+
 console.log("Waiting for MariaDB container...");
 await waitOn({
 	resources: [
@@ -27,12 +34,7 @@ await waitOn({
 });
 
 console.log("MariaDB container is up! Connecting...");
-const conn = await mysql.createPool({
-	database:	"main",
-	host:		"db",
-	user:		process.env["DB_USER"],
-	password:	process.env["DB_PASS"],
-});
+const conn = await mysql.createPool(CONN_OPTIONS);
 
 console.log("Connected to DB.");
 
@@ -99,8 +101,6 @@ namespace dbGet {
 }
 
 export namespace db {
-	dbGet;
-
 	export async function register(user: string, pass: string) {
 		// Get hash of password
 		const hashed = await bcrypt.hash(pass, 10);
@@ -243,10 +243,12 @@ export namespace db {
 		`, [], conn);
 	}
 
-	export async function lmfao() {
-		return await conn.execute(`
-			DROP TABLE IF EXISTS users;
-		`);
+	export namespace admin {
+		export async function lmfao() {
+			return conn.execute(`
+				DROP TABLE IF EXISTS users;
+			`);
+		}
 	}
 }
 
