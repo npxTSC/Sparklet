@@ -90,7 +90,7 @@ export namespace SparkletDB {
 	* These types should only be used by code in db.ts!!!!
 	*/
 
-	export interface SparkletUserRow extends RowDataPacket {
+	export type SparkletUserRow = RowDataPacket & Dateable & {
 		uuid:			string,
 		name:			string,
 		passHash:		string,
@@ -101,9 +101,9 @@ export namespace SparkletDB {
 		authToken?:		string,
 		pfpSrc?:		string,
 		bio?:			string,
-	}
+	};
 	
-	export interface CapsuleRow extends RowDataPacket {
+	export type CapsuleRow = RowDataPacket & Dateable & {
 		uuid:		string;
 		name:		string;
 		creator:	string;
@@ -114,7 +114,7 @@ export namespace SparkletDB {
 		likes:		number;
 	}
 	
-	export interface NewsPostRow extends RowDataPacket {
+	export type NewsPostRow = RowDataPacket & Dateable & {
 		uuid:		string,
 		title:		string,
 		author:		string,
@@ -123,7 +123,7 @@ export namespace SparkletDB {
 		date:		number,
 	}
 
-	export interface SparkRow extends RowDataPacket {
+	export type SparkRow = RowDataPacket & Dateable & {
 		uuid:			string,
 		title:			string,
 		creator:		string,

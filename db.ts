@@ -2,7 +2,7 @@ import mysql 							from "mysql2/promise";
 import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import waitOn							from "wait-on";
-import {Option, Nullable, SparkletDB}	from "./classes.js";
+import {Option, Nullable, SparkletDB, Dateable, TimestampIntoDate}	from "./classes.js";
 import * as util						from "./util.js";
 import { ADMINS }						from "./consts.js";
 
@@ -46,6 +46,18 @@ async function executeGet<T extends mysql.RowDataPacket>(
 	return res[0][nth];
 }
 
+async function executeGetDateify<T extends mysql.RowDataPacket & Dateable>(
+	sql:	string,
+	values:	any[],
+	conn:	mysql.Pool,
+	nth:	number,
+): Promise<Option<TimestampIntoDate<T>>> {
+	const res = await conn.execute<T[]>(sql, values);
+	const atNth = res[0][nth];
+
+	return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
+}
+
 export namespace db {
 	export async function register(user: string, pass: string) {
 		// Get hash of password
@@ -67,12 +79,10 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		const res = await executeGet<SparkletDB.SparkletUserRow>(`
+		return executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [user], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
@@ -100,30 +110,24 @@ export namespace db {
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		const res = await executeGet<SparkletDB.SparkletUserRow>(`
+		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 		`, [user, token], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getUser(username: string) {
-		const res = await executeGet<SparkletDB.SparkletUserRow>(`
+		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		const res = await executeGet<SparkletDB.SparkletUserRow>(`
+		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
 		`, [uuid], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function postCapsule(
@@ -133,21 +137,17 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		const res = await executeGet<SparkletDB.CapsuleRow>(`
+		return await executeGetDateify<SparkletDB.CapsuleRow>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
 		`, [uuid, name, creator, version, content], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		const res = await executeGet<SparkletDB.CapsuleRow>(`
+		return await executeGetDateify<SparkletDB.CapsuleRow>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function searchCapsules(query: string) {
@@ -174,12 +174,10 @@ export namespace db {
 	}
 
 	export async function getGame(uuid: string) {
-		const res = await executeGet<SparkletDB.SparkRow>(`
+		return await executeGetDateify<SparkletDB.SparkRow>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function gameQPosts() {
@@ -194,12 +192,10 @@ export namespace db {
 	}
 
 	export async function getNews(uuid: string) {
-		const res = await executeGet<SparkletDB.NewsPostRow>(`
+		return await executeGetDateify<SparkletDB.NewsPostRow>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
-
-		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function newsQPosts() {
