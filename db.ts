@@ -72,7 +72,7 @@ export namespace db {
 			WHERE LOWER(name) = LOWER(?);
 		`, [user], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
@@ -105,7 +105,7 @@ export namespace db {
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 		`, [user, token], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getUser(username: string) {
@@ -114,7 +114,7 @@ export namespace db {
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getUserByUUID(uuid: string) {
@@ -123,7 +123,7 @@ export namespace db {
 			WHERE uuid = ?;
 		`, [uuid], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function postCapsule(
@@ -138,7 +138,7 @@ export namespace db {
 			VALUES (?, ?, ?, ?, ?);
 		`, [uuid, name, creator, version, content], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
@@ -147,7 +147,7 @@ export namespace db {
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function searchCapsules(query: string) {
@@ -179,7 +179,7 @@ export namespace db {
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function gameQPosts() {
@@ -199,7 +199,7 @@ export namespace db {
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
 
-		return res;
+		return typeof res === "undefined" ? undefined : util.dateify(res);
 	}
 
 	export async function newsQPosts() {
