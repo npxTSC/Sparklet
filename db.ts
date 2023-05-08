@@ -2,9 +2,12 @@ import mysql 							from "mysql2/promise";
 import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import waitOn							from "wait-on";
-import {Option, Nullable, SparkletDB, Dateable, TimestampIntoDate}	from "./classes.js";
 import * as util						from "./util.js";
 import { ADMINS }						from "./consts.js";
+import {
+	Option, Nullable, SparkletDB,
+	TimestampIntoDate, DateablePacket
+}	from "./classes.js";
 
 const DEFAULT_PASSWORD_FOR_TESTING = "asdf";
 
@@ -35,28 +38,43 @@ console.log("Connected to DB.");
 
 await initTables(conn);
 
-// type-safe shorthand for doing execute()[0][n]
-async function executeGet<T extends mysql.RowDataPacket>(
-	sql:	string,
-	values:	any[],
-	conn:	mysql.Pool,
-	nth:	number,
-): Promise<Option<T>> {
-	const res = await conn.execute<T[]>(sql, values);
-	return res[0][nth];
-}
 
-async function executeGetDateify<T extends mysql.RowDataPacket & Dateable>(
-	sql:	string,
-	values:	any[],
-	conn:	mysql.Pool,
-	nth:	number,
-): Promise<Option<TimestampIntoDate<T>>> {
-	const atNth = await executeGet<T>(sql, values, conn, nth);
-	return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
+namespace dbGet {
+	export async function executeGetArr<T extends mysql.RowDataPacket>(
+		sql:	string,
+		values:	any[],
+		conn:	mysql.Pool,
+	): Promise<T[]> {
+		const res = await conn.execute<T[]>(sql, values);
+		return res[0];
+	}
+
+	// type-safe shorthand for doing execute()[0][n]
+	export async function executeGet<T extends mysql.RowDataPacket>(
+		sql:	string,
+		values:	any[],
+		conn:	mysql.Pool,
+		nth:	number,
+	): Promise<Option<T>> {
+		const res = await executeGetArr<T>(sql, values, conn);
+		return res[nth];
+	}
+
+	// shorthand to executeGet() and then dateify
+	export async function executeGetDateify<T extends DateablePacket>(
+		sql:	string,
+		values:	any[],
+		conn:	mysql.Pool,
+		nth:	number,
+	): Promise<Option<TimestampIntoDate<T>>> {
+		const atNth = await executeGet<T>(sql, values, conn, nth);
+		return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
+	}
 }
 
 export namespace db {
+	dbGet;
+
 	export async function register(user: string, pass: string) {
 		// Get hash of password
 		const hashed = await bcrypt.hash(pass, 10);
@@ -77,7 +95,7 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		return executeGetDateify<SparkletDB.SparkletUserRow>(`
+		return dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [user], conn, 0);
@@ -108,21 +126,21 @@ export namespace db {
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 		`, [user, token], conn, 0);
 	}
 
 	export async function getUser(username: string) {
-		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		return await executeGetDateify<SparkletDB.SparkletUserRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
 		`, [uuid], conn, 0);
@@ -135,14 +153,14 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		return await executeGetDateify<SparkletDB.CapsuleRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
 		`, [uuid, name, creator, version, content], conn, 0);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		return await executeGetDateify<SparkletDB.CapsuleRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid], conn, 0);
@@ -172,7 +190,7 @@ export namespace db {
 	}
 
 	export async function getGame(uuid: string) {
-		return await executeGetDateify<SparkletDB.SparkRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.SparkRow>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);
@@ -190,7 +208,7 @@ export namespace db {
 	}
 
 	export async function getNews(uuid: string) {
-		return await executeGetDateify<SparkletDB.NewsPostRow>(`
+		return await dbGet.executeGetDateify<SparkletDB.NewsPostRow>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid], conn, 0);

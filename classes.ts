@@ -73,6 +73,8 @@ export type Dateable = {
 
 export type TimestampIntoDate<Inner> = Omit<Inner, "date"> & {date: Date};
 
+export type DateablePacket = RowDataPacket & Dateable
+
 export namespace SparkletDB {
 
 	// Row stuff, except date goes from number -> Date
@@ -90,7 +92,7 @@ export namespace SparkletDB {
 	* These types should only be used by code in db.ts!!!!
 	*/
 
-	export type SparkletUserRow = RowDataPacket & Dateable & {
+	export type SparkletUserRow = DateablePacket & {
 		uuid:			string,
 		name:			string,
 		passHash:		string,
@@ -103,7 +105,7 @@ export namespace SparkletDB {
 		bio?:			string,
 	};
 	
-	export type CapsuleRow = RowDataPacket & Dateable & {
+	export type CapsuleRow = DateablePacket & {
 		uuid:		string;
 		name:		string;
 		creator:	string;
@@ -114,7 +116,7 @@ export namespace SparkletDB {
 		likes:		number;
 	}
 	
-	export type NewsPostRow = RowDataPacket & Dateable & {
+	export type NewsPostRow = DateablePacket & {
 		uuid:		string,
 		title:		string,
 		author:		string,
@@ -123,7 +125,7 @@ export namespace SparkletDB {
 		date:		number,
 	}
 
-	export type SparkRow = RowDataPacket & Dateable & {
+	export type SparkRow = DateablePacket & {
 		uuid:			string,
 		title:			string,
 		creator:		string,
