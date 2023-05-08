@@ -65,14 +65,15 @@ export enum AdminRank {
 	Operator
 }
 
-export namespace SparkletDB {
-	// unfortunately i do not implement this type irl
-	export type Dateable = {
-		date: number;
-		[key: string]: any;
-	};
+// unfortunately i do not implement this type irl
+export type Dateable = {
+	date: number;
+	[key: string]: any;
+};
 
-	export type TimestampIntoDate<Inner> = Omit<Inner, "date"> & {date: Date};
+export type TimestampIntoDate<Inner> = Omit<Inner, "date"> & {date: Date};
+
+export namespace SparkletDB {
 
 	// Row stuff, except date goes from number -> Date
 	export type SparkletUser	= TimestampIntoDate<SparkletUserRow>;
@@ -84,7 +85,7 @@ export namespace SparkletDB {
 		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
 
 
-		
+
 	/*
 	* These types should only be used by code in db.ts!!!!
 	*/

@@ -1,4 +1,5 @@
-export {config as loadEnv}	from "dotenv";
+export {config as loadEnv}				from "dotenv";
+import {Dateable, TimestampIntoDate}	from "./classes.js";
 
 export function checkEnvReady(requiredVars: string[]) {
 	for (let v of requiredVars) {
@@ -10,4 +11,9 @@ export function checkEnvReady(requiredVars: string[]) {
 	}
 }
 
-
+export function dateify<T extends Dateable>(obj: T): TimestampIntoDate<T> {
+	return {
+		...obj,
+		date: new Date(obj.date),
+	}
+}
