@@ -1,7 +1,7 @@
 "use strict";
 
 import {
-	AdminRank, SparkletDB, Option
+	AdminRank, SparkletDB, Nullable
 }				from "../classes.js";
 import Express	from "express";
 import db		from "../db.js";
@@ -27,7 +27,7 @@ router.get("/wipe-users", async (req, res) => {
 function checkHasPerms(
 	res:	Express.Response,
 	rank:	AdminRank
-): Option<boolean> {
+): Nullable<boolean> {
 	if (res.locals.account === null) return null;
 
 	const acc = res.locals.account as SparkletDB.SparkletUser<Date>;

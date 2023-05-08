@@ -1,5 +1,5 @@
-export {config as loadEnv}	from "dotenv";
-import { DateLike }			from "./classes.js";
+export {config as loadEnv}		from "dotenv";
+import { HasDateLike, Option }	from "./classes.js";
 
 export function checkEnvReady(requiredVars: string[]) {
 	for (let v of requiredVars) {
@@ -11,7 +11,9 @@ export function checkEnvReady(requiredVars: string[]) {
 	}
 }
 
-export function dateify<T extends {date: DateLike}>(obj: T) {
+export function dateify<T extends Option<HasDateLike>>(obj: T) {
+	if (typeof obj === "undefined") return;
+	
 	const nobj = obj;
 	nobj.date = new Date(obj.date);
 

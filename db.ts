@@ -2,7 +2,7 @@ import mysql 							from "mysql2/promise";
 import {v4 as newUUID}					from "uuid";
 import bcrypt	 						from "bcrypt";
 import waitOn							from "wait-on";
-import {AdminRank, Option, SparkletDB}	from "./classes.js";
+import {Option, Nullable, SparkletDB}	from "./classes.js";
 import * as util						from "./util.js";
 import { ADMINS }						from "./consts.js";
 
@@ -35,17 +35,16 @@ console.log("Connected to DB.");
 
 await initTables(conn);
 
-/*
-* This SHOULD be the external interface for accessing
-* database stuff... Clearly, it's not, though, and that
-* needs to change soon. Code outside db.ts and statements.ts
-* should not be able to do anything with the DB except
-* calling the provided methods. Maintaining code like this
-* in its current state is really annoying when requirements
-* are constantly changing.
-*
-* tl;dr git gud at encapsulation
-*/
+// type-safe shorthand for doing execute()[0][n]
+async function executeGet<T extends mysql.RowDataPacket>(
+	sql:	string,
+	values:	any[],
+	conn:	mysql.Pool,
+	nth:	number,
+): Promise<Option<T>> {
+	const res = await conn.execute<T[]>(sql, values);
+	return res[0][nth];
+}
 
 export namespace db {
 	export async function register(user: string, pass: string) {
@@ -68,12 +67,12 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
-		`, [user]))[0][0];
+		`, [user], conn, 0);
 
-		return util.dateify(res);
+		return util.dateify(res) as Option<SparkletDB.SparkletUser<Date>>;
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
@@ -92,7 +91,7 @@ export namespace db {
 		`, [bio, user]);
 	}
 
-	export async function editLoginToken(user: string, newToken: Option<string>) {
+	export async function editLoginToken(user: string, newToken: Nullable<string>) {
 		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET authToken = ?
@@ -101,28 +100,28 @@ export namespace db {
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
-		`, [user, token]))[0][0];
+		`, [user, token], conn, 0);
 
 		return util.dateify(res);
 	}
 
 	export async function getUser(username: string) {
-		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
-		`, [username]))[0][0];
+		`, [username], conn, 0);
 
 		return util.dateify(res);
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
+		const res = await executeGet<SparkletDB.SparkletUser<number>>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
 
 		return util.dateify(res);
 	}
@@ -134,19 +133,19 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
+		const res = await executeGet<SparkletDB.Capsule<number>>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
-		`, [uuid, name, creator, version, content]))[0][0];
+		`, [uuid, name, creator, version, content], conn, 0);
 
 		return util.dateify(res);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
+		const res = await executeGet<SparkletDB.Capsule<number>>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid]))[0][0];
+		`, [capsuleUuid], conn, 0);
 
 		return util.dateify(res);
 	}
@@ -159,7 +158,7 @@ export namespace db {
 			LIMIT 25;
 		`, [query]))[0];
 		
-		return res.map(util.dateify);
+		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
 	}
 
 	export async function capsuleQPosts() {
@@ -171,14 +170,14 @@ export namespace db {
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify);
+		return res.map(util.dateify) as unknown as SparkletDB.Capsule<Date>[];
 	}
 
 	export async function getGame(uuid: string) {
-		const res = (await conn.execute<SparkletDB.Spark<number>[]>(`
+		const res = await executeGet<SparkletDB.Spark<number>>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
 
 		return util.dateify(res);
 	}
@@ -191,14 +190,14 @@ export namespace db {
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify);
+		return res.map(util.dateify) as unknown as SparkletDB.Spark<Date>[];
 	}
 
 	export async function getNews(uuid: string) {
-		const res = (await conn.execute<SparkletDB.NewsPost<number>[]>(`
+		const res = await executeGet<SparkletDB.NewsPost<number>>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
-		`, [uuid]))[0][0];
+		`, [uuid], conn, 0);
 
 		return util.dateify(res);
 	}
@@ -211,7 +210,7 @@ export namespace db {
 			LIMIT 25;
 		`))[0];
 		
-		return res.map(util.dateify);
+		return res.map(util.dateify) as unknown as SparkletDB.NewsPost<Date>[];
 	}
 
 	export async function lmfao() {

@@ -4,7 +4,14 @@
 import { RowDataPacket }	from "mysql2/promise";
 
 // crab noises
-export type Option<T> = T | null;
+export type Nullable<T>		= T | null;
+
+// Like Option<T>, but for values that may be undefined.
+export type Option<T>		= T | undefined;
+
+// Wow, okay... Calm down, Satan. We're using **types**, here.
+// Named after the ?? operator. Maybe there's a better name for this?
+export type MaybeNullish<T>	= T | null | undefined;
 
 export interface Conductor {
 	username:	string;
@@ -61,20 +68,13 @@ export enum AdminRank {
 // Use `number` only when getting values out of DB
 // Otherwise, Date is preferred.
 export type DateLike = number | Date;
+export interface HasDateLike {
+	date: DateLike;
+}
 
 export namespace SparkletDB {
-
-	export type TimestampIntoDate<T extends RowDataPacket> = {
-		[k in keyof T]: (
-			T[k] extends number ? string:
-				T[k] extends object
-				? TimestampIntoDate<T[k]>
-				: T[k]
-		);
-	};
-	
 	export interface SparkletUser<D extends DateLike>
-		extends RowDataPacket {
+		extends RowDataPacket, HasDateLike {
 		
 		uuid:			string,
 		name:			string,
@@ -92,7 +92,7 @@ export namespace SparkletDB {
 		Omit<SparkletUser<D>, "passHash" | "emailVToken" | "authToken">;
 	
 	export interface Capsule<D extends DateLike>
-		extends RowDataPacket {
+		extends RowDataPacket, HasDateLike {
 
 		uuid:		string;
 		name:		string;
@@ -105,7 +105,7 @@ export namespace SparkletDB {
 	}
 	
 	export interface NewsPost<D extends DateLike>
-		extends RowDataPacket {
+		extends RowDataPacket, HasDateLike {
 
 		uuid:		string;
 		title:		string;
@@ -119,7 +119,7 @@ export namespace SparkletDB {
 	}
 
 	export interface Spark<D extends DateLike>
-		extends RowDataPacket {
+		extends RowDataPacket, HasDateLike {
 		
 		uuid:			string;
 		title:			string;
