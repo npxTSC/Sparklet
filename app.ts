@@ -28,6 +28,7 @@ import {
 } from "./classes.js";
 import db						from "./db.js";
 import accountParser			from "./middleware/accounts.js";
+import cspNonce					from "./middleware/csp-nonce.js";
 import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
 import * as routes				from "./routes/all.js";
 import { PORT }					from "./consts.js";
@@ -54,6 +55,7 @@ app.use(
 app.use(cparse());
 app.use(helmet());
 app.use(accountParser);
+app.use(cspNonce);
 app.use(gzipCompression());
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
