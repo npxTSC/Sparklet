@@ -6,7 +6,7 @@ const CopyPlugin			= require("copy-webpack-plugin");
 const cd = __dirname;
 
 module.exports = {
-	mode: "development",
+	mode: "production",
 	entry: {
 		"main":				cd + "/src/js/main.ts",
 		"login":			cd + "/src/js/login.ts",
