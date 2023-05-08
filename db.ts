@@ -68,55 +68,63 @@ export namespace db {
 	}
 
 	export async function getFromUsername(user: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			SELECT name, uuid, passHash FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [user]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function setAdminRank(user: string, rank: number) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		return await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET adminRank = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [rank, user]))[0][0];
+		`, [rank, user]);
 	}
 
 	export async function updateBio(user: string, bio: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET bio = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [bio, user]))[0][0];
+		`, [bio, user]);
 	}
 
 	export async function editLoginToken(user: string, newToken: Option<string>) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		return conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			UPDATE users
 			SET authToken = ?
 			WHERE LOWER(name) = LOWER(?);
-		`, [newToken, user]))[0][0];
+		`, [newToken, user]);
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			SELECT name, uuid FROM users
 			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
 		`, [user, token]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function getUser(username: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function getUserByUUID(uuid: string) {
-		return (await conn.execute<SparkletDB.SparkletUser[]>(`
+		const res = (await conn.execute<SparkletDB.SparkletUser<number>[]>(`
 			SELECT * FROM users
 			WHERE uuid = ?;
 		`, [uuid]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function postCapsule(
@@ -126,68 +134,84 @@ export namespace db {
 		version:	string,
 		content:	string
 	) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			INSERT INTO capsules(uuid, name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
 		`, [uuid, name, creator, version, content]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
 		`, [capsuleUuid]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function searchCapsules(query: string) {
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
 			ORDER BY date DESC
 			LIMIT 25;
 		`, [query]))[0];
+		
+		return res.map(util.dateify);
 	}
 
 	export async function capsuleQPosts() {
 		// TODO select less data... qposts are only surface-level overviews
-		return (await conn.execute<SparkletDB.Capsule[]>(`
+		const res = (await conn.execute<SparkletDB.Capsule<number>[]>(`
 			SELECT *
 			FROM capsules WHERE visible = 1
 			ORDER BY likes DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify);
 	}
 
 	export async function getGame(uuid: string) {
-		return (await conn.execute<SparkletDB.Spark[]>(`
+		const res = (await conn.execute<SparkletDB.Spark<number>[]>(`
 			SELECT * FROM games
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function gameQPosts() {
-		return (await conn.execute<SparkletDB.Spark[]>(`
+		const res = (await conn.execute<SparkletDB.Spark<number>[]>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify);
 	}
 
 	export async function getNews(uuid: string) {
-		return (await conn.execute<SparkletDB.NewsPost[]>(`
+		const res = (await conn.execute<SparkletDB.NewsPost<number>[]>(`
 			SELECT * FROM news
 			WHERE uuid = (?) AND visible = 1;
 		`, [uuid]))[0][0];
+
+		return util.dateify(res);
 	}
 
 	export async function newsQPosts() {
-		return (await conn.execute<SparkletDB.NewsPost[]>(`
+		const res = (await conn.execute<SparkletDB.NewsPost<number>[]>(`
 			SELECT title, author, date, uuid
 			FROM news WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`))[0];
+		
+		return res.map(util.dateify);
 	}
 
 	export async function lmfao() {

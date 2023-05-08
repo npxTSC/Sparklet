@@ -30,7 +30,7 @@ function checkHasPerms(
 ): Option<boolean> {
 	if (res.locals.account === null) return null;
 
-	const acc = res.locals.account as SparkletDB.SparkletUser;
+	const acc = res.locals.account as SparkletDB.SparkletUser<Date>;
 	return (acc.adminRank >= rank);
 }
 

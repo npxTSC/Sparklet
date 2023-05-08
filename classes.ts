@@ -26,7 +26,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-	account?:	SparkletDB.SparkletUser;
+	account?:	SparkletDB.SparkletUser<Date>;
 }
 
 export interface QuizHostCommand {
@@ -58,19 +58,28 @@ export enum AdminRank {
 	Operator
 }
 
-export namespace SparkletDB {
-	/*
-	* These interfaces should all contain only primitives...
-	*
-	* Maybe create classes that have methods to access
-	* data in a more dev-friendly way later?
-	*/
+// Use `number` only when getting values out of DB
+// Otherwise, Date is preferred.
+export type DateLike = number | Date;
 
-	export interface SparkletUser extends RowDataPacket {
+export namespace SparkletDB {
+
+	export type TimestampIntoDate<T extends RowDataPacket> = {
+		[k in keyof T]: (
+			T[k] extends number ? string:
+				T[k] extends object
+				? TimestampIntoDate<T[k]>
+				: T[k]
+		);
+	};
+	
+	export interface SparkletUser<D extends DateLike>
+		extends RowDataPacket {
+		
 		uuid:			string,
 		name:			string,
 		passHash:		string,
-		date:			number,
+		date:			D,
 		adminRank:		number,
 		emailVerified:	boolean,
 		emailVToken?:	string,
@@ -79,38 +88,44 @@ export namespace SparkletDB {
 		bio?:			string,
 	}
 
-	export type SparkletUserPublic =
-		Omit<SparkletUser, "id" | "passHash" | "emailVToken" | "authToken">;
+	export type SparkletUserPublic<D extends DateLike> =
+		Omit<SparkletUser<D>, "passHash" | "emailVToken" | "authToken">;
 	
-	export interface Capsule extends RowDataPacket {
+	export interface Capsule<D extends DateLike>
+		extends RowDataPacket {
+
 		uuid:		string;
 		name:		string;
 		creator:	string;
 		version:	string;
 		content:	string;
 		visible:	boolean;
-		date:		number;
+		date:		D;
 		likes:		number;
 	}
 	
-	export interface NewsPost extends RowDataPacket {
+	export interface NewsPost<D extends DateLike>
+		extends RowDataPacket {
+
 		uuid:		string;
 		title:		string;
 		author:		string;
 		content:	string;
 		visible:	boolean;
-		date:		number;
+		date:		D;
 
 //		possible new feature?
 //		likes:		number;
 	}
 
-	export interface Spark extends RowDataPacket {
+	export interface Spark<D extends DateLike>
+		extends RowDataPacket {
+		
 		uuid:			string;
 		title:			string;
 		creator:		string;
 		description:	string;
 		visible:		boolean;
-		date:			number;
+		date:			D;
 	}
 }
