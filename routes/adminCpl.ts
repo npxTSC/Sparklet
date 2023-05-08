@@ -2,26 +2,38 @@
 
 import {
 	AdminRank, SparkletDB, Nullable
-}				from "../classes.js";
-import Express	from "express";
-import db		from "../db.js";
+}				from	"../classes.js";
+import Express	from	"express";
+import db		from	"../db.js";
 
 const router = Express.Router();
 
 router.get("/wipe-users", async (req, res) => {
-	switch (checkHasPerms(res, AdminRank.Operator)) {
+	await defaultCheck(res, AdminRank.Operator, async () => {
+		await db.admin.lmfao();
+		res.send("Done...");
+	});
+});
+
+async function defaultCheck(
+	res:		Express.Response,
+	rank:		AdminRank,
+	ifPassed:	() => any,
+) {
+	switch (checkHasPerms(res, rank)) {
 		case null:
 			// no account
-			return res.redirect("/");
+			res.redirect("/login");
+			return;
 		
 		case false:
-			return res.send("Nice try, clown");
+			res.send("Nice try, clown");
+			return;
 
 		case true:
-			await db.lmfao();
-			return res.send("Done...");
+			return ifPassed();
 	}
-});
+}
 
 // Mandatory Access Control permission-checking
 function checkHasPerms(
