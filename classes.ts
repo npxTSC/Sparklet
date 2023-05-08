@@ -33,7 +33,7 @@ export interface QuizPlayer {
 	uuid:		string;
 	correctQs:	number;
 	tempToken:	string;
-	account?:	SparkletDB.SparkletUser<Date>;
+	account?:	SparkletDB.SparkletUser;
 }
 
 export interface QuizHostCommand {
@@ -65,67 +65,72 @@ export enum AdminRank {
 	Operator
 }
 
-// Use `number` only when getting values out of DB
-// Otherwise, Date is preferred.
-export type DateLike = number | Date;
-export interface HasDateLike {
-	date: DateLike;
-}
+// unfortunately i do not implement this type irl
+export type Dateable = {
+	date: number;
+	[key: string]: any;
+};
+
+export type TimestampIntoDate<Inner> = Omit<Inner, "date"> & {date: Date};
+
+export type DateablePacket = RowDataPacket & Dateable
 
 export namespace SparkletDB {
-	export interface SparkletUser<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-		
+
+	// Row stuff, except date goes from number -> Date
+	export type SparkletUser	= TimestampIntoDate<SparkletUserRow>;
+	export type Capsule			= TimestampIntoDate<CapsuleRow>;
+	export type NewsPost		= TimestampIntoDate<NewsPostRow>;
+	export type Spark			= TimestampIntoDate<SparkRow>;
+
+	export type SparkletUserPublic =
+		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;
+
+
+
+	/*
+	* These types should only be used by code in db.ts!!!!
+	*/
+
+	export type SparkletUserRow = DateablePacket & {
 		uuid:			string,
 		name:			string,
 		passHash:		string,
-		date:			D,
+		date:			number,
 		adminRank:		number,
 		emailVerified:	boolean,
 		emailVToken?:	string,
 		authToken?:		string,
 		pfpSrc?:		string,
 		bio?:			string,
-	}
-
-	export type SparkletUserPublic<D extends DateLike> =
-		Omit<SparkletUser<D>, "passHash" | "emailVToken" | "authToken">;
+	};
 	
-	export interface Capsule<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-
+	export type CapsuleRow = DateablePacket & {
 		uuid:		string;
 		name:		string;
 		creator:	string;
 		version:	string;
 		content:	string;
 		visible:	boolean;
-		date:		D;
+		date:		number,
 		likes:		number;
 	}
 	
-	export interface NewsPost<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-
-		uuid:		string;
-		title:		string;
-		author:		string;
-		content:	string;
-		visible:	boolean;
-		date:		D;
-
-//		possible new feature?
-//		likes:		number;
+	export type NewsPostRow = DateablePacket & {
+		uuid:		string,
+		title:		string,
+		author:		string,
+		content:	string,
+		visible:	boolean,
+		date:		number,
 	}
 
-	export interface Spark<D extends DateLike>
-		extends RowDataPacket, HasDateLike {
-		
-		uuid:			string;
-		title:			string;
-		creator:		string;
-		description:	string;
-		visible:		boolean;
-		date:			D;
+	export type SparkRow = DateablePacket & {
+		uuid:			string,
+		title:			string,
+		creator:		string,
+		description:	string,
+		visible:		boolean,
+		date:			number,
 	}
 }

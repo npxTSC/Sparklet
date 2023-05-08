@@ -64,7 +64,7 @@ export const QUIZ_SOCKET_HANDLERS: Record<string, SocketHandlerFactory> = {
 	joinRoom: function(socket) {
 		return (data: {
 			username:	string;
-			account:	SparkletDB.SparkletUser<Date>
+			account:	SparkletDB.SparkletUser
 			roomcode:	string;
 		}) => {
 			// If quiz invalid
