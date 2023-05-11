@@ -20,10 +20,11 @@ util.checkEnvReady([
 ]);
 
 const CONN_OPTIONS = {
-	database:	"main",
-	host:		"db",
-	user:		process.env["DB_USER"]!,
-	password:	process.env["DB_PASS"]!,
+	database:			"main",
+	host:				"db",
+	user:				process.env["DB_USER"]!,
+	password:			process.env["DB_PASS"]!,
+	multipleStatements:	true,
 };
 
 console.log("Waiting for MariaDB container...");
@@ -110,7 +111,7 @@ export namespace db {
 		// Put in DB
 		const row = await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			INSERT INTO users(name, passHash) VALUES(?, ?);
-			SELECT * FROM users WHERE name = ?;
+			SELECT * FROM users WHERE LOWER(name) = LOWER(?);
 		`, [user, hashed, user], conn, 0);
 
 		return row!;
