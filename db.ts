@@ -208,11 +208,11 @@ export namespace db {
 		`, [name, creator, version, content], conn, 0);
 	}
 
-	export async function getCapsule(capsuleUuid: string) {
+	export async function getCapsule(uuid: string) {
 		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid], conn, 0);
+		`, [uuid], conn, 0);
 	}
 
 	export async function searchCapsules(query: string) {
