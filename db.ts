@@ -137,12 +137,12 @@ export namespace db {
 		`, [rank, uuid]);
 	}
 
-	export async function updateBio(user: string, bio: string) {
+	export async function updateBio(uuid: string, bio: string) {
 		return conn.execute(`
 			UPDATE users
 			SET bio = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [bio, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [bio, uuid]);
 	}
 
 	export async function editLoginToken(user: string, newToken: Nullable<string>) {
