@@ -165,7 +165,7 @@ app.post("/login", async (req, res) => {
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
-			const { passHash } = await db.register(user, pass);
+			await db.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 
@@ -190,7 +190,7 @@ app.post("/login", async (req, res) => {
 			console.log(`User ${user} logged in successfully`);
 
 			// Change login token in DB
-			const token = await makeNewTokenFor(user);
+			const token = await makeNewTokenFor(row.uuid);
 			
 			res.cookie("user", user);
 			res.cookie("luster", token);
@@ -199,11 +199,13 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
+			if (!row) return;
+
 			// Remove auth cookie stuff
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			await db.editLoginToken(user, null);
+			await db.editLoginToken(row.uuid, null);
 			
 			return res.redirect("/login");
 
@@ -218,10 +220,10 @@ app.post("/login", async (req, res) => {
 		res.redirect("/login?ecode="+code);
 	}
 
-	async function makeNewTokenFor(user: string) {
+	async function makeNewTokenFor(uuid: string) {
 		const token = generateToken(512);
 
-		await db.editLoginToken(user, token);
+		await db.editLoginToken(uuid, token);
 		return token;
 	}
 });

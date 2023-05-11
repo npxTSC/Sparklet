@@ -145,12 +145,12 @@ export namespace db {
 		`, [bio, uuid]);
 	}
 
-	export async function editLoginToken(user: string, newToken: Nullable<string>) {
+	export async function editLoginToken(uuid: string, newToken: Nullable<string>) {
 		return conn.execute(`
 			UPDATE users
 			SET authToken = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [newToken, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [newToken, uuid]);
 	}
 
 	export async function verifyLoginToken(user: string, token: string) {
