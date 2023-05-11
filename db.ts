@@ -138,16 +138,9 @@ export namespace db {
 	}
 	
 	export async function registerIfNotExists(user: string, pass: string) {
-		if (await getFromUsername(user)) return null;
+		if (await getUser(user)) return null;
 
 		return await register(user, pass);
-	}
-
-	export async function getFromUsername(user: string) {
-		return dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
-			SELECT name, uuid, passHash FROM users
-			WHERE LOWER(name) = LOWER(?);
-		`, [user], conn, 0);
 	}
 
 	export async function setAdminRank(uuid: string, rank: number) {
@@ -183,7 +176,7 @@ export namespace db {
 
 	export async function getUser(username: string) {
 		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
-			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
+			SELECT * FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
 	}
