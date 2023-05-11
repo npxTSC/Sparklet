@@ -1,5 +1,4 @@
 import mysql 				from "mysql2/promise";
-import {v4 as newUUID}		from "uuid";
 import bcrypt	 			from "bcrypt";
 import waitOn				from "wait-on";
 import * as util			from "./util.js";
@@ -56,9 +55,19 @@ namespace dbGet {
 		sql:	string,
 		values:	any[],
 		conn:	mysql.Pool,
+		query?:	DbRunMode,
 	): Promise<T[]> {
-		const res = await conn.execute<T[]>(sql, values);
-		return res[0];
+		let res;
+
+		if (!query) {
+			// execute
+			res = conn.execute<T[]>(sql, values);
+		} else {
+			// query
+			res = conn.query<T[]>(sql, values);
+		}
+
+		return (await res)[0];
 	}
 
 	// type-safe shorthand for doing execute()[0][n]
@@ -67,8 +76,9 @@ namespace dbGet {
 		values:	any[],
 		conn:	mysql.Pool,
 		nth:	number,
+		query?:	DbRunMode,
 	): Promise<Option<T>> {
-		const res = await executeGetArr<T>(sql, values, conn);
+		const res = await executeGetArr<T>(sql, values, conn, query);
 		return res[nth];
 	}
 
@@ -78,8 +88,9 @@ namespace dbGet {
 		values:	any[],
 		conn:	mysql.Pool,
 		nth:	number,
+		query?:	DbRunMode,
 	): Promise<Option<TimestampIntoDate<T>>> {
-		const atNth = await executeGet<T>(sql, values, conn, nth);
+		const atNth = await executeGet<T>(sql, values, conn, nth, query);
 		return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
 	}
 
@@ -88,8 +99,9 @@ namespace dbGet {
 		sql:	string,
 		values:	any[],
 		conn:	mysql.Pool,
+		query?:	DbRunMode,
 	): Promise<TimestampIntoDate<T>[]> {
-		const res = await executeGetArr<T>(sql, values, conn);
+		const res = await executeGetArr<T>(sql, values, conn, query);
 
 		/*
 		* we can safely say it's not an Option<T>[] because...
@@ -103,6 +115,14 @@ namespace dbGet {
 	}
 }
 
+const enum DbRunMode {
+	// Default is conn.execute()
+	Execute	= 0,
+	Query	= 1,
+
+	__LENGTH
+}
+
 export namespace db {
 	export async function register(user: string, pass: string) {
 		// Get hash of password
@@ -112,7 +132,7 @@ export namespace db {
 		const row = await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			INSERT INTO users(name, passHash) VALUES(?, ?);
 			SELECT * FROM users WHERE LOWER(name) = LOWER(?);
-		`, [user, hashed, user], conn, 0);
+		`, [user, hashed, user], conn, 0, DbRunMode.Query);
 
 		return row!;
 	}
