@@ -165,7 +165,7 @@ app.post("/login", async (req, res) => {
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
-			const hashed = await db.register(user, pass);
+			const { passHash } = await db.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 

@@ -106,12 +106,12 @@ export namespace db {
 		const hashed = await bcrypt.hash(pass, 10);
 
 		// Put in DB
-		await conn.execute(`
-			INSERT INTO users(name, passHash, uuid)
-			VALUES(?, ?, ?);
-		`, [user, hashed, newUUID()]);
+		const row = await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
+			INSERT INTO users(name, passHash) VALUES(?, ?);
+			SELECT * FROM users WHERE name = ?;
+		`, [user, hashed, user], conn, 0);
 
-		return hashed;
+		return row!;
 	}
 	
 	export async function registerIfNotExists(user: string, pass: string) {
