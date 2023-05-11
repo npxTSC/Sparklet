@@ -197,16 +197,15 @@ export namespace db {
 	}
 
 	export async function postCapsule(
-		uuid:		string,
 		name:		string,
 		creator:	string,
 		version:	string,
 		content:	string
 	) {
 		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
-			INSERT INTO capsules(uuid, name, creator, version, content)
+			INSERT INTO capsules(name, creator, version, content)
 			VALUES (?, ?, ?, ?, ?);
-		`, [uuid, name, creator, version, content], conn, 0);
+		`, [name, creator, version, content], conn, 0);
 	}
 
 	export async function getCapsule(capsuleUuid: string) {
