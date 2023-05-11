@@ -9,7 +9,9 @@ import {
 	TimestampIntoDate, DateablePacket
 }	from "./classes.js";
 
-const DEFAULT_PASSWORD_FOR_TESTING = "asdf";
+// for testing purposes... remove when we start
+// processing important information someday
+const DEFAULT_PASSWORD = "asdf";
 
 util.loadEnv();
 util.checkEnvReady([
@@ -127,12 +129,12 @@ export namespace db {
 		`, [user], conn, 0);
 	}
 
-	export async function setAdminRank(user: string, rank: number) {
+	export async function setAdminRank(uuid: string, rank: number) {
 		return conn.execute(`
 			UPDATE users
 			SET adminRank = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [rank, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [rank, uuid]);
 	}
 
 	export async function updateBio(user: string, bio: string) {
@@ -257,8 +259,10 @@ export default db;
 
 // Remove this once there's a way for user "Mira" to assign ranks.
 Object.entries(ADMINS).forEach(async ([name, rank]) => {
-	db.registerIfNotExists(name, DEFAULT_PASSWORD_FOR_TESTING);
-	db.setAdminRank(name, rank);
+	const row = await db.registerIfNotExists(name, DEFAULT_PASSWORD);
+	if (!row) return;
+	
+	db.setAdminRank(row.uuid, rank);
 });
 
 async function initTables(conn: mysql.Pool) {
