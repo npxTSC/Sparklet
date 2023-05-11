@@ -166,12 +166,20 @@ export namespace db {
 			WHERE LOWER(uuid) = LOWER(?);
 		`, [newToken, uuid]);
 	}
+	
+	export async function verifyLoginTokenWithName(name: string, token: string) {
+		const row = await getUser(name);
 
-	export async function verifyLoginToken(user: string, token: string) {
+		if (!row) return false;
+
+		return verifyLoginToken(row.uuid, token);
+	}
+	
+	export async function verifyLoginToken(uuid: string, token: string) {
 		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid FROM users
-			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
-		`, [user, token], conn, 0);
+			WHERE uuid = ? AND authToken = ?;
+		`, [uuid, token], conn, 0);
 	}
 
 	export async function getUser(username: string) {
