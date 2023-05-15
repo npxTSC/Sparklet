@@ -2,7 +2,7 @@
 "use strict";
 
 import {SparkletDB, CapsuleContent}	from "../../classes";
-import {cmon}						from "libdx";
+import {cmon, sleep$}				from "libdx";
 
 // Elements
 const searchbox		= document.getElementById("capsuleSearch")	as HTMLInputElement;
@@ -10,6 +10,10 @@ const resultsbox	= document.getElementById("results")		as HTMLDivElement;
 const listingsDiv	= document.getElementById("listings")		as HTMLDivElement;
 const noResultsE	= document.getElementById("noresults")		as HTMLDivElement;
 
+
+// wait this long (ms) for the user to stop typing
+// before updating the capsules listing
+const SEARCHBOX_CHECK_DELAY = 400;
 
 
 const listingBlueprint = resultsbox.lastElementChild as HTMLDivElement;
@@ -93,7 +97,13 @@ function updateListings(rows: SparkletDB.Capsule[]) {
 
 
 searchbox.addEventListener("input", () => {
-	fetchCapsules(searchbox.value);
+	const oldValue = searchbox.value;
+	sleep$(SEARCHBOX_CHECK_DELAY);
+	
+	// if not changed after delay
+	if (searchbox.value !== oldValue) {
+		fetchCapsules(searchbox.value);
+	}
 });
 
 
