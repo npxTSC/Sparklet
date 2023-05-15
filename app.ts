@@ -206,7 +206,10 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
-			if (!row || (res.locals.account?.name !== user)) {
+			console.log("Logging out...");
+			console.log(res.locals.account);
+			
+			if (!row || (res.locals.account?.name !== user.toLowerCase())) {
 				return res.send("Failed to log out");
 			}
 
