@@ -11,6 +11,14 @@
 	<div class="bb1" style="margin-bottom: 5%;">
 		<div class="container bg-black border border-primary pb-3">
 			ADMIN CONTROLS
+			<form action="/cpl/new-spark" method="post">
+				<label for="sparkTitle">First name:</label><br>
+				<input type="text" name="sparkTitle" placeholder="Title"><br><br>
+				<label for="sparkDesc">Last name:</label><br>
+				<input type="text" name="sparkDesc" placeholder="Desc"><br><br>
+				<input type="file" name="sparkZip" accept=".spark.zip"><br><br>
+				<input type="submit" value="Post">
+			</form>
 		</div>
 	</div>
 </body>

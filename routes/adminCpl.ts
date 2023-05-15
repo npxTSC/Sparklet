@@ -28,6 +28,8 @@ router.post("/wipe-users", async (req, res) => {
 router.post("/new-spark", async (req, res) => {
 	await defaultCheck(res, AdminRank.Manager, async () => {
 		const {sparkTitle, sparkDesc} = req.body;
+		console.log(req.body);
+		console.log(req.files);
 		
 		if (!sparkTitle || !sparkDesc)
 			return res.status(400).send("Form incomplete");
@@ -35,7 +37,7 @@ router.post("/new-spark", async (req, res) => {
 		if (!req.files)
 			return res.status(400).send("No file uploaded");
 		
-		const sparkZip = req.files["spark"] as UploadedFile;
+		const sparkZip = req.files["sparkZip"] as UploadedFile;
 
 		if (!sparkZip)
 			return res.status(400).send("File `spark` not uploaded!");
