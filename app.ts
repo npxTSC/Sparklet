@@ -206,18 +206,9 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
-			console.log("Logging out...");
-			console.log(res.locals.account);
-			
-			if (!row || (res.locals.account?.name !== user.toLowerCase())) {
-				return res.send("Failed to log out");
-			}
-
 			// Remove auth cookie stuff
 			res.cookie("user", null);
 			res.cookie("luster", null);
-			
-			await db.editLoginToken(row.uuid, null);
 			
 			return res.redirect("/login");
 
