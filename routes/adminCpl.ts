@@ -14,7 +14,7 @@ import { __dirname as root }	from "../app.js";
 const router = Express.Router();
 
 router.get("/", async (req, res) => {
-	await defaultCheck(res, AdminRank.Operator, async () => {
+	await defaultCheck(res, AdminRank.Electrician, async () => {
 		res.render("admin-cpl");
 	});
 });
