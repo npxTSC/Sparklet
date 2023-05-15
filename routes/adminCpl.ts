@@ -2,9 +2,10 @@
 
 import {
 	AdminRank, SparkletDB, Nullable
-}				from	"../classes.js";
-import Express	from	"express";
-import db		from	"../db.js";
+}						from "../classes.js";
+import Express			from "express";
+import db				from "../db.js";
+import { UploadedFile }	from "express-fileupload";
 
 const router = Express.Router();
 
@@ -20,15 +21,15 @@ router.post("/new-spark", async (req, res) => {
 		const {sparkTitle, sparkDesc} = req.body;
 		
 		if (!sparkTitle || !sparkDesc)
-			return res.send("Form incomplete");
+			return res.status(400).send("Form incomplete");
 
 		if (!req.files)
-			return res.send("No file uploaded");
+			return res.status(400).send("No file uploaded");
 		
-		const sparkZip = req.files["spark"];
+		const sparkZip = req.files["spark"] as UploadedFile;
 
 		if (!sparkZip)
-			return res.send("File `spark` not uploaded!");
+			return res.status(400).send("File `spark` not uploaded!");
 		
 		const acc = res.locals.account as SparkletDB.SparkletUser;
 
@@ -37,6 +38,12 @@ router.post("/new-spark", async (req, res) => {
 			acc.uuid,
 			sparkDesc
 		);
+
+		if (sparkZip.mimetype !== "application/zip") {
+			return res.status(400).send("Uploaded file is not a zip file");
+		}
+
+		// extract spark zip
 
 		return res.redirect("/sparks");
 	});
