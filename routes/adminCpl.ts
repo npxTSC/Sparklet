@@ -59,6 +59,7 @@ router.post("/new-spark", async (req, res) => {
 			await new Promise((resolve, reject) => {
 				yauzl.fromBuffer(
 					sparkZip.data,
+					{lazyEntries: true},
 					(err, zip) => resolve(err ? null : zip)
 				)
 			});
