@@ -266,15 +266,17 @@ export namespace db {
 			creator:	string,
 			desc:		string,
 		) {
-			return (await dbGet.executeGetDateify<SparkletDB.SparkRow>(`
+			await conn.execute(`
 				INSERT INTO games(title, creator, description, visible)
 				VALUES (?, ?, ?, 1);
+			`, [title, creator, desc]);
 
+			return (await dbGet.executeGetDateify<SparkletDB.SparkRow>(`
 				SELECT * FROM games
 				WHERE LOWER(creator) = LOWER(?)
 				ORDER BY date DESC
 				LIMIT 1;
-			`, [title, creator, desc, creator], conn, 0, DbRunMode.Query))!;
+			`, [creator], conn, 0))!;
 		}
 
 		export async function postCapsule(
