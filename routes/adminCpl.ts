@@ -9,6 +9,7 @@ import yauzl					from "yauzl";
 import { UploadedFile }			from "express-fileupload";
 import fs						from "fs";
 import { __dirname as root }	from "../app.js";
+import path						from "path";
 
 const router = Express.Router();
 const ZIP_MIMETYPES = [
@@ -81,14 +82,16 @@ router.post("/new-spark", async (req, res) => {
 					if (err) throw err;
 
 					const sparkRoute = `${root}/dist/public/sparks/${sparkUUID}`;
-					console.log("Writing to... " + sparkRoute);
-					fs.mkdirSync(sparkRoute, { recursive: true });
-
+					
 					// Create a write stream to write the file contents to disk
 					let fname = (entry.fileName).replace(/\\/g, "/");
 					fname = fname.substring(fname.indexOf("/") + 1);
+					const writePath = `${sparkRoute}/${fname}`;
+
+					fs.mkdirSync(path.dirname(writePath), { recursive: true });
+					
 					const writeStream = fs.createWriteStream(
-						`${sparkRoute}/${fname}`
+						writePath
 					);
 
 					// Pipe the read stream into the write stream to write the file contents to disk
