@@ -12,7 +12,13 @@ import { __dirname as root }	from "../app.js";
 
 const router = Express.Router();
 
-router.get("/wipe-users", async (req, res) => {
+router.get("/", async (req, res) => {
+	await defaultCheck(res, AdminRank.Operator, async () => {
+		res.render("admin-cpl");
+	});
+});
+
+router.post("/wipe-users", async (req, res) => {
 	await defaultCheck(res, AdminRank.Operator, async () => {
 		await db.admin.lmfao();
 		res.send("Done...");
