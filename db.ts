@@ -229,13 +229,18 @@ export namespace db {
 		`, [uuid], conn, 0);
 	}
 
-	export async function gameQPosts() {
-		return await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(`
+	export async function gameQPosts(): Promise<SparkletDB.SparkDisp[]> {
+		const row = await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`, [], conn);
+
+		return Promise.all(row.map(async (v) => {
+			v.creatorName = (await db.getUserByUUID(v.creator))!.name;
+			return v as SparkletDB.SparkDisp;
+		}));
 	}
 
 	export async function getNews(uuid: string) {
