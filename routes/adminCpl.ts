@@ -11,6 +11,10 @@ import fs						from "fs";
 import { __dirname as root }	from "../app.js";
 
 const router = Express.Router();
+const ZIP_MIMETYPES = [
+	"application/zip",
+	"application/x-zip-compressed"
+]
 
 router.get("/", async (req, res) => {
 	await defaultCheck(res, AdminRank.Electrician, async () => {
@@ -48,9 +52,7 @@ router.post("/new-spark", async (req, res) => {
 			sparkDesc
 		);
 
-		if (sparkZip.mimetype !== "application/zip") {
-			console.log(sparkZip.mimetype);
-			console.log(sparkZip);
+		if (!ZIP_MIMETYPES.includes(sparkZip.mimetype)) {
 			return res.status(400).send("Uploaded file is not a zip file");
 		}
 
