@@ -3,7 +3,6 @@
 
 import {str, cmon, elem}	from "libdx";
 import {io}					from "socket.io-client";
-import {Modal, Carousel}	from "bootstrap";
 const socket = io();
 
 const {

@@ -8,7 +8,6 @@ import db						from "../db.js";
 import yauzl					from "yauzl";
 import { UploadedFile }			from "express-fileupload";
 import fs						from "fs";
-import path						from "path";
 import { __dirname as root }	from "../app.js";
 
 const router = Express.Router();
