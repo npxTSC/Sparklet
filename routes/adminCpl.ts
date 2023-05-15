@@ -15,6 +15,17 @@ router.get("/wipe-users", async (req, res) => {
 	});
 });
 
+router.post("/new-spark", async (req, res) => {
+	await defaultCheck(res, AdminRank.Manager, async () => {
+		//const {sparkTitle, sparkDesc} = req.body;
+		//res.locals.account
+
+		//await db.admin.postSpark();
+		res.redirect("/sparks");
+	});
+});
+
+// TODO: make this use async stuff instead of callback fn
 async function defaultCheck(
 	res:		Express.Response,
 	rank:		AdminRank,

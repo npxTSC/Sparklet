@@ -196,18 +196,6 @@ export namespace db {
 		`, [uuid], conn, 0);
 	}
 
-	export async function postCapsule(
-		name:		string,
-		creator:	string,
-		version:	string,
-		content:	string
-	) {
-		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
-			INSERT INTO capsules(name, creator, version, content)
-			VALUES (?, ?, ?, ?, ?);
-		`, [name, creator, version, content], conn, 0);
-	}
-
 	export async function getCapsule(uuid: string) {
 		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
 			SELECT * FROM capsules
@@ -271,6 +259,34 @@ export namespace db {
 			return conn.execute(`
 				DROP TABLE IF EXISTS users;
 			`);
+		}
+
+		export async function postSpark(
+			title:		string,
+			creator:	string,
+			desc:		string,
+		) {
+			return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
+				INSERT INTO games(title, creator, description, visible)
+				VALUES (?, ?, ?, 1);
+
+				SELECT * FROM games
+				WHERE LOWER(creator) = LOWER(?)
+				ORDER BY date DESC
+				LIMIT 1;
+			`, [title, creator, desc, creator], conn, 0, DbRunMode.Query);
+		}
+
+		export async function postCapsule(
+			name:		string,
+			creator:	string,
+			version:	string,
+			content:	string
+		) {
+			return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
+				INSERT INTO capsules(name, creator, version, content)
+				VALUES (?, ?, ?, ?, ?);
+			`, [name, creator, version, content], conn, 0);
 		}
 	}
 }
