@@ -80,13 +80,14 @@ router.post("/new-spark", async (req, res) => {
 				zip.openReadStream(entry, (err, readStream) => {
 					if (err) throw err;
 
-					fs.mkdirSync(`${root}/${sparkUUID}`, { recursive: true });
+					const sparkRoute = `${root}/dist/public/sparks/${sparkUUID}`;
+					fs.mkdirSync(sparkRoute, { recursive: true });
 
 					// Create a write stream to write the file contents to disk
 					let fname = (entry.fileName).replace(/\\/g, "/");
 					fname = fname.substring(fname.indexOf("/") + 1);
 					const writeStream = fs.createWriteStream(
-						`${root}/${sparkUUID}/${fname}`
+						`${sparkRoute}/${fname}`
 					);
 
 					// Pipe the read stream into the write stream to write the file contents to disk
