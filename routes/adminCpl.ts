@@ -49,6 +49,8 @@ router.post("/new-spark", async (req, res) => {
 		);
 
 		if (sparkZip.mimetype !== "application/zip") {
+			console.log(sparkZip.mimetype);
+			console.log(sparkZip);
 			return res.status(400).send("Uploaded file is not a zip file");
 		}
 
