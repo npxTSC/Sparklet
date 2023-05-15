@@ -206,7 +206,9 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
-			if (!row) return;
+			if (!row || (res.locals.account?.name !== user)) {
+				return res.send("Failed to log out");
+			}
 
 			// Remove auth cookie stuff
 			res.cookie("user", null);
