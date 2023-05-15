@@ -14,6 +14,7 @@ import fs					from "fs";
 import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
 import rateLimit			from "express-rate-limit";
+import fileUpload			from "express-fileupload";
 import "ejs";
 
 export const __filename	= fileURLToPath(import.meta.url);
@@ -25,13 +26,13 @@ util.loadEnv();
 import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes.js";
-import db						from "./db.js";
-import accountParser			from "./middleware/accounts.js";
-import helmetCsp				from "./middleware/helmet-csp.js";
-import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
-import * as routes				from "./routes/all.js";
-import { PORT }					from "./consts.js";
-import * as util				from "./util.js";
+import db							from "./db.js";
+import accountParser				from "./middleware/accounts.js";
+import helmetCsp					from "./middleware/helmet-csp.js";
+import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils.js";
+import * as routes					from "./routes/all.js";
+import { MAX_FILE_UPLOAD_MB, PORT }	from "./consts.js";
+import * as util					from "./util.js";
 
 // App
 export const app					= Express();
@@ -55,6 +56,9 @@ app.use(cparse());
 app.use(helmetCsp);
 app.use(accountParser);
 app.use(gzipCompression());
+app.use(fileUpload({
+	limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
+}));
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
