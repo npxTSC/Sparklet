@@ -26,13 +26,15 @@ util.loadEnv();
 import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes.js";
+import {
+	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT
+} from "./consts.js";
 import db							from "./db.js";
 import accountParser				from "./middleware/accounts.js";
 import pathsSupplier				from "./middleware/paths.js"
 import helmetCsp					from "./middleware/helmet-csp.js";
 import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils.js";
 import * as routes					from "./routes/all.js";
-import { MAX_FILE_UPLOAD_MB, PORT }	from "./consts.js";
 import * as util					from "./util.js";
 
 // App
@@ -206,13 +208,9 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
-			if (!row) return;
-
 			// Remove auth cookie stuff
 			res.cookie("user", null);
 			res.cookie("luster", null);
-			
-			await db.editLoginToken(row.uuid, null);
 			
 			return res.redirect("/login");
 
@@ -225,13 +223,6 @@ app.post("/login", async (req, res) => {
 	function fail(code: string) {
 		console.log(`Failed "${action}" on ${user}`);
 		res.redirect("/login?ecode="+code);
-	}
-
-	async function makeNewTokenFor(uuid: string) {
-		const token = generateToken(512);
-
-		await db.editLoginToken(uuid, token);
-		return token;
 	}
 });
 
@@ -350,4 +341,11 @@ export function generateToken(len: number) {
 
 export function findRoom(code: string) {
 	return activeRooms.find(v => v.joinHash === code);
+}
+
+async function makeNewTokenFor(uuid: string) {
+	const token = generateToken(AUTH_TOKEN_BITS);
+
+	await db.editLoginToken(uuid, token);
+	return token;
 }
