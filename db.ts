@@ -266,7 +266,7 @@ export namespace db {
 			creator:	string,
 			desc:		string,
 		) {
-			return (await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
+			return (await dbGet.executeGetDateify<SparkletDB.SparkRow>(`
 				INSERT INTO games(title, creator, description, visible)
 				VALUES (?, ?, ?, 1);
 
