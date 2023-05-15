@@ -69,6 +69,7 @@ router.post("/new-spark", async (req, res) => {
 		zip.readEntry();
 
 		const sparkUUID = spark.uuid;
+		console.log(spark);
 		zip.on("entry", (entry) => {
 			if (/\/$/.test(entry.fileName)) {
 				// Directory file names end with "/".
