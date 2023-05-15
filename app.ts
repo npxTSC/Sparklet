@@ -286,7 +286,7 @@ app.get("/sparks/:SparkID", async (req, res) => {
 		post: post,
 	}
 
-	res.render("sparks/"+sparkId, passed);
+	res.render(`${__dirname}/dist/public/sparks/${sparkId}/main`, passed);
 });
 
 app.get("/sparks", async (req, res) => {
