@@ -290,13 +290,11 @@ app.get("/sparks/:SparkID", async (req, res) => {
 });
 
 app.get("/sparks", async (req, res) => {
-	const qposts = await db.gameQPosts();
-	const qpostsNamed = qposts.map(async (v) => {
-		v.creator = (await db.getUser(v.creator))!.uuid;
-		return v;
+	const qposts = (await db.gameQPosts()).map(async (v) => {
+		v.creatorName = (await db.getUserByUUID(v.creator))!.name;
 	});
-
-	res.render("catalog", {qposts: qpostsNamed});
+	
+	res.render("catalog", {qposts});
 });
 
 app.get("/capsules", async (req, res) => {
