@@ -28,6 +28,7 @@ import {
 } from "./classes.js";
 import db							from "./db.js";
 import accountParser				from "./middleware/accounts.js";
+import pathsSupplier				from "./middleware/paths.js"
 import helmetCsp					from "./middleware/helmet-csp.js";
 import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils.js";
 import * as routes					from "./routes/all.js";
@@ -55,6 +56,7 @@ app.use(
 app.use(cparse());
 app.use(helmetCsp);
 app.use(accountParser);
+app.use(pathsSupplier);
 app.use(gzipCompression());
 app.use(fileUpload({
 	limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
@@ -271,22 +273,22 @@ app.get("/news", async (req, res) => {
 	res.render("news", {qposts});
 });
 
-app.get("/sparks/:SparkID", async (req, res) => {
-	let sparkId = req.params["SparkID"];
-	if (!sparkId) return throw404(res);
+app.get("/sparks/:SparkUUID", async (req, res) => {
+	let sparkUUID = req.params["SparkUUID"];
+	if (!sparkUUID) return throw404(res);
 
-	sparkId = sanitize(sparkId);
+	sparkUUID = sanitize(sparkUUID);
 
-	let post = await db.getGame(sparkId);
+	let post = await db.getGame(sparkUUID);
 
 	if (!post) return throw404(res);
 
 	let passed = {
-		postId: sparkId,
-		post: post,
+		postId:	sparkUUID,
+		post:	post,
 	}
 
-	res.render(`${__dirname}/dist/public/sparks/${sparkId}/main`, passed);
+	res.render(`${__dirname}/dist/public/sparks/${sparkUUID}/main`, passed);
 });
 
 app.get("/sparks", async (req, res) => {
