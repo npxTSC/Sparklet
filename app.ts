@@ -14,6 +14,7 @@ import fs					from "fs";
 import sanitize				from "sanitize-filename";
 import {fileURLToPath}		from "url";
 import rateLimit			from "express-rate-limit";
+import fileUpload			from "express-fileupload";
 import "ejs";
 
 export const __filename	= fileURLToPath(import.meta.url);
@@ -25,13 +26,13 @@ util.loadEnv();
 import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes.js";
-import db						from "./db.js";
-import accountParser			from "./middleware/accounts.js";
-import helmetCsp				from "./middleware/helmet-csp.js";
-import { QUIZ_SOCKET_HANDLERS }	from "./quiz-utils.js";
-import * as routes				from "./routes/all.js";
-import { PORT }					from "./consts.js";
-import * as util				from "./util.js";
+import db							from "./db.js";
+import accountParser				from "./middleware/accounts.js";
+import helmetCsp					from "./middleware/helmet-csp.js";
+import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils.js";
+import * as routes					from "./routes/all.js";
+import { MAX_FILE_UPLOAD_MB, PORT }	from "./consts.js";
+import * as util					from "./util.js";
 
 // App
 export const app					= Express();
@@ -55,6 +56,9 @@ app.use(cparse());
 app.use(helmetCsp);
 app.use(accountParser);
 app.use(gzipCompression());
+app.use(fileUpload({
+	limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
+}));
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
@@ -158,19 +162,19 @@ app.post("/login", async (req, res) => {
 	if (user.length > 30)			return fail("l-tooLong");
 	if (pass.length > 100)			return fail("l-passTooLong");
 
-	let row = await db.getFromUsername(user);
+	let row = await db.getUser(user);
 
 	switch (action) {
 		case "Register":
 			// Opposite of login, reject if exists
 			if (row) return fail("r-nameExists");
 
-			const hashed = await db.register(user, pass);
+			await db.register(user, pass);
 
 			console.log(`New account created: ${user}`);
 
 			// Reassign row to new user object
-			row = await db.getFromUsername(user);
+			row = await db.getUser(user);
 			
 			// Fall-through to Login, because let's be real,
 			// it's fucking annoying when you need to log in
@@ -190,7 +194,7 @@ app.post("/login", async (req, res) => {
 			console.log(`User ${user} logged in successfully`);
 
 			// Change login token in DB
-			const token = await makeNewTokenFor(user);
+			const token = await makeNewTokenFor(row.uuid);
 			
 			res.cookie("user", user);
 			res.cookie("luster", token);
@@ -199,11 +203,13 @@ app.post("/login", async (req, res) => {
 			break;
 
 		case "Log Out":
+			if (!row) return;
+
 			// Remove auth cookie stuff
 			res.cookie("user", null);
 			res.cookie("luster", null);
 			
-			await db.editLoginToken(user, null);
+			await db.editLoginToken(row.uuid, null);
 			
 			return res.redirect("/login");
 
@@ -218,10 +224,10 @@ app.post("/login", async (req, res) => {
 		res.redirect("/login?ecode="+code);
 	}
 
-	async function makeNewTokenFor(user: string) {
+	async function makeNewTokenFor(uuid: string) {
 		const token = generateToken(512);
 
-		await db.editLoginToken(user, token);
+		await db.editLoginToken(uuid, token);
 		return token;
 	}
 });
@@ -280,12 +286,12 @@ app.get("/sparks/:SparkID", async (req, res) => {
 		post: post,
 	}
 
-	res.render("sparks/"+sparkId, passed);
+	res.render(`${__dirname}/dist/public/sparks/${sparkId}/main`, passed);
 });
 
 app.get("/sparks", async (req, res) => {
-	let qposts = await db.gameQPosts();
-
+	const qposts = await db.gameQPosts();
+	
 	res.render("catalog", {qposts});
 });
 

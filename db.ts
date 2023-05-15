@@ -1,15 +1,16 @@
 import mysql 				from "mysql2/promise";
-import {v4 as newUUID}		from "uuid";
 import bcrypt	 			from "bcrypt";
 import waitOn				from "wait-on";
 import * as util			from "./util.js";
 import { ADMINS }			from "./consts.js";
 import {
 	Option, Nullable, SparkletDB,
-	TimestampIntoDate, DateablePacket
+	TimestampIntoDate, DateablePacket, AdminRank
 }	from "./classes.js";
 
-const DEFAULT_PASSWORD_FOR_TESTING = "asdf";
+// for testing purposes... remove when we start
+// processing important information someday
+const DEFAULT_PASSWORD = "asdf";
 
 util.loadEnv();
 util.checkEnvReady([
@@ -18,10 +19,11 @@ util.checkEnvReady([
 ]);
 
 const CONN_OPTIONS = {
-	database:	"main",
-	host:		"db",
-	user:		process.env["DB_USER"]!,
-	password:	process.env["DB_PASS"]!,
+	database:			"main",
+	host:				"db",
+	user:				process.env["DB_USER"]!,
+	password:			process.env["DB_PASS"]!,
+	multipleStatements:	true,
 };
 
 console.log("Waiting for MariaDB container...");
@@ -53,9 +55,19 @@ namespace dbGet {
 		sql:	string,
 		values:	any[],
 		conn:	mysql.Pool,
+		query?:	DbRunMode,
 	): Promise<T[]> {
-		const res = await conn.execute<T[]>(sql, values);
-		return res[0];
+		let res;
+
+		if (!query) {
+			// execute
+			res = conn.execute<T[]>(sql, values);
+		} else {
+			// query
+			res = conn.query<T[]>(sql, values);
+		}
+
+		return (await res)[0];
 	}
 
 	// type-safe shorthand for doing execute()[0][n]
@@ -64,8 +76,9 @@ namespace dbGet {
 		values:	any[],
 		conn:	mysql.Pool,
 		nth:	number,
+		query?:	DbRunMode,
 	): Promise<Option<T>> {
-		const res = await executeGetArr<T>(sql, values, conn);
+		const res = await executeGetArr<T>(sql, values, conn, query);
 		return res[nth];
 	}
 
@@ -75,8 +88,9 @@ namespace dbGet {
 		values:	any[],
 		conn:	mysql.Pool,
 		nth:	number,
+		query?:	DbRunMode,
 	): Promise<Option<TimestampIntoDate<T>>> {
-		const atNth = await executeGet<T>(sql, values, conn, nth);
+		const atNth = await executeGet<T>(sql, values, conn, nth, query);
 		return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
 	}
 
@@ -85,8 +99,9 @@ namespace dbGet {
 		sql:	string,
 		values:	any[],
 		conn:	mysql.Pool,
+		query?:	DbRunMode,
 	): Promise<TimestampIntoDate<T>[]> {
-		const res = await executeGetArr<T>(sql, values, conn);
+		const res = await executeGetArr<T>(sql, values, conn, query);
 
 		/*
 		* we can safely say it's not an Option<T>[] because...
@@ -100,67 +115,76 @@ namespace dbGet {
 	}
 }
 
+const enum DbRunMode {
+	// Default is conn.execute()
+	Execute	= 0,
+	Query	= 1,
+
+	__LENGTH
+}
+
 export namespace db {
 	export async function register(user: string, pass: string) {
 		// Get hash of password
 		const hashed = await bcrypt.hash(pass, 10);
 
 		// Put in DB
-		await conn.execute(`
-			INSERT INTO users(name, passHash, uuid)
-			VALUES(?, ?, ?);
-		`, [user, hashed, newUUID()]);
+		const row = await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
+			INSERT INTO users(name, passHash) VALUES(?, ?);
+			SELECT * FROM users WHERE LOWER(name) = LOWER(?);
+		`, [user, hashed, user], conn, 0, DbRunMode.Query);
 
-		return hashed;
+		return row!;
 	}
 	
 	export async function registerIfNotExists(user: string, pass: string) {
-		if (await getFromUsername(user)) return null;
+		if (await getUser(user)) return null;
 
 		return await register(user, pass);
 	}
 
-	export async function getFromUsername(user: string) {
-		return dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
-			SELECT name, uuid, passHash FROM users
-			WHERE LOWER(name) = LOWER(?);
-		`, [user], conn, 0);
-	}
-
-	export async function setAdminRank(user: string, rank: number) {
+	export async function setAdminRank(uuid: string, rank: number) {
 		return conn.execute(`
 			UPDATE users
 			SET adminRank = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [rank, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [rank, uuid]);
 	}
 
-	export async function updateBio(user: string, bio: string) {
+	export async function updateBio(uuid: string, bio: string) {
 		return conn.execute(`
 			UPDATE users
 			SET bio = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [bio, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [bio, uuid]);
 	}
 
-	export async function editLoginToken(user: string, newToken: Nullable<string>) {
+	export async function editLoginToken(uuid: string, newToken: Nullable<string>) {
 		return conn.execute(`
 			UPDATE users
 			SET authToken = ?
-			WHERE LOWER(name) = LOWER(?);
-		`, [newToken, user]);
+			WHERE LOWER(uuid) = LOWER(?);
+		`, [newToken, uuid]);
 	}
+	
+	export async function verifyLoginTokenWithName(name: string, token: string) {
+		const row = await getUser(name);
 
-	export async function verifyLoginToken(user: string, token: string) {
+		if (!row) return false;
+
+		return verifyLoginToken(row.uuid, token);
+	}
+	
+	export async function verifyLoginToken(uuid: string, token: string) {
 		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
 			SELECT name, uuid FROM users
-			WHERE LOWER(name) = LOWER(?) AND authToken = (?);
-		`, [user, token], conn, 0);
+			WHERE uuid = ? AND authToken = ?;
+		`, [uuid, token], conn, 0);
 	}
 
 	export async function getUser(username: string) {
 		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
-			SELECT name, uuid, adminRank, bio, pfpSrc FROM users
+			SELECT * FROM users
 			WHERE LOWER(name) = LOWER(?);
 		`, [username], conn, 0);
 	}
@@ -172,24 +196,11 @@ export namespace db {
 		`, [uuid], conn, 0);
 	}
 
-	export async function postCapsule(
-		uuid:		string,
-		name:		string,
-		creator:	string,
-		version:	string,
-		content:	string
-	) {
-		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
-			INSERT INTO capsules(uuid, name, creator, version, content)
-			VALUES (?, ?, ?, ?, ?);
-		`, [uuid, name, creator, version, content], conn, 0);
-	}
-
-	export async function getCapsule(capsuleUuid: string) {
+	export async function getCapsule(uuid: string) {
 		return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
 			SELECT * FROM capsules
 			WHERE uuid = (?) AND visible = 1;
-		`, [capsuleUuid], conn, 0);
+		`, [uuid], conn, 0);
 	}
 
 	export async function searchCapsules(query: string) {
@@ -218,13 +229,19 @@ export namespace db {
 		`, [uuid], conn, 0);
 	}
 
-	export async function gameQPosts() {
-		return await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(`
+	export async function gameQPosts(): Promise<SparkletDB.SparkDisp[]> {
+		const row = await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(`
 			SELECT *
 			FROM games WHERE visible = 1
 			ORDER BY date DESC
 			LIMIT 25;
 		`, [], conn);
+
+		return Promise.all(row.map(async (v) => {
+			const creatorRow = (await db.getUserByUUID(v.creator))!;
+			v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name}`;
+			return v as SparkletDB.SparkDisp;
+		}));
 	}
 
 	export async function getNews(uuid: string) {
@@ -249,6 +266,36 @@ export namespace db {
 				DROP TABLE IF EXISTS users;
 			`);
 		}
+
+		export async function postSpark(
+			title:		string,
+			creator:	string,
+			desc:		string,
+		) {
+			await conn.execute(`
+				INSERT INTO games(title, creator, description, visible)
+				VALUES (?, ?, ?, 1);
+			`, [title, creator, desc]);
+
+			return (await dbGet.executeGetDateify<SparkletDB.SparkRow>(`
+				SELECT * FROM games
+				WHERE LOWER(creator) = LOWER(?)
+				ORDER BY date DESC
+				LIMIT 1;
+			`, [creator], conn, 0))!;
+		}
+
+		export async function postCapsule(
+			name:		string,
+			creator:	string,
+			version:	string,
+			content:	string
+		) {
+			return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(`
+				INSERT INTO capsules(name, creator, version, content)
+				VALUES (?, ?, ?, ?, ?);
+			`, [name, creator, version, content], conn, 0);
+		}
 	}
 }
 
@@ -257,8 +304,10 @@ export default db;
 
 // Remove this once there's a way for user "Mira" to assign ranks.
 Object.entries(ADMINS).forEach(async ([name, rank]) => {
-	db.registerIfNotExists(name, DEFAULT_PASSWORD_FOR_TESTING);
-	db.setAdminRank(name, rank);
+	const row = await db.registerIfNotExists(name, DEFAULT_PASSWORD);
+	if (!row) return;
+	
+	db.setAdminRank(row.uuid, rank);
 });
 
 async function initTables(conn: mysql.Pool) {

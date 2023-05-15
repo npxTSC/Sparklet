@@ -1,7 +1,8 @@
 // Middleware to add account data to req
 "use strict";
 
-import {db}		from "../db.js";
+import {db}				from "../db.js";
+import {MaybeNullish}	from "../classes.js";
 
 import {
 	Request,
@@ -14,13 +15,13 @@ export default async function(
 	res:	Response,
 	next:	NextFunction
 ) {
-	const user = req.cookies?.user;
-	const token = req.cookies?.luster;
+	const user = req.cookies?.user		as MaybeNullish<string>;
+	const token = req.cookies?.luster	as MaybeNullish<string>;
 
 	res.locals.account = null;
-	if (!user) return next();
+	if (!user || !token) return next();
 
-	const row = await db.verifyLoginToken(user, token);
+	const row = await db.verifyLoginTokenWithName(user, token);
 	if (!row) return next();
 
 	res.locals.account = await db.getUser(user);

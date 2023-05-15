@@ -82,6 +82,7 @@ export namespace SparkletDB {
 	export type Capsule			= TimestampIntoDate<CapsuleRow>;
 	export type NewsPost		= TimestampIntoDate<NewsPostRow>;
 	export type Spark			= TimestampIntoDate<SparkRow>;
+	export type SparkDisp		= Spark & { creatorName: string };
 
 	export type SparkletUserPublic =
 		Omit<SparkletUser, "passHash" | "emailVToken" | "authToken">;

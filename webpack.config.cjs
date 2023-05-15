@@ -20,15 +20,6 @@ module.exports = {
 		"sass-main":		cd + "/src/css/main.scss",
 		"sass-pets":		cd + "/src/css/pets.scss",
 		"sass-quizplay":	cd + "/src/css/quizplay.scss",
-		
-		"sparks/sparkwave":	cd + "/src/js/sparks/sparkwave/main.ts",
-		"sass-sparkwave":	cd + "/src/css/sparks/sparkwave.scss",
-		
-		"sparks/wordle":	cd + "/src/js/sparks/wordle/main.ts",
-		"sass-wordle":		cd + "/src/css/sparks/wordle.scss",
-		
-		"sparks/sudoku":	cd + "/src/js/sparks/sudoku/main.ts",
-		"sass-sudoku":		cd + "/src/css/sparks/sudoku.scss",
 	},
 	
 	module: {
