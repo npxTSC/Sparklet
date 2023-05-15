@@ -8,6 +8,7 @@ import db						from "../db.js";
 import yauzl					from "yauzl";
 import { UploadedFile }			from "express-fileupload";
 import fs						from "fs";
+import path						from "path";
 import { __dirname as root }	from "../app.js";
 
 const router = Express.Router();
@@ -82,7 +83,11 @@ router.post("/new-spark", async (req, res) => {
 					fs.mkdirSync(`${root}/${sparkUUID}`, { recursive: true });
 
 					// Create a write stream to write the file contents to disk
-					const writeStream = fs.createWriteStream(`${root}/${sparkUUID}/${entry.fileName}`);
+					let fname = (entry.fileName).replace(/\\/g, "/");
+					fname = fname.substring(fname.indexOf("/") + 1);
+					const writeStream = fs.createWriteStream(
+						`${root}/${sparkUUID}/${fname}`
+					);
 
 					// Pipe the read stream into the write stream to write the file contents to disk
 					readStream.pipe(writeStream);
