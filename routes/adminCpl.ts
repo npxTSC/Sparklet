@@ -29,8 +29,6 @@ router.post("/wipe-users", async (req, res) => {
 router.post("/new-spark", async (req, res) => {
 	await defaultCheck(res, AdminRank.Manager, async () => {
 		const {sparkTitle, sparkDesc} = req.body;
-		console.log(req.body);
-		console.log(req.files);
 		
 		if (!sparkTitle || !sparkDesc)
 			return res.status(400).send("Form incomplete");
@@ -70,7 +68,6 @@ router.post("/new-spark", async (req, res) => {
 		zip.readEntry();
 
 		const sparkUUID = spark.uuid;
-		console.log(spark);
 		zip.on("entry", (entry) => {
 			if (/\/$/.test(entry.fileName)) {
 				// Directory file names end with "/".
@@ -81,6 +78,7 @@ router.post("/new-spark", async (req, res) => {
 					if (err) throw err;
 
 					const sparkRoute = `${root}/dist/public/sparks/${sparkUUID}`;
+					console.log("Writing to... " + sparkRoute);
 					fs.mkdirSync(sparkRoute, { recursive: true });
 
 					// Create a write stream to write the file contents to disk
