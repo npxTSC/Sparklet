@@ -5,7 +5,7 @@ import * as util			from "./util.js";
 import { ADMINS }			from "./consts.js";
 import {
 	Option, Nullable, SparkletDB,
-	TimestampIntoDate, DateablePacket
+	TimestampIntoDate, DateablePacket, AdminRank
 }	from "./classes.js";
 
 // for testing purposes... remove when we start
@@ -238,7 +238,8 @@ export namespace db {
 		`, [], conn);
 
 		return Promise.all(row.map(async (v) => {
-			v.creatorName = (await db.getUserByUUID(v.creator))!.name;
+			const creatorRow = (await db.getUserByUUID(v.creator))!;
+			v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name}`;
 			return v as SparkletDB.SparkDisp;
 		}));
 	}
