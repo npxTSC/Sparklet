@@ -17,11 +17,28 @@ router.get("/wipe-users", async (req, res) => {
 
 router.post("/new-spark", async (req, res) => {
 	await defaultCheck(res, AdminRank.Manager, async () => {
-		//const {sparkTitle, sparkDesc} = req.body;
-		//res.locals.account
+		const {sparkTitle, sparkDesc} = req.body;
+		
+		if (!sparkTitle || !sparkDesc)
+			return res.send("Form incomplete");
 
-		//await db.admin.postSpark();
-		res.redirect("/sparks");
+		if (!req.files)
+			return res.send("No file uploaded");
+		
+		const sparkZip = req.files["spark"];
+
+		if (!sparkZip)
+			return res.send("File `spark` not uploaded!");
+		
+		const acc = res.locals.account as SparkletDB.SparkletUser;
+
+		const spark = await db.admin.postSpark(
+			sparkTitle,
+			acc.uuid,
+			sparkDesc
+		);
+
+		return res.redirect("/sparks");
 	});
 });
 
