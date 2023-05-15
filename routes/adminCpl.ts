@@ -2,10 +2,13 @@
 
 import {
 	AdminRank, SparkletDB, Nullable
-}						from "../classes.js";
-import Express			from "express";
-import db				from "../db.js";
-import { UploadedFile }	from "express-fileupload";
+}								from "../classes.js";
+import Express					from "express";
+import db						from "../db.js";
+import yauzl					from "yauzl";
+import { UploadedFile }			from "express-fileupload";
+import fs						from "fs";
+import { __dirname as root }	from "../app.js";
 
 const router = Express.Router();
 
@@ -44,6 +47,43 @@ router.post("/new-spark", async (req, res) => {
 		}
 
 		// extract spark zip
+		const zip: Nullable<yauzl.ZipFile> =
+			await new Promise((resolve, reject) => {
+				yauzl.fromBuffer(
+					sparkZip.data,
+					(err, zip) => resolve(err ? null : zip)
+				)
+			});
+
+		if (!zip) return res.status(400).send("Error unzipping...");
+
+		zip.readEntry();
+
+		const sparkUUID = spark.uuid;
+		zip.on("entry", (entry) => {
+			if (/\/$/.test(entry.fileName)) {
+				// Directory file names end with "/".
+				// We don't need to do anything with these.
+				zip.readEntry();
+			} else {
+				zip.openReadStream(entry, (err, readStream) => {
+					if (err) throw err;
+
+					fs.mkdirSync(`${root}/${sparkUUID}`, { recursive: true });
+
+					// Create a write stream to write the file contents to disk
+					const writeStream = fs.createWriteStream(`${root}/${sparkUUID}/${entry.fileName}`);
+
+					// Pipe the read stream into the write stream to write the file contents to disk
+					readStream.pipe(writeStream);
+
+					// When the write stream finishes writing, move on to the next entry in the zip file
+					writeStream.on("finish", () => {
+						zip.readEntry();
+					});
+				});
+			}
+		});
 
 		return res.redirect("/sparks");
 	});
