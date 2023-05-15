@@ -64,6 +64,9 @@ app.use(fileUpload({
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 app.use(Express.static(path.join(__dirname, "dist")));
+app.use("/sparks", Express.static(
+	path.join(__dirname, "dist/public/sparks")
+));
 
 // App config
 app.locals.Ranks = AdminRank;
