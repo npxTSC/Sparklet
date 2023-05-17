@@ -8,8 +8,8 @@ import db						from "../db.js";
 import yauzl					from "yauzl";
 import { UploadedFile }			from "express-fileupload";
 import fs						from "fs";
-import { __dirname as root }	from "../app.js";
 import path						from "path";
+import { sparksFolder }			from "../consts.js";
 
 const router = Express.Router();
 const ZIP_MIMETYPES = [
@@ -81,7 +81,7 @@ router.post("/new-spark", async (req, res) => {
 				zip.openReadStream(entry, (err, readStream) => {
 					if (err) throw err;
 
-					const sparkRoute = `${root}/dist/public/sparks/${sparkUUID}`;
+					const sparkRoute = path.join(sparksFolder, sparkUUID);
 					
 					// Create a write stream to write the file contents to disk
 					let fname = (entry.fileName).replace(/\\/g, "/");

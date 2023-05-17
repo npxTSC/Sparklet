@@ -6,6 +6,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    volumes:
+      - "stateful:/var/lib/sparklet"
   db:
     image: mariadb
     env_file:
@@ -19,3 +21,4 @@ services:
 
 volumes:
   db-data: {}
+  stateful: {}

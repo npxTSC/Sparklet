@@ -27,7 +27,7 @@ import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes.js";
 import {
-	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT
+	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT, sparksFolder
 } from "./consts.js";
 import db							from "./db.js";
 import accountParser				from "./middleware/accounts.js";
@@ -280,7 +280,7 @@ app.get("/sparks/:SparkUUID", async (req, res) => {
 		post:	post,
 	}
 
-	res.render(`${__dirname}/dist/public/sparks/${sparkUUID}/main`, passed);
+	res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
 });
 
 app.get("/sparks", async (req, res) => {
