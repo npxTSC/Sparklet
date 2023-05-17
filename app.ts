@@ -240,8 +240,13 @@ app.get("/conductors/:profile", async (req, res) => {
 	let row = await db.getUser(profile);
 
 	if (!row) return throw404(res);
+
+	const isOwnProfile = row.uuid === user.uuid;
 	
-	return res.render("profile", {profileInfo: row});
+	return res.render("profile", {
+		profileInfo: row,
+		isOwnProfile,
+	});
 });
 
 app.get("/news/:PostID", async (req, res) => {
