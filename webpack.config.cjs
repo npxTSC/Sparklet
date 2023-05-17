@@ -2,6 +2,7 @@
 const path					= require("path");
 const CleanTerminalPlugin	= require("clean-terminal-webpack-plugin");
 const CopyPlugin			= require("copy-webpack-plugin");
+const webpack				= require("webpack");
 
 const cd = __dirname;
 
@@ -67,6 +68,7 @@ module.exports = {
 
 	plugins: [
 		new CleanTerminalPlugin(),
+		new webpack.ProgressPlugin(),
 		
 		new CopyPlugin({
 			patterns: [
