@@ -1,8 +1,8 @@
 /* Home page */
 
-@import "custombs.scss";
+@import "./imports/custombs.scss";
 @import "~bootstrap/scss/bootstrap";
-@import "mixins.scss";
+@import "./imports/mixins.scss";
 
 // Constants
 $mobile-max-width:	768px;

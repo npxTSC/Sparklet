@@ -1,4 +1,4 @@
-import {SparkletDB}	from "../../classes";
+import {SparkletDB}	from "../../../classes";
 export {}
 
 declare global {
