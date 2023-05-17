@@ -11,7 +11,17 @@
 	<div class="bb1" style="margin-bottom: 5%;">
 		<div class="container bg-black border border-primary pb-3">
 			<h1 class="display-1 center text-white mb-5">
-				<%= `${Ranks[profileInfo.adminRank]} ${profileInfo.name}` %>
+				<span class="profile-rank">
+					<%= Ranks[profileInfo.adminRank] %>
+				</span>
+				<span class="profile-name">
+					<%= profileInfo.name %>
+				</span>
+				<% if (isOwnProfile) { %>
+				<script nonce="<%- nonce %>">
+					alert("this is your own profile");
+				</script>
+				<% } %>
 			</h1>
 			
 			<div class="text-center mb-4">
