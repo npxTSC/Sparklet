@@ -1,26 +1,38 @@
 "use strict";
 const path					= require("path");
+const glob					= require("glob");
+const fs					= require("fs");
 const CleanTerminalPlugin	= require("clean-terminal-webpack-plugin");
 const CopyPlugin			= require("copy-webpack-plugin");
 const webpack				= require("webpack");
 
 const cd = __dirname;
 
+const tsEntries = glob.sync("src/js/*.ts").map(v => path.parse(v).name);
+//const sassEntries = glob.sync("src/css/*.scss").map(v => path.parse(v).name);
+
+const entries = tsEntries.reduce((entries, name) => {
+	const outTS = `${cd}/src/js/${name}.ts`;
+	const outSass = `${cd}/src/css/${name}.scss`;
+
+	const entry = [
+		outTS,
+	]
+
+	if (fs.existsSync(outSass)) entry.push(outSass);
+	
+	entries[name] = entry;
+
+	return entries;
+}, {});
+
 module.exports = {
 	mode: "production",
-	entry: {
-		"main":				cd + "/src/js/main.ts",
-		"login":			cd + "/src/js/login.ts",
-		"quiz":				cd + "/src/js/quiz.ts",
-		"quizplay":			cd + "/src/js/quizplay.ts",
-		"stratus":			cd + "/src/js/stratus.ts",
-		"pets":				cd + "/src/js/pets.ts",
-		"capsules":			cd + "/src/js/capsules.ts",
-		"host-room":		cd + "/src/js/host-room.ts",
-		
-		"sass-main":		cd + "/src/css/main.scss",
-		"sass-pets":		cd + "/src/css/pets.scss",
-		"sass-quizplay":	cd + "/src/css/quizplay.scss",
+	entry: entries,
+	
+	output: {
+		filename: "js/[name].js",
+		path: cd + "/dist",
 	},
 	
 	module: {
@@ -36,8 +48,7 @@ module.exports = {
 					{
 						loader: "file-loader",
 						options: {
-							outputPath: "css/",
-							name: "[path][name].min.css",
+							name: "css/[name].min.css",
 							context: "src/css/",
 						}
 					},
@@ -59,11 +70,6 @@ module.exports = {
 
 	resolve: {
 		extensions: [".scss", ".tsx", ".ts", ".js"],
-	},
-	
-	output: {
-		filename: "js/[name].js",
-		path: cd + "/dist",
 	},
 
 	plugins: [
