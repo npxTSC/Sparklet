@@ -1,7 +1,8 @@
 "use strict";
 
-import Express	from "express";
-import db		from "../db.js";
+import Express			from "express";
+import db				from "../db.js";
+import { SparkletDB }	from "../classes.js";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";
@@ -33,6 +34,17 @@ router.get("/tea-capes", (req, res) => {
 		"III_zP0_III":							CHICKEN_WINGS_URL,
 		"8d5fdde6-9ae9-480b-9cf2-30167933a10e":	CHICKEN_WINGS_URL,
 	})
+});
+
+router.post("/profile-mod/bio", (req, res) => {
+	const {} = req.body;
+	if (res.locals.account === null) return res.send("NT, Clown! 🤡");
+
+	const acc = res.locals.account as SparkletDB.SparkletUser;
+
+	if (acc.uuid !== 1) return;
+
+	return;
 });
 
 export default router;
