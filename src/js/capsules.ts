@@ -100,7 +100,7 @@ searchbox.addEventListener("input", () => {
 	const oldValue = searchbox.value;
 	sleep$(SEARCHBOX_CHECK_DELAY);
 	
-	// if not changed after delay
+	// if changed after delay
 	if (searchbox.value !== oldValue) {
 		fetchCapsules(searchbox.value);
 	}
