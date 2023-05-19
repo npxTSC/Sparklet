@@ -6,6 +6,7 @@
 
 import {sleep$, post$, elem}	from "libdx";
 import {SparkletDB}				from "../../classes.js";
+import {BIO_CHAR_LIMIT}			from "../../consts.js";
 
 // if there's one more "delay" const like this,
 // then it should prob be refactored
@@ -21,6 +22,10 @@ console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 if (ownProfile) {
 	bioE.setAttribute("contenteditable", "true");
 	bioE.addEventListener("input", async () => {
+		if (bioE.innerText.length > BIO_CHAR_LIMIT) {
+			bioE.innerText = bioE.innerText.substring(0, BIO_CHAR_LIMIT);
+		}
+		
 		const oldBio = bioE.innerText;
 
 		await sleep$(BIO_CHECK_DELAY);

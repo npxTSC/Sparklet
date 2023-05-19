@@ -1,8 +1,9 @@
 "use strict";
 
-import Express			from "express";
-import db				from "../db.js";
-import { SparkletDB }	from "../classes.js";
+import Express				from "express";
+import db					from "../db.js";
+import { SparkletDB }		from "../classes.js";
+import { BIO_CHAR_LIMIT }	from "../consts.js";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";
@@ -38,11 +39,13 @@ router.get("/tea-capes", (req, res) => {
 
 router.post("/profile-mod/bio", (req, res) => {
 	const {newBio} = req.body;
+	const bioLimited = newBio.substring(0, BIO_CHAR_LIMIT);
+
 	if (res.locals.account === null)
 		return res.status(400).send("NT, Clown! 🤡");
 
 	const acc = res.locals.account as SparkletDB.SparkletUser;
-	db.updateBio(acc.uuid, newBio);
+	db.updateBio(acc.uuid, bioLimited);
 
 	return res.status(200).end();
 });
