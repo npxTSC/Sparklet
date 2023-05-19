@@ -42,9 +42,6 @@ router.post("/profile-mod/bio", (req, res) => {
 		return res.status(400).send("NT, Clown! 🤡");
 
 	const acc = res.locals.account as SparkletDB.SparkletUser;
-
-	if (acc.uuid !== 1) return res.status(401).end();
-
 	db.updateBio(acc.uuid, newBio);
 
 	return res.status(200).end();

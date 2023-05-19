@@ -9,7 +9,7 @@ import {SparkletDB}				from "../../classes.js";
 
 // if there's one more "delay" const like this,
 // then it should prob be refactored
-const BIO_CHECK_DELAY = 2000;
+const BIO_CHECK_DELAY = 800;
 
 const profileInfo = (window as any).profileInfo as SparkletDB.SparkletUser;
 
@@ -20,10 +20,10 @@ console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 if (ownProfile) {
 	bioE.setAttribute("contenteditable", "true");
-	bioE.addEventListener("change", () => {
+	bioE.addEventListener("input", async () => {
 		const oldBio = bioE.innerText;
 
-		sleep$(BIO_CHECK_DELAY);
+		await sleep$(BIO_CHECK_DELAY);
 
 		// if not changed after delay, update it
 		if (bioE.innerText === oldBio) {
@@ -32,10 +32,16 @@ if (ownProfile) {
 	});
 }
 
-function submitNewBio(newBio: string) {
-	post$("/profile-mod/bio", {
+async function submitNewBio(newBio: string) {
+	const req = await post$("/api/profile-mod/bio", {
 		newBio
 	});
 
+	if (req.status !== 200) {
+		console.error("Failed to update bio...");
+		return;
+	}
+
 	elem.shakeElement(bioE, 100, 5);
+	alert("submitted");
 }
