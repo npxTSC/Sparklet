@@ -9,18 +9,19 @@ import {AdminRank, SparkletDB}	from "../../classes.js";
 import {BIO_CHAR_LIMIT}			from "../../consts.js";
 import loaders					from "./imports/loaders";
 
-const currentAccount = loaders.account();
+const currentAccount	= loaders.account();
+const profileInfo		= (
+	loaders.profileInfo() ??
+	(location.href = "/", null)
+)!;
 
 // if there's one more "delay" const like this,
 // then it should prob be refactored
 const BIO_CHECK_DELAY = 2000;
 
-const profileInfo = (window as any).profileInfo as SparkletDB.SparkletUser;
-
 const bioE = document.getElementsByClassName("profile-bio")[0] as HTMLParagraphElement;
 
-const profileUUID = profileInfo.uuid;
-const ownProfile = profileUUID === currentAccount.uuid;
+const ownProfile = profileInfo.uuid === currentAccount.uuid;
 console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 // this is also validated server-side... don't worry :) <3
@@ -41,7 +42,7 @@ if (ownProfile || currentAccount.adminRank >= AdminRank.Manager) {
 		// if was last input in time period, update it
 		if (editCounter === 0) {
 			bioE.blur();
-			submitNewBio(profileUUID, bioE.innerText);
+			submitNewBio(profileInfo.uuid, bioE.innerText);
 		}
 	});
 
@@ -52,7 +53,7 @@ if (ownProfile || currentAccount.adminRank >= AdminRank.Manager) {
 		e.preventDefault();
 		bioE.blur();
 		editCounter = 0;
-		submitNewBio(profileUUID, bioE.innerText);
+		submitNewBio(profileInfo.uuid, bioE.innerText);
 	});
 }
 
