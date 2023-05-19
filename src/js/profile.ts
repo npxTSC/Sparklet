@@ -10,7 +10,7 @@ import {BIO_CHAR_LIMIT}			from "../../consts.js";
 
 // if there's one more "delay" const like this,
 // then it should prob be refactored
-const BIO_CHECK_DELAY = 800;
+const BIO_CHECK_DELAY = 2000;
 
 const profileInfo = (window as any).profileInfo as SparkletDB.SparkletUser;
 
@@ -31,9 +31,7 @@ if (ownProfile) {
 		await sleep$(BIO_CHECK_DELAY);
 
 		// if not changed after delay, update it
-		if (bioE.innerText === oldBio) {
-			submitNewBio(oldBio);
-		}
+		if (bioE.innerText === oldBio) submitNewBio(oldBio);
 	});
 }
 
@@ -47,6 +45,5 @@ async function submitNewBio(newBio: string) {
 		return;
 	}
 
-	elem.shakeElement(bioE, 100, 5);
-	alert("submitted");
+	elem.shakeElement(bioE, 750, 5);
 }
