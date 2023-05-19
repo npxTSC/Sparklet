@@ -15,15 +15,15 @@ export default async function(
 	res:	Response,
 	next:	NextFunction
 ) {
-	const user = req.cookies?.user		as MaybeNullish<string>;
+	const uuid = req.cookies?.uuid		as MaybeNullish<string>;
 	const token = req.cookies?.luster	as MaybeNullish<string>;
 
 	res.locals.account = null;
-	if (!user || !token) return next();
+	if (!uuid || !token) return next();
 
-	const row = await db.verifyLoginTokenWithName(user, token);
+	const row = await db.verifyLoginToken(uuid, token);
 	if (!row) return next();
 
-	res.locals.account = await db.getUser(user);
+	res.locals.account = await db.getUser(uuid);
 	return next();
 }

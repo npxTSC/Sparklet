@@ -202,7 +202,7 @@ app.post("/login", async (req, res) => {
 			// Change login token in DB
 			const token = await makeNewTokenFor(row.uuid);
 			
-			res.cookie("user", user);
+			res.cookie("uuid", row.uuid);
 			res.cookie("luster", token);
 			res.redirect("/conductors/"+ user.toLowerCase());
 			
@@ -210,7 +210,7 @@ app.post("/login", async (req, res) => {
 
 		case "Log Out":
 			// Remove auth cookie stuff
-			res.cookie("user", null);
+			res.cookie("uuid", null);
 			res.cookie("luster", null);
 			
 			return res.redirect("/login");
