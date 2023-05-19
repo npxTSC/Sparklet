@@ -16,7 +16,8 @@ const profileInfo = (window as any).profileInfo as SparkletDB.SparkletUser;
 
 const bioE = document.getElementsByClassName("profile-bio")[0] as HTMLParagraphElement;
 
-const ownProfile = profileInfo.uuid === currentAccount.uuid;
+const profileUUID = profileInfo.uuid;
+const ownProfile = profileUUID === currentAccount.uuid;
 console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 if (ownProfile) {
@@ -36,7 +37,7 @@ if (ownProfile) {
 		// if was last input in time period, update it
 		if (editCounter === 0) {
 			bioE.blur();
-			submitNewBio(bioE.innerText);
+			submitNewBio(profileUUID, bioE.innerText);
 		}
 	});
 
@@ -47,13 +48,14 @@ if (ownProfile) {
 		e.preventDefault();
 		bioE.blur();
 		editCounter = 0;
-		submitNewBio(bioE.innerText);
+		submitNewBio(profileUUID, bioE.innerText);
 	});
 }
 
-async function submitNewBio(newBio: string) {
+async function submitNewBio(uuid: string, newBio: string) {
 	const req = await post$("/api/profile-mod/bio", {
-		newBio
+		uuid,
+		newBio,
 	});
 
 	if (req.status !== 200) {
