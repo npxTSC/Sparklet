@@ -21,24 +21,29 @@ console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 if (ownProfile) {
 	bioE.setAttribute("contenteditable", "true");
+
+	let editCounter = 0;
 	bioE.addEventListener("input", async () => {
 		if (bioE.innerText.length > BIO_CHAR_LIMIT) {
 			bioE.innerText = bioE.innerText.substring(0, BIO_CHAR_LIMIT);
 		}
 		
-		const oldBio = bioE.innerText;
+		editCounter++;
 
 		await sleep$(BIO_CHECK_DELAY);
+		editCounter--;
 
-		// if not changed after delay, update it
-		if (bioE.innerText === oldBio) submitNewBio(oldBio);
+		// if was last input in time period, update it
+		if (editCounter === 0) submitNewBio(bioE.innerText);
 	});
 
 	bioE.addEventListener("keydown", async (e) => {
 		if (!(e.key === "Enter" && e.ctrlKey)) return;
 
 		// If ctrl + enter, submit
+		e.preventDefault();
 		bioE.blur();
+		editCounter = 0;
 		submitNewBio(bioE.innerText);
 	});
 }
