@@ -27,8 +27,9 @@ import {
 	Room, AdminRank, QuizPlayer, SparkletDB,
 } from "./classes.js";
 import {
-	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT, STATEFUL, sparksFolder
+	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT
 } from "./consts.js";
+import {STATEFUL, sparksFolder}		from "./paths.js";
 import db							from "./db.js";
 import accountParser				from "./middleware/accounts.js";
 import pathsSupplier				from "./middleware/paths.js"

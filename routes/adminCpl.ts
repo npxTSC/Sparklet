@@ -9,7 +9,7 @@ import yauzl					from "yauzl";
 import { UploadedFile }			from "express-fileupload";
 import fs						from "fs";
 import path						from "path";
-import { sparksFolder }			from "../consts.js";
+import { sparksFolder }			from "../paths.js";
 
 const router = Express.Router();
 const ZIP_MIMETYPES = [
