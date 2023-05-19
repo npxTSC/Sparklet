@@ -177,7 +177,7 @@ export namespace db {
 	
 	export async function verifyLoginToken(uuid: string, token: string) {
 		return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(`
-			SELECT name, uuid FROM users
+			SELECT * FROM users
 			WHERE uuid = ? AND authToken = ?;
 		`, [uuid, token], conn, 0);
 	}

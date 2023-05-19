@@ -21,9 +21,6 @@ export default async function(
 	res.locals.account = null;
 	if (!uuid || !token) return next();
 
-	const row = await db.verifyLoginToken(uuid, token);
-	if (!row) return next();
-
-	res.locals.account = await db.getUser(uuid);
+	res.locals.account = await db.verifyLoginToken(uuid, token) ?? null;
 	return next();
 }
