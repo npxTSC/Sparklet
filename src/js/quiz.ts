@@ -4,6 +4,9 @@
 import {str, cmon, elem}	from "libdx";
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
+import loaders				from "./imports/loaders";
+
+const currentAccount = loaders.account();
 
 const socket = io();
 
@@ -45,7 +48,7 @@ loginForm.addEventListener("submit", (e) => {
 			if (unameElement.value) {
 				socket.emit("joinRoom", {
 					username:	unameElement.value,
-					account:	global.currentAccount,
+					account:	currentAccount,
 					roomcode:	lastEnteredRID,
 				});
 

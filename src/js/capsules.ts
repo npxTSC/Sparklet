@@ -3,13 +3,15 @@
 
 import {SparkletDB, CapsuleContent}	from "../../classes";
 import {cmon, sleep$}				from "libdx";
+import loaders						from "./imports/loaders";
+
+const currentAccount = loaders.account();
 
 // Elements
 const searchbox		= document.getElementById("capsuleSearch")	as HTMLInputElement;
 const resultsbox	= document.getElementById("results")		as HTMLDivElement;
 const listingsDiv	= document.getElementById("listings")		as HTMLDivElement;
 const noResultsE	= document.getElementById("noresults")		as HTMLDivElement;
-
 
 // wait this long (ms) for the user to stop typing
 // before updating the capsules listing

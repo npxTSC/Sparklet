@@ -3,14 +3,23 @@
 */
 "use strict";
 
+import { Nullable, SparkletDB }	from "../../../classes";
+
 namespace loaders {
-	export function account() {
-		return getMeta("account");
+	export function account(): Nullable<SparkletDB.SparkletUser> {
+		return getJSONMeta("account");
 	}
 
-	export function profileInfo() {
-		return getMeta("profile-info");
+	export function profileInfo(): Nullable<SparkletDB.SparkletUser> {
+		return getJSONMeta("profile-info");
 	}
+}
+
+function getJSONMeta(name: string) {
+	const meta = getMeta(name);
+	if (!meta) return null;
+
+	return JSON.parse(meta);
 }
 
 // NOT SECURE AGAINST BAD USER INPUT!
