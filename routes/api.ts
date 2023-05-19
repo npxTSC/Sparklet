@@ -39,13 +39,14 @@ router.get("/tea-capes", (req, res) => {
 
 router.post("/profile-mod/bio", (req, res) => {
 	const {newBio} = req.body;
-	const bioLimited = newBio.substring(0, BIO_CHAR_LIMIT);
+	const bioLimited: string = newBio.substring(0, BIO_CHAR_LIMIT);
+	const bioDefaulted = bioLimited.trim() || null;
 
 	if (res.locals.account === null)
 		return res.status(400).send("NT, Clown! 🤡");
 
 	const acc = res.locals.account as SparkletDB.SparkletUser;
-	db.updateBio(acc.uuid, bioLimited);
+	db.updateBio(acc.uuid, bioDefaulted);
 
 	return res.status(200).end();
 });

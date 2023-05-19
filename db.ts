@@ -151,7 +151,7 @@ export namespace db {
 		`, [rank, uuid]);
 	}
 
-	export async function updateBio(uuid: string, bio: string) {
+	export async function updateBio(uuid: string, bio: Nullable<string>) {
 		return conn.execute(`
 			UPDATE users
 			SET bio = ?
