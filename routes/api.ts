@@ -2,7 +2,7 @@
 
 import Express				from "express";
 import db					from "../db.js";
-import { SparkletDB }		from "../classes.js";
+import { AdminRank, SparkletDB }		from "../classes.js";
 import { BIO_CHAR_LIMIT }	from "../consts.js";
 
 const router = Express.Router();
@@ -38,15 +38,20 @@ router.get("/tea-capes", (req, res) => {
 });
 
 router.post("/profile-mod/bio", (req, res) => {
-	const {newBio} = req.body;
+	const {newBio, uuid: targetUUID} = req.body;
+
+	if (res.locals.account === null) return res.status(400).end();
+	const acc = res.locals.account as SparkletDB.SparkletUser;
+
+	if (acc.uuid !== targetUUID && acc.adminRank < AdminRank.Manager) {
+		// must be Manager+ to edit bios of other users
+		return res.status(403).end();
+	}
+
 	const bioLimited: string = newBio.substring(0, BIO_CHAR_LIMIT);
 	const bioDefaulted = bioLimited.trim() || null;
 
-	if (res.locals.account === null)
-		return res.status(400).send("NT, Clown! 🤡");
-
-	const acc = res.locals.account as SparkletDB.SparkletUser;
-	db.updateBio(acc.uuid, bioDefaulted);
+	db.updateBio(targetUUID, bioDefaulted);
 
 	return res.status(200).end();
 });
