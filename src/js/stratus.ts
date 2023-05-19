@@ -3,6 +3,9 @@
 
 import {io}					from "socket.io-client";
 import {Modal, Carousel}	from "bootstrap";
+import loaders				from "./imports/loaders";
+
+const currentAccount = loaders.account();
 const socket = io();
 
 const nagModalE	= document.getElementById("loginNagModal")!;

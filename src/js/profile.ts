@@ -7,6 +7,9 @@
 import {sleep$, post$, elem}	from "libdx";
 import {AdminRank, SparkletDB}	from "../../classes.js";
 import {BIO_CHAR_LIMIT}			from "../../consts.js";
+import loaders					from "./imports/loaders";
+
+const currentAccount = loaders.account();
 
 // if there's one more "delay" const like this,
 // then it should prob be refactored
