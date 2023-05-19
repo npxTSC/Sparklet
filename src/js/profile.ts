@@ -34,7 +34,10 @@ if (ownProfile) {
 		editCounter--;
 
 		// if was last input in time period, update it
-		if (editCounter === 0) submitNewBio(bioE.innerText);
+		if (editCounter === 0) {
+			bioE.blur();
+			submitNewBio(bioE.innerText);
+		}
 	});
 
 	bioE.addEventListener("keydown", async (e) => {
