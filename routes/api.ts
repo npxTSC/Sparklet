@@ -37,14 +37,17 @@ router.get("/tea-capes", (req, res) => {
 });
 
 router.post("/profile-mod/bio", (req, res) => {
-	const {} = req.body;
-	if (res.locals.account === null) return res.send("NT, Clown! 🤡");
+	const {newBio} = req.body;
+	if (res.locals.account === null)
+		return res.status(400).send("NT, Clown! 🤡");
 
 	const acc = res.locals.account as SparkletDB.SparkletUser;
 
-	if (acc.uuid !== 1) return;
+	if (acc.uuid !== 1) return res.status(401).end();
 
-	return;
+	db.updateBio(acc.uuid, newBio);
+
+	return res.status(200).end();
 });
 
 export default router;
