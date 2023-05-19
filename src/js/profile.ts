@@ -5,7 +5,7 @@
 "use strict";
 
 import {sleep$, post$, elem}	from "libdx";
-import {SparkletDB}				from "../../classes.js";
+import {AdminRank, SparkletDB}	from "../../classes.js";
 import {BIO_CHAR_LIMIT}			from "../../consts.js";
 
 // if there's one more "delay" const like this,
@@ -20,7 +20,8 @@ const profileUUID = profileInfo.uuid;
 const ownProfile = profileUUID === currentAccount.uuid;
 console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
-if (ownProfile) {
+// this is also validated server-side... don't worry :) <3
+if (ownProfile || currentAccount.adminRank >= AdminRank.Manager) {
 	bioE.setAttribute("contenteditable", "true");
 
 	let editCounter = 0;
