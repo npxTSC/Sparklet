@@ -12,7 +12,5 @@ export const STATEFUL			= path.resolve("/var/lib/sparklet");
 export const sparksFolder		= path.resolve(STATEFUL, "sparks");
 
 export const ADMINS				= {
-	"Mira":			AdminRank.Operator,		// Root
-	"zP":			AdminRank.Manager,		// Sh33p
 	"Anonymous":	AdminRank.Conductor,	// Reserved for default name
 };
