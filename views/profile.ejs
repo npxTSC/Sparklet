@@ -6,7 +6,9 @@
 	<%- include("parts/head") %>
 	<script src="/js/profile.js" defer></script>
 	<script nonce="<%- nonce %>">
-		window.profileInfo = <%- JSON.stringify(profileInfo) %>;
+		window.profileInfo = JSON.parse(decodeURI(
+			<%- encodeURI(JSON.stringify(profileInfo)) %>
+		));
 	</script>
 </head>
 
