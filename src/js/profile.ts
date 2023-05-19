@@ -21,11 +21,11 @@ const BIO_CHECK_DELAY = 2000;
 
 const bioE = document.getElementsByClassName("profile-bio")[0] as HTMLParagraphElement;
 
-const ownProfile = profileInfo.uuid === currentAccount.uuid;
+const ownProfile = profileInfo.uuid === currentAccount?.uuid;
 console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 // this is also validated server-side... don't worry :) <3
-if (ownProfile || currentAccount.adminRank >= AdminRank.Manager) {
+if (ownProfile || currentAccount?.adminRank >= AdminRank.Manager) {
 	bioE.setAttribute("contenteditable", "true");
 
 	let editCounter = 0;
