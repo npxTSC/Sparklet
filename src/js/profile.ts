@@ -33,6 +33,14 @@ if (ownProfile) {
 		// if not changed after delay, update it
 		if (bioE.innerText === oldBio) submitNewBio(oldBio);
 	});
+
+	bioE.addEventListener("keydown", async (e) => {
+		if (!(e.key === "Enter" && e.ctrlKey)) return;
+
+		// If ctrl + enter, submit
+		bioE.blur();
+		submitNewBio(bioE.innerText);
+	});
 }
 
 async function submitNewBio(newBio: string) {
@@ -45,5 +53,6 @@ async function submitNewBio(newBio: string) {
 		return;
 	}
 
+	// maybe flash it green or pop up a box saying "submitted" later on
 	elem.shakeElement(bioE, 750, 5);
 }
