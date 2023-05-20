@@ -1,9 +1,9 @@
 "use strict";
 
-import Express				from "express";
-import db					from "../db.js";
+import Express							from "express";
+import db								from "../db.js";
 import { AdminRank, SparkletDB }		from "../classes.js";
-import { BIO_CHAR_LIMIT }	from "../consts.js";
+import { BIO_CHAR_LIMIT, DEFAULT_BIO }	from "../consts.js";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";
@@ -40,7 +40,9 @@ router.get("/tea-capes", (req, res) => {
 router.post("/profile-mod/bio", (req, res) => {
 	const {newBio, uuid: targetUUID} = req.body;
 
-	if (res.locals.account === null) return res.status(400).end();
+	if (res.locals.account === null || !newBio)
+		return res.status(400).end();
+	
 	const acc = res.locals.account as SparkletDB.SparkletUser;
 
 	if (acc.uuid !== targetUUID && acc.adminRank < AdminRank.Manager) {
@@ -48,12 +50,16 @@ router.post("/profile-mod/bio", (req, res) => {
 		return res.status(403).end();
 	}
 
-	const bioLimited: string = newBio.substring(0, BIO_CHAR_LIMIT);
-	const bioDefaulted = bioLimited.trim() || null;
-
-	db.updateBio(targetUUID, bioDefaulted);
+	db.updateBio(targetUUID, bioFilter(newBio));
 
 	return res.status(200).end();
 });
+
+export function bioFilter(bio: string, defaults?: true): string;
+export function bioFilter(bio: string, defaults: false): string | null;
+export function bioFilter(bio: string, defaults: boolean = true) {
+	const filtered = bio.substring(0, BIO_CHAR_LIMIT).trim();
+	return filtered || (defaults ? DEFAULT_BIO : null);
+}
 
 export default router;

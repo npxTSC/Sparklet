@@ -5,9 +5,10 @@
 "use strict";
 
 import {sleep$, post$, elem}	from "libdx";
-import {AdminRank, SparkletDB}	from "../../classes.js";
+import {AdminRank}				from "../../classes.js";
 import {BIO_CHAR_LIMIT}			from "../../consts.js";
 import loaders					from "./imports/loaders";
+import {bioFilter}				from "../../routes/api.js";
 
 const currentAccount	= loaders.account();
 const profileInfo		= (
@@ -31,7 +32,7 @@ if (ownProfile || currentAccount?.adminRank >= AdminRank.Manager) {
 	let editCounter = 0;
 	bioE.addEventListener("input", async () => {
 		if (bioE.innerText.length > BIO_CHAR_LIMIT) {
-			bioE.innerText = bioE.innerText.substring(0, BIO_CHAR_LIMIT);
+			bioE.innerText = bioFilter(bioE.innerText);
 		}
 		
 		editCounter++;
@@ -67,6 +68,10 @@ async function submitNewBio(uuid: string, newBio: string) {
 		console.error("Failed to update bio...");
 		return;
 	}
+
+	// Filter with defaults AFTER, so we don't send the default
+	// to the backend if empty (really should be null if default)
+	bioE.innerText = bioFilter(bioE.innerText, true);
 
 	// maybe flash it green or pop up a box saying "submitted" later on
 	elem.shakeElement(bioE, 750, 5);
