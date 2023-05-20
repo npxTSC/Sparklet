@@ -8,7 +8,7 @@ import {sleep$, post$, elem}	from "libdx";
 import {AdminRank}				from "../../classes.js";
 import {BIO_CHAR_LIMIT}			from "../../consts.js";
 import loaders					from "./imports/loaders";
-import {bioFilter}				from "../../routes/api.js";
+import { bioFilter }			from "../../feutils.js";
 
 const currentAccount	= loaders.account();
 const profileInfo		= (

@@ -1,9 +1,9 @@
 "use strict";
 
-import Express							from "express";
-import db								from "../db.js";
-import { AdminRank, SparkletDB }		from "../classes.js";
-import { BIO_CHAR_LIMIT, DEFAULT_BIO }	from "../consts.js";
+import Express						from "express";
+import db							from "../db.js";
+import { AdminRank, SparkletDB }	from "../classes.js";
+import { bioFilter }				from "../feutils.js";
 
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://i.imgur.com/95Awa6y.png";
@@ -54,12 +54,5 @@ router.post("/profile-mod/bio", (req, res) => {
 
 	return res.status(200).end();
 });
-
-export function bioFilter(bio: string, defaults?: true): string;
-export function bioFilter(bio: string, defaults: false): string | null;
-export function bioFilter(bio: string, defaults: boolean = true) {
-	const filtered = bio.substring(0, BIO_CHAR_LIMIT).trim();
-	return filtered || (defaults ? DEFAULT_BIO : null);
-}
 
 export default router;
