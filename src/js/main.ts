@@ -6,5 +6,8 @@ import {cmon}		from "libdx";
 // Get all cookies
 const cookies = cmon.parse(document.cookie);
 
-// Set profile picture on topbar
+// Made all "backbuttons" send you back on click
+for (let el of document.getElementsByClassName("backbutton")) {
+  el.addEventListener("click", history.back);
+}
 
