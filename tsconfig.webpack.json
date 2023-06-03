@@ -9,7 +9,7 @@
 		"strictNullChecks": true,
 		"sourceMap": false,
 		"esModuleInterop": true,
-		"lib": ["esnext", "DOM"],
+		"lib": ["esnext", "DOM", "DOM.iterable"],
 		"downlevelIteration": true
 	},
 	
