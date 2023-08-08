@@ -9,7 +9,7 @@ services:
     volumes:
       - "stateful:/var/lib/sparklet"
   db:
-    image: mariadb
+    image: mariadb:latest
     env_file:
       - .env
     environment:
