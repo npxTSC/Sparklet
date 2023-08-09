@@ -1,59 +1,55 @@
 "use strict";
 
 // Modules
-import Express				from "express";
-import crypto				from "crypto";
-import cparse				from "cookie-parser";
-import bcrypt				from "bcrypt";
-import path					from "path";
-import http					from "http";
-import {Server as ioServer}	from "socket.io";
-import {str, rand}			from "libdx";
-import gzipCompression		from "compression";
-import fs					from "fs";
-import sanitize				from "sanitize-filename";
-import {fileURLToPath}		from "url";
-import rateLimit			from "express-rate-limit";
-import fileUpload			from "express-fileupload";
+import Express from "express";
+import crypto from "crypto";
+import cparse from "cookie-parser";
+import bcrypt from "bcrypt";
+import path from "path";
+import http from "http";
+import { Server as ioServer } from "socket.io";
+import { rand, str } from "libdx";
+import gzipCompression from "compression";
+import fs from "fs";
+import sanitize from "sanitize-filename";
+import { fileURLToPath } from "url";
+import rateLimit from "express-rate-limit";
+import fileUpload from "express-fileupload";
 import "ejs";
 
-export const __filename	= fileURLToPath(import.meta.url);
-export const __dirname	= path.dirname(__filename);
+export const __filename = fileURLToPath(import.meta.url);
+export const __dirname = path.dirname(__filename);
 
 util.loadEnv();
 
 // Local Modules
-import {
-	Room, AdminRank, QuizPlayer, SparkletDB,
-} from "./classes.js";
-import {
-	AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT
-} from "./consts.js";
-import {STATEFUL, sparksFolder}		from "./paths.js";
-import db							from "./db.js";
-import accountParser				from "./middleware/accounts.js";
-import pathsSupplier				from "./middleware/paths.js"
-import helmetCsp					from "./middleware/helmet-csp.js";
-import { QUIZ_SOCKET_HANDLERS }		from "./quiz-utils.js";
-import * as routes					from "./routes/all.js";
-import * as util					from "./util.js";
+import { AdminRank, QuizPlayer, Room } from "./classes.js";
+import { AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT } from "./consts.js";
+import { sparksFolder, STATEFUL } from "./paths.js";
+import db from "./db.js";
+import accountParser from "./middleware/accounts.js";
+import pathsSupplier from "./middleware/paths.js";
+import helmetCsp from "./middleware/helmet-csp.js";
+import { QUIZ_SOCKET_HANDLERS } from "./quiz-utils.js";
+import * as routes from "./routes/all.js";
+import * as util from "./util.js";
 
 // App
-export const app					= Express();
-export const activeRooms: Room[]	= [];
-const server						= http.createServer(app);
-const io							= new ioServer(server);
+export const app = Express();
+export const activeRooms: Room[] = [];
+const server = http.createServer(app);
+const io = new ioServer(server);
 
 // Middleware
 app.use(
-	rateLimit({
-		// 600 requests per minute allowed
-		windowMs:			60_000,
-		max:				600,
+  rateLimit({
+    // 600 requests per minute allowed
+    windowMs: 60_000,
+    max: 600,
 
-		// Return rate limit info in the `RateLimit-*` headers
-		standardHeaders:	true,
-	})
+    // Return rate limit info in the `RateLimit-*` headers
+    standardHeaders: true,
+  }),
 );
 
 app.use(cparse());
@@ -62,7 +58,7 @@ app.use(accountParser);
 app.use(pathsSupplier);
 app.use(gzipCompression());
 app.use(fileUpload({
-	limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
+  limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
 }));
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
@@ -74,282 +70,282 @@ app.use(Express.static(STATEFUL));
 app.locals.Ranks = AdminRank;
 app.set("view engine", "ejs");
 
-
-app.use((req, res, next) => {
-	const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-	console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
-	next();
+app.use((req, _, next) => {
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
+  next();
 });
 
 // Routes
-app.get("/", (req, res) => {
-	res.render("home");
+app.get("/", (_, res) => {
+  res.render("home");
 });
 
 // robots.txt -> /public/robots.txt
-app.get("/robots.txt", (req, res) => {
-	res.sendFile(path.join(__dirname, "dist/public/robots.txt"));
+app.get("/robots.txt", (_, res) => {
+  res.sendFile(path.join(__dirname, "dist/public/robots.txt"));
 });
 
-app.get("/info(/*)?", (req, res) => {
-	res.render("sussy");
+app.get("/info(/*)?", (_, res) => {
+  res.render("sussy");
 });
 
-app.get("/pets", (req, res) => {
-	res.render("pets-info");
+app.get("/pets", (_, res) => {
+  res.render("pets-info");
 });
 
-app.get("/about", (req, res) => {
-	res.render("about");
+app.get("/about", (_, res) => {
+  res.render("about");
 });
 
-app.use("/rooms",		routes.rooms);
-app.use("/.well-known",	routes.wk);
-app.use("/api",			routes.api);
-app.use("/cpl",			routes.adminCpl);
+app.use("/rooms", routes.rooms);
+app.use("/.well-known", routes.wk);
+app.use("/api", routes.api);
+app.use("/cpl", routes.adminCpl);
 
 app.post("/create-room/:roomType", async (req, res) => {
-	const {roomType}	= req.params;
-	const {cuuid}		= req.body;
+  // const { roomType } = req.params;
+  const { cuuid } = req.body;
 
-	
-	const row = await db.getCapsule(cuuid);
-	if (!row) return res.status(400).json({
-		bruhmoment:	"Invalid capsule! You shouldn't be here...",
-	});
-	
+  const row = await db.getCapsule(cuuid);
+  if (!row) {
+    return res.status(400).json({
+      bruhmoment: "Invalid capsule! You shouldn't be here...",
+    });
+  }
 
-	let jh = "";
+  let jh = "";
 
-	// Make a random join code (repeat until unique)
-	do jh = rand.r_str(6);
-	while (activeRooms.filter(v => v.joinHash === jh).length > 0);
+  // Make a random join code (repeat until unique)
+  do jh = rand.r_str(6); while (
+    activeRooms.filter((v) => v.joinHash === jh).length > 0
+  );
 
-	// Admin token (doesn't have to be as secure, since rooms are temporary)
-	const tok = generateToken(128);
+  // Admin token (doesn't have to be as secure, since rooms are temporary)
+  const tok = generateToken(128);
 
-	// Create new room object, and push it to activeRooms
-	const newRoom = {
-		joinHash:	jh,
-		ownerAccId:	res.locals.account?.uuid,
-		authToken:	tok,
-		quizId:		cuuid,
-		currentQ:	0,
-		status:		"waiting",
-		players:	<QuizPlayer[]>[],
-	}
-	
-	activeRooms.push(newRoom);
+  // Create new room object, and push it to activeRooms
+  const newRoom = {
+    joinHash: jh,
+    ownerAccId: res.locals.account?.uuid,
+    authToken: tok,
+    quizId: cuuid,
+    currentQ: 0,
+    status: "waiting",
+    players: <QuizPlayer[]> [],
+  };
 
-	return res.status(200).json(newRoom);
+  activeRooms.push(newRoom);
+
+  return res.status(200).json(newRoom);
 });
 
-app.get("/host-room/:rid", (req, res) => {
-	return res.render("host-room");
+app.get("/host-room/:rid", (_, res) => {
+  return res.render("host-room");
 });
 
-app.get("/login", (req, res) => {
-	res.render("login");
+app.get("/login", (_, res) => {
+  res.render("login");
 });
 
 app.post("/login", async (req, res) => {
-	const {
-		username:		user,
-		password:		pass,
-		loginAction:	action,
-	} = req.body;
-	
-	// Empty usernames, specially crafted requests with missing fields, etc.
-	if (action !== "Log Out" &&
-		[user, pass, action].some(v => (typeof v === "undefined" || v.length === 0))) {
-		return fail("l-noInput");
-	}
+  const {
+    username: user,
+    password: pass,
+    loginAction: action,
+  } = req.body;
 
-	if (str.containsSpecials(user))	return fail("l-specialChars");
-	if (user.length > 30)			return fail("l-tooLong");
-	if (pass.length > 100)			return fail("l-passTooLong");
+  // Empty usernames, specially crafted requests with missing fields, etc.
+  if (
+    action !== "Log Out" &&
+    [user, pass, action].some(
+      (v) => (typeof v === "undefined" || v.length === 0),
+    )
+  ) {
+    return fail("l-noInput");
+  }
 
-	let row = await db.getUser(user);
+  if (str.containsSpecials(user)) return fail("l-specialChars");
+  if (user.length > 30) return fail("l-tooLong");
+  if (pass.length > 100) return fail("l-passTooLong");
 
-	switch (action) {
-		case "Register":
-			// Opposite of login, reject if exists
-			if (row) return fail("r-nameExists");
+  let row = await db.getUser(user);
 
-			await db.register(user, pass);
+  switch (action) {
+    case "Register":
+      // Opposite of login, reject if exists
+      if (row) return fail("r-nameExists");
 
-			console.log(`New account created: ${user}`);
+      await db.register(user, pass);
 
-			// Reassign row to new user object
-			row = await db.getUser(user);
-			
-			// Fall-through to Login, because let's be real,
-			// it's fucking annoying when you need to log in
-			// after registering on a site ¯\_(ツ)_/¯
-		
-		case "Log In":
-			// If username not found, reject early
-			if (!row) return fail("l-nameNotFound");
-			
-			// Compare password to hash
-			const correct = await bcrypt.compare(pass, row.passHash);
-			
-			// If password is wrong, reject
-			if (!correct) return fail("l-wrongPassword");
-	
-			// Password is correct
-			console.log(`User ${user} logged in successfully`);
+      console.log(`New account created: ${user}`);
 
-			// Change login token in DB
-			const token = await makeNewTokenFor(row.uuid);
-			
-			res.cookie("uuid", row.uuid);
-			res.cookie("luster", token);
-			res.redirect("/conductors/"+ user.toLowerCase());
-			
-			break;
+      // Reassign row to new user object
+      row = await db.getUser(user);
 
-		case "Log Out":
-			// Remove auth cookie stuff
-			res.cookie("uuid", null);
-			res.cookie("luster", null);
-			
-			return res.redirect("/login");
+      // Fall-through to Login, because let's be real,
+      // it's fucking annoying when you need to log in
+      // after registering on a site ¯\_(ツ)_/¯
 
-		default:
-			// Malformed requests should be rejected
-			res.status(400);
-			return res.send("Use the form correctly pls :)");
-	}
+    case "Log In":
+      // If username not found, reject early
+      if (!row) return fail("l-nameNotFound");
 
-	function fail(code: string) {
-		console.log(`Failed "${action}" on ${user}`);
-		res.redirect("/login?ecode="+code);
-	}
+      // Compare password to hash
+      const correct = await bcrypt.compare(pass, row.passHash);
+
+      // If password is wrong, reject
+      if (!correct) return fail("l-wrongPassword");
+
+      // Password is correct
+      console.log(`User ${user} logged in successfully`);
+
+      // Change login token in DB
+      const token = await makeNewTokenFor(row.uuid);
+
+      res.cookie("uuid", row.uuid);
+      res.cookie("luster", token);
+      res.redirect("/conductors/" + user.toLowerCase());
+
+      break;
+
+    case "Log Out":
+      // Remove auth cookie stuff
+      res.cookie("uuid", null);
+      res.cookie("luster", null);
+
+      return res.redirect("/login");
+
+    default:
+      // Malformed requests should be rejected
+      res.status(400);
+      return res.send("Use the form correctly pls :)");
+  }
+
+  function fail(code: string) {
+    console.log(`Failed "${action}" on ${user}`);
+    res.redirect("/login?ecode=" + code);
+  }
 });
 
 app.get("/conductors/:profile", async (req, res) => {
-	const {profile}		= req.params;
-	const user			= res.locals.account;
+  const { profile } = req.params;
+  const user = res.locals.account;
 
-	console.log(
-		`${user?.name ?? "<Anon>"} requested profile of "${profile}"`
-	);
-	
-	if (str.containsSpecials(profile)) return throw404(res);
-	
-	let row = await db.getUser(profile);
+  console.log(
+    `${user?.name ?? "<Anon>"} requested profile of "${profile}"`,
+  );
 
-	if (!row) return throw404(res);
-	
-	return res.render("profile", {
-		profileInfo: row,
-	});
+  if (str.containsSpecials(profile)) return throw404(res);
+
+  let row = await db.getUser(profile);
+
+  if (!row) return throw404(res);
+
+  return res.render("profile", {
+    profileInfo: row,
+  });
 });
 
 app.get("/news/:PostID", async (req, res) => {
-	let postId = req.params["PostID"];
-	if (typeof postId !== "number" || isNaN(postId))
-		return throw404(res);
-	
-	let post = await db.getNews(postId);
+  let postId = req.params["PostID"];
+  if (typeof postId !== "number" || isNaN(postId)) {
+    return throw404(res);
+  }
 
-	if (!post) return throw404(res);
+  let post = await db.getNews(postId);
 
-	let passed = {
-		postId: postId,
-		post: post,
-	}
+  if (!post) return throw404(res);
 
-	res.render("article", passed);
+  let passed = {
+    postId: postId,
+    post: post,
+  };
+
+  res.render("article", passed);
 });
 
-app.get("/news", async (req, res) => {
-	let qposts = await db.newsQPosts();
-	res.render("news", {qposts});
+app.get("/news", async (_, res) => {
+  let qposts = await db.newsQPosts();
+  res.render("news", { qposts });
 });
 
 app.get("/sparks/:SparkUUID", async (req, res) => {
-	let sparkUUID = req.params["SparkUUID"];
-	if (!sparkUUID) return throw404(res);
+  let sparkUUID = req.params["SparkUUID"];
+  if (!sparkUUID) return throw404(res);
 
-	sparkUUID = sanitize(sparkUUID);
+  sparkUUID = sanitize(sparkUUID);
 
-	let post = await db.getGame(sparkUUID);
+  let post = await db.getGame(sparkUUID);
 
-	if (!post) return throw404(res);
+  if (!post) return throw404(res);
 
-	let passed = {
-		postId:	sparkUUID,
-		post:	post,
-	}
+  let passed = {
+    postId: sparkUUID,
+    post: post,
+  };
 
-	res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
+  res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
 });
 
-app.get("/sparks", async (req, res) => {
-	const qposts = await db.gameQPosts();
-	
-	res.render("catalog", {qposts});
+app.get("/sparks", async (_, res) => {
+  const qposts = await db.gameQPosts();
+
+  res.render("catalog", { qposts });
 });
 
-app.get("/capsules", async (req, res) => {
-	const qposts = (await db.capsuleQPosts()).map(v => {
-		const jsondata = fs.readFileSync(
-			`./dist/public/capsules/${v.uuid}.json`
-		).toString();
-		
-		return {
-			...JSON.parse(jsondata),
-			
-			// PLUS the following information:
+app.get("/capsules", async (_, res) => {
+  const qposts = (await db.capsuleQPosts()).map((v) => {
+    const jsondata = fs.readFileSync(
+      `./dist/public/capsules/${v.uuid}.json`,
+    ).toString();
 
-			uuid:	v.uuid,
-			date:	v.date,
-		}
-	});
+    return {
+      ...JSON.parse(jsondata),
 
-	res.render("capsules", {qposts});
+      // PLUS the following information:
+
+      uuid: v.uuid,
+      date: v.date,
+    };
+  });
+
+  res.render("capsules", { qposts });
 });
 
 // 404 other routes
-app.get("*", (req, res) => throw404(res));
-
+app.get("*", (_, res) => throw404(res));
 
 // Socket.IO handlers
 io.on("connection", (socket) => {
-	//socket.on("disconnect", () => {});
+  //socket.on("disconnect", () => {});
 
-	socket.on("quizHostAction",	QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
-	socket.on("queryRoom",		QUIZ_SOCKET_HANDLERS.queryRoom(socket));
-	socket.on("joinRoom",		QUIZ_SOCKET_HANDLERS.joinRoom(socket));
+  socket.on("quizHostAction", QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
+  socket.on("queryRoom", QUIZ_SOCKET_HANDLERS.queryRoom(socket));
+  socket.on("joinRoom", QUIZ_SOCKET_HANDLERS.joinRoom(socket));
 });
 
-
-
-
-
 server.listen(PORT, () => {
-	console.log("Listening on port " + PORT);
+  console.log("Listening on port " + PORT);
 });
 
 // Functions
 export function throw404(res: Express.Response) {
-	res.status(404);
-	res.render("404");
+  res.status(404);
+  res.render("404");
 }
 
 export function generateToken(len: number) {
-	return crypto.randomBytes(len).toString("hex");
+  return crypto.randomBytes(len).toString("hex");
 }
 
 export function findRoom(code: string) {
-	return activeRooms.find(v => v.joinHash === code);
+  return activeRooms.find((v) => v.joinHash === code);
 }
 
 async function makeNewTokenFor(uuid: string) {
-	const token = generateToken(AUTH_TOKEN_BITS);
+  const token = generateToken(AUTH_TOKEN_BITS);
 
-	await db.editLoginToken(uuid, token);
-	return token;
+  await db.editLoginToken(uuid, token);
+  return token;
 }

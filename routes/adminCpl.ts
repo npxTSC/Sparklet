@@ -1,144 +1,147 @@
 "use strict";
 
-import {
-	AdminRank, SparkletDB, Nullable
-}								from "../classes.js";
-import Express					from "express";
-import db						from "../db.js";
-import yauzl					from "yauzl";
-import { UploadedFile }			from "express-fileupload";
-import fs						from "fs";
-import path						from "path";
-import { sparksFolder }			from "../paths.js";
+import Express from "express";
+import fs from "fs";
+import path from "path";
+import yauzl from "yauzl";
+import { UploadedFile } from "express-fileupload";
+
+import { AdminRank, Nullable, SparkletDB } from "../classes.js";
+import db from "../db.js";
+import { sparksFolder } from "../paths.js";
 
 const router = Express.Router();
 const ZIP_MIMETYPES = [
-	"application/zip",
-	"application/x-zip-compressed"
-]
+  "application/zip",
+  "application/x-zip-compressed",
+];
 
-router.get("/", async (req, res) => {
-	await defaultCheck(res, AdminRank.Electrician, async () => {
-		res.render("admin-cpl");
-	});
+router.get("/", async (_, res) => {
+  await defaultCheck(res, AdminRank.Electrician, async () => {
+    res.render("admin-cpl");
+  });
 });
 
-router.post("/wipe-users", async (req, res) => {
-	await defaultCheck(res, AdminRank.Operator, async () => {
-		await db.admin.lmfao();
-		res.send("Done...");
-	});
+router.post("/wipe-users", async (_, res) => {
+  await defaultCheck(res, AdminRank.Operator, async () => {
+    await db.admin.lmfao();
+    res.send("Done...");
+  });
 });
 
 router.post("/new-spark", async (req, res) => {
-	await defaultCheck(res, AdminRank.Manager, async () => {
-		const {sparkTitle, sparkDesc} = req.body;
-		
-		if (!sparkTitle || !sparkDesc)
-			return res.status(400).send("Form incomplete");
+  await defaultCheck(res, AdminRank.Manager, async () => {
+    const { sparkTitle, sparkDesc } = req.body;
 
-		if (!req.files)
-			return res.status(400).send("No file uploaded");
-		
-		const sparkZip = req.files["sparkZip"] as UploadedFile;
+    if (!sparkTitle || !sparkDesc) {
+      return res.status(400).send("Form incomplete");
+    }
 
-		if (!sparkZip)
-			return res.status(400).send("File `spark` not uploaded!");
-		
-		const acc = res.locals.account as SparkletDB.SparkletUser;
+    if (!req.files) {
+      return res.status(400).send("No file uploaded");
+    }
 
-		const spark = await db.admin.postSpark(
-			sparkTitle,
-			acc.uuid,
-			sparkDesc
-		);
+    const sparkZip = req.files["sparkZip"] as UploadedFile;
 
-		if (!ZIP_MIMETYPES.includes(sparkZip.mimetype)) {
-			return res.status(400).send("Uploaded file is not a zip file");
-		}
+    if (!sparkZip) {
+      return res.status(400).send("File `spark` not uploaded!");
+    }
 
-		// extract spark zip
-		const zip: Nullable<yauzl.ZipFile> =
-			await new Promise((resolve, reject) => {
-				yauzl.fromBuffer(
-					sparkZip.data,
-					{lazyEntries: true},
-					(err, zip) => resolve(err ? null : zip)
-				)
-			});
+    const acc = res.locals.account as SparkletDB.SparkletUser;
 
-		if (!zip) return res.status(400).send("Error unzipping...");
+    const spark = await db.admin.postSpark(
+      sparkTitle,
+      acc.uuid,
+      sparkDesc,
+    );
 
-		zip.readEntry();
+    if (!ZIP_MIMETYPES.includes(sparkZip.mimetype)) {
+      return res.status(400).send("Uploaded file is not a zip file");
+    }
 
-		const sparkUUID = spark.uuid;
-		zip.on("entry", (entry) => {
-			if (/\/$/.test(entry.fileName)) {
-				// Directory file names end with "/".
-				// We don't need to do anything with these.
-				zip.readEntry();
-			} else {
-				zip.openReadStream(entry, (err, readStream) => {
-					if (err) throw err;
+    // extract spark zip
+    const zip: Nullable<yauzl.ZipFile> = await new Promise(
+      (resolve, _) => {
+        yauzl.fromBuffer(
+          sparkZip.data,
+          { lazyEntries: true },
+          (err, zip) => resolve(err ? null : zip),
+        );
+      },
+    );
 
-					const sparkRoute = path.join(sparksFolder, sparkUUID);
-					
-					// Create a write stream to write the file contents to disk
-					let fname = (entry.fileName).replace(/\\/g, "/");
-					fname = fname.substring(fname.indexOf("/") + 1);
-					const writePath = `${sparkRoute}/${fname}`;
+    if (!zip) return res.status(400).send("Error unzipping...");
 
-					fs.mkdirSync(path.dirname(writePath), { recursive: true });
-					
-					const writeStream = fs.createWriteStream(
-						writePath
-					);
+    zip.readEntry();
 
-					// Pipe the read stream into the write stream to write the file contents to disk
-					readStream.pipe(writeStream);
+    const sparkUUID = spark.uuid;
+    zip.on("entry", (entry) => {
+      if (/\/$/.test(entry.fileName)) {
+        // Directory file names end with "/".
+        // We don't need to do anything with these.
+        zip.readEntry();
+      } else {
+        zip.openReadStream(entry, (err, readStream) => {
+          if (err) throw err;
 
-					// When the write stream finishes writing, move on to the next entry in the zip file
-					writeStream.on("finish", () => {
-						zip.readEntry();
-					});
-				});
-			}
-		});
+          const sparkRoute = path.join(sparksFolder, sparkUUID);
 
-		return res.redirect("/sparks");
-	});
+          // Create a write stream to write the file contents to disk
+          let fname = (entry.fileName).replace(/\\/g, "/");
+          fname = fname.substring(fname.indexOf("/") + 1);
+          const writePath = `${sparkRoute}/${fname}`;
+
+          fs.mkdirSync(path.dirname(writePath), { recursive: true });
+
+          const writeStream = fs.createWriteStream(
+            writePath,
+          );
+
+          // Pipe the read stream into the write stream to write the file contents to disk
+          readStream.pipe(writeStream);
+
+          // When the write stream finishes writing, move on to the next entry in the zip file
+          writeStream.on("finish", () => {
+            zip.readEntry();
+          });
+        });
+      }
+    });
+
+    return res.redirect("/sparks");
+  });
 });
 
 // TODO: make this use async stuff instead of callback fn
 async function defaultCheck(
-	res:		Express.Response,
-	rank:		AdminRank,
-	ifPassed:	() => any,
+  res: Express.Response,
+  rank: AdminRank,
+  ifPassed: () => any,
 ) {
-	switch (checkHasPerms(res, rank)) {
-		case null:
-			// no account
-			res.redirect("/login");
-			return;
-		
-		case false:
-			res.send("Nice try, clown");
-			return;
+  switch (checkHasPerms(res, rank)) {
+    case null:
+      // no account
+      res.redirect("/login");
+      return;
 
-		case true:
-			return ifPassed();
-	}
+    case false:
+      res.send("Nice try, clown");
+      return;
+
+    case true:
+      return ifPassed();
+  }
 }
 
 // Mandatory Access Control permission-checking
 function checkHasPerms(
-	res:	Express.Response,
-	rank:	AdminRank
+  res: Express.Response,
+  rank: AdminRank,
 ): Nullable<boolean> {
-	if (res.locals.account === null) return null;
+  if (res.locals.account === null) return null;
 
-	const acc = res.locals.account as SparkletDB.SparkletUser;
-	return (acc.adminRank >= rank);
+  const acc = res.locals.account as SparkletDB.SparkletUser;
+  return (acc.adminRank >= rank);
 }
 
 export default router;

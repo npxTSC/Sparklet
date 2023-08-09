@@ -11,11 +11,11 @@ backend belongs here
 */
 "use strict";
 
-import { BIO_CHAR_LIMIT, DEFAULT_BIO }	from "./consts.js";
+import { BIO_CHAR_LIMIT, DEFAULT_BIO } from "./consts.js";
 
 export function bioFilter(bio: string, defaults?: true): string;
 export function bioFilter(bio: string, defaults: false): string | null;
 export function bioFilter(bio: string, defaults: boolean = true) {
-	const filtered = bio.substring(0, BIO_CHAR_LIMIT).trim();
-	return filtered || (defaults ? DEFAULT_BIO : null);
+  const filtered = bio.substring(0, BIO_CHAR_LIMIT).trim();
+  return filtered || (defaults ? DEFAULT_BIO : null);
 }
