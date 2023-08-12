@@ -23,7 +23,7 @@ export const __dirname = path.dirname(__filename);
 util.loadEnv();
 
 // Local Modules
-import { AdminRank, QuizPlayer, Room } from "./classes.js";
+import { AdminRank, Room } from "./classes.js";
 import { AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT } from "./consts.js";
 import { sparksFolder, STATEFUL } from "./paths.js";
 import db from "./db.js";
@@ -132,7 +132,7 @@ app.post("/create-room/:roomType", async (req, res) => {
     quizId: cuuid,
     currentQ: 0,
     status: "waiting",
-    players: <QuizPlayer[]> [],
+    players: [],
   };
 
   activeRooms.push(newRoom);

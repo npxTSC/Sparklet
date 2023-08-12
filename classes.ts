@@ -3,15 +3,8 @@
 
 import { RowDataPacket } from "mysql2/promise";
 
-// crab noises
+// iguana noises
 export type Nullable<T> = T | null;
-
-// Like Option<T>, but for values that may be undefined.
-export type Option<T> = T | undefined;
-
-// Wow, okay... Calm down, Satan. We're using **types**, here.
-// Named after the ?? operator. Maybe there's a better name for this?
-export type MaybeNullish<T> = T | null | undefined;
 
 export interface Conductor {
   username: string;

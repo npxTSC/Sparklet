@@ -7,7 +7,6 @@ import {
   AdminRank,
   DateablePacket,
   Nullable,
-  Option,
   SparkletDB,
   TimestampIntoDate,
 } from "./classes.js";
@@ -80,7 +79,7 @@ namespace dbGet {
     conn: mysql.Pool,
     nth: number,
     query?: DbRunMode,
-  ): Promise<Option<T>> {
+  ): Promise<T | undefined> {
     const res = await executeGetArr<T>(sql, values, conn, query);
     return res[nth];
   }
@@ -92,7 +91,7 @@ namespace dbGet {
     conn: mysql.Pool,
     nth: number,
     query?: DbRunMode,
-  ): Promise<Option<TimestampIntoDate<T>>> {
+  ): Promise<TimestampIntoDate<T> | undefined> {
     const atNth = await executeGet<T>(sql, values, conn, nth, query);
     return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
   }
@@ -107,9 +106,9 @@ namespace dbGet {
     const res = await executeGetArr<T>(sql, values, conn, query);
 
     /*
-     * we can safely say it's not an Option<T>[] because...
+     * we can safely say it's not undefined because...
      * well, that'd be stupid. The only reason we used
-     * Option<T> earlier was because there was a chance
+     * T | undefined earlier was because there was a chance
      * that row 0 doesn't exist, but if someone calls this
      * function, it's their responsibility to check length.
      */
