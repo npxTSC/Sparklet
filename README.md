@@ -22,8 +22,14 @@ might want to accept one, but I can't because it includes something unrelated.
 
 ## FOR DEVS
 
-To get started, run `npm i` to install dependencies That's it! Now, you can
-start typing away!
+To get started, run `npm i` to install dependencies so your editor can do
+type-checking.
+
+Then, write a .env file with your `DB_USER` and `DB_PASS` environment variables.
+
+That's it! Now, you can start typing away!
+
+---
 
 Useful npm scripts:
 
