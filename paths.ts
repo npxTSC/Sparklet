@@ -6,5 +6,5 @@
 "use strict";
 import path from "path";
 
-export const STATEFUL = path.resolve("/var/lib/sparklet");
+export const STATEFUL = path.resolve("/srv/sparklet");
 export const sparksFolder = path.resolve(STATEFUL, "sparks");
