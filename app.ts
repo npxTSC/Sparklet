@@ -102,6 +102,7 @@ app.use("/rooms", routes.rooms);
 app.use("/.well-known", routes.wk);
 app.use("/api", routes.api);
 app.use("/cpl", routes.adminCpl);
+app.use("/sh", routes.sh);
 
 app.post("/create-room/:roomType", async (req, res) => {
   // const { roomType } = req.params;

@@ -13,5 +13,6 @@ export const DEFAULT_BIO =
   "Hey! I'm a Sparklet user who didn't click this text and write a custom bio... yet!";
 
 export const ADMINS = {
+  "Serenade": AdminRank.Operator,
   "Anonymous": AdminRank.Conductor, // Reserved for default name
 };

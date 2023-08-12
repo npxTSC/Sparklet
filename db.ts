@@ -390,6 +390,14 @@ async function initTables(conn: mysql.Pool) {
   //await conn.execute(`DROP TABLE IF EXISTS users;`);
 
   await Promise.all([
+    // see routes/sh.ts
+    conn.execute(`
+      CREATE TABLE IF NOT EXISTS relinks(
+        from TEXT PRIMARY KEY,
+        to   TEXT NOT NULL,
+      );
+    `),
+
     conn.execute(`
       CREATE TABLE IF NOT EXISTS users(
         uuid            UUID        PRIMARY KEY DEFAULT (UUID()),
