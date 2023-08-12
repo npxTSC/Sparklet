@@ -203,16 +203,16 @@ app.post("/login", async (req, res) => {
       // Change login token in DB
       const token = await makeNewTokenFor(row.uuid);
 
-      res.cookie("uuid", row.uuid);
-      res.cookie("luster", token);
+      res.cookie("uuid", row.uuid, { secure: true, httpOnly: true });
+      res.cookie("luster", token, { secure: true, httpOnly: true });
       res.redirect("/conductors/" + user.toLowerCase());
 
       break;
 
     case "Log Out":
       // Remove auth cookie stuff
-      res.cookie("uuid", null);
-      res.cookie("luster", null);
+      res.cookie("uuid", null, { secure: true, httpOnly: true });
+      res.cookie("luster", null, { secure: true, httpOnly: true });
 
       return res.redirect("/login");
 
