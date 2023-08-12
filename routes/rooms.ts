@@ -1,16 +1,16 @@
 "use strict";
 
-import Express					from "express";
-import { findRoom, throw404 }	from "../app.js";
+import Express from "express";
+import { findRoom, throw404 } from "../app.js";
 
-const router			= Express.Router();
+const router = Express.Router();
 
-router.get("/quiz", (req, res) => {
-	res.render("quiz");
+router.get("/quiz", (_, res) => {
+  res.render("quiz");
 });
 
-router.get("/stratus", (req, res) => {
-	res.render("stratus");
+router.get("/stratus", (_, res) => {
+  res.render("stratus");
 });
 
 /*router.get("/breakout", (req, res) => {
@@ -18,12 +18,12 @@ router.get("/stratus", (req, res) => {
 });*/
 
 router.get("/quiz/:room", (req, res) => {
-	const room = findRoom(req.params.room);
+  const room = findRoom(req.params.room);
 
-	// Guard clause for invalid inputs
-	if (!room) return throw404(res);
-	
-	res.render("quizplay", {room: room});
+  // Guard clause for invalid inputs
+  if (!room) return throw404(res);
+
+  res.render("quizplay", { room: room });
 });
 
 export default router;
