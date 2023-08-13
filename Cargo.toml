@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-libdx = "0.4.1"
+libdx = "1.0.0"

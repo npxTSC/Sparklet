@@ -2,8 +2,10 @@
 // aka something that will probably never be completely finished!
 // but then again... all great things take time
 
-use libdx::libdx;
+use libdx::*;
 
-fn main() {
+fn main() -> Result<()> {
     println!("Hello, world!");
+
+    Ok(())
 }
