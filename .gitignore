@@ -7,3 +7,7 @@ db/
 dist/
 .env
 data/
+
+# Added by cargo
+
+/target
