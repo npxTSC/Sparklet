@@ -5,6 +5,8 @@
 // use libdx::*;
 use actix_web::{get, post, App, HttpResponse, HttpServer, Responder};
 
+const FRONTEND_DIR: &str = "./vue-app";
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new().service(hello).service(echo))
