@@ -1,5 +1,6 @@
 *.js
 !_*.js
+!.eslintrc.js
 *.js.map
 !webpack.config.js
 node_modules
