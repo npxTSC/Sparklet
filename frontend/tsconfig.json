@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "removeComments": true,
+    "alwaysStrict": true,
+    "allowUnreachableCode": false,
+    "noImplicitReturns": true,
+
     "target": "esnext",
     "module": "esnext",
     "strict": true,
