@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+actix-rt = "2.9.0"
 actix-web = "4.3.1"
 libdx = "1.0.0"
