@@ -10,10 +10,10 @@ use std::path::PathBuf;
 mod api;
 use api::api_routes;
 
-const FRONTEND_DIR: &str = "./vue-app";
-const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
-const ASSETS_DIR: &str = concatcp!(SERVE_DIR, "/assets");
-
+pub const FRONTEND_DIR: &str = "./vue-app";
+pub const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
+pub const ASSETS_DIR: &str = concatcp!(SERVE_DIR, "/assets");
+pub const CAPE_JSON: &str = concatcp!(FRONTEND_DIR, "/tea-capes.json");
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
