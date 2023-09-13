@@ -7,7 +7,7 @@ use actix_web::{get, post, App, HttpResponse, HttpServer, Responder};
 
 const FRONTEND_DIR: &str = "./vue-app";
 
-#[actix_web::main]
+#[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new().service(hello).service(echo))
         .bind(("127.0.0.1", 5001))?
