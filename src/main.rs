@@ -15,8 +15,8 @@ const ASSETS_DIR: &str = concatcp!(SERVE_DIR, "/assets");
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            // .service(index)
-            .route("/", web::get().to(index))
+            .service(index)
+            // route("/{filename:.*}", web::get().to(index))
             // .service(echo)
             .service(Files::new("/assets", ASSETS_DIR))
     })
@@ -25,14 +25,14 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-// #[get("/")]
-async fn index(_req: HttpRequest) -> Result<NamedFile> {
+#[get("/")]
+async fn index(_req: HttpRequest) -> impl Responder {
     let path = concatcp!(SERVE_DIR, "/index.html");
     let path = PathBuf::from(path);
-    Ok(NamedFile::open(path)?)
+    NamedFile::open(path)
 }
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
+#[get("/api")]
+async fn api(req_body: String) -> impl Responder {
     HttpResponse::Ok().body(req_body)
 }
