@@ -7,6 +7,9 @@ use actix_web::*;
 use const_format::concatcp;
 use std::path::PathBuf;
 
+mod api;
+use api::api_routes;
+
 const FRONTEND_DIR: &str = "./vue-app";
 const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
 const ASSETS_DIR: &str = concatcp!(SERVE_DIR, "/assets");
@@ -16,8 +19,11 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(index)
-            // route("/{filename:.*}", web::get().to(index))
-            // .service(echo)
+            .configure(|cfg| {
+                cfg.service(web::scope("/api").configure(api_routes));
+            })
+            // .configure( api::configure_routes)
+            // .service(web::resource("/api").route(web::post().to(api_router)))
             .service(Files::new("/assets", ASSETS_DIR))
     })
     .bind(("127.0.0.1", 5001))?
@@ -30,9 +36,4 @@ async fn index(_req: HttpRequest) -> impl Responder {
     let path = concatcp!(SERVE_DIR, "/index.html");
     let path = PathBuf::from(path);
     NamedFile::open(path)
-}
-
-#[get("/api")]
-async fn api(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
 }
