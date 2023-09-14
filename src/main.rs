@@ -8,7 +8,6 @@ use const_format::concatcp;
 use std::path::PathBuf;
 
 mod api;
-use api::api_routes;
 
 pub const FRONTEND_DIR: &str = "./vue-app";
 pub const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
@@ -20,7 +19,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(index)
             .configure(|cfg| {
-                cfg.service(web::scope("/api").configure(api_routes));
+                cfg.service(web::scope("/api").configure(api::router));
             })
             // .configure( api::configure_routes)
             // .service(web::resource("/api").route(web::post().to(api_router)))

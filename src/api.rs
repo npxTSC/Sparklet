@@ -8,7 +8,7 @@ use actix_web::*;
 use crate::CAPE_JSON;
 use std::path::PathBuf;
 
-pub fn api_routes(cfg: &mut web::ServiceConfig) {
+pub fn router(cfg: &mut web::ServiceConfig) {
     // Register the /hello route
     cfg.route("/tea-capes", web::get().to(tea_capes));
 }
