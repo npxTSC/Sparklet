@@ -21,8 +21,6 @@ async fn main() -> std::io::Result<()> {
             .configure(|cfg| {
                 cfg.service(web::scope("/api").configure(api::router));
             })
-            // .configure( api::configure_routes)
-            // .service(web::resource("/api").route(web::post().to(api_router)))
             .service(Files::new("/assets", ASSETS_DIR))
     })
     .bind(("127.0.0.1", 5001))?
