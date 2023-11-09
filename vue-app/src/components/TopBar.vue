@@ -6,8 +6,8 @@
 
 <template>
   <div class="greetings">
-    <h1 class="green">3</h1>
-    <h3>4</h3>
+    <h1 class="green">1</h1>
+    <h3>2</h3>
   </div>
 </template>
 
@@ -35,3 +35,4 @@ h3 {
   }
 }
 </style>
+

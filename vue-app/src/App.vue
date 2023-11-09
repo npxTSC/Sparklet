@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+import TopBar from './components/TopBar.vue'
 </script>
 
 <template>
   <header>
+    <TopBar />
+
     <div class="wrapper">
       <HelloWorld />
     </div>
