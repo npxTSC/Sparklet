@@ -26,11 +26,7 @@ h3 {
 .greetings h1,
 .greetings h3 {
   text-align: center;
-}
-
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
+  @media (min-width: 1024px) {
     text-align: left;
   }
 }
