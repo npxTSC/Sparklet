@@ -1,1 +1,13 @@
+#!/bin/bash
+
+# This script is not meant for frontend devs!
+#
+# It only builds the frontend once, so rebuild manually
+# if you change the frontend code.
+#
+# Only use this if actually deploying the app or for
+# working on the backend where you don't really change
+# the frontend code.
+
+(cd vue-app && npm run build)
 cargo watch -x run
