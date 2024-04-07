@@ -5,7 +5,8 @@
 </script>
 
 <template>
-    <div class="greetings">
+    <div>
+        <img src="../assets/zap.png" alt="logo" />
         <h1 class="green">1</h1>
         <h3>2</h3>
     </div>
@@ -15,7 +16,6 @@
 @mobile-max-width: 768px;
 @col-goldenrod: #ffe600;
 @spark-yellow: #f0e130;
-// @col-turmeric: $col-goldenrod; //#fdc029;
 // @bg-dark: 0.7;
 
 .nav-link {
