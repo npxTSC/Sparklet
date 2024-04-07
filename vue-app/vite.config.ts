@@ -10,15 +10,15 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                main: resolve(__dirname, "src/index.html"),
-                nested: resolve(__dirname, "nested/index.html"),
+                main: resolve(__dirname, "index.html"),
+                about: resolve(__dirname, "about/index.html"),
             },
         },
     },
 
     plugins: [
         vue(),
-        mpa(),
+        // mpa(),
     ],
 
     resolve: {
