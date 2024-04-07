@@ -11,24 +11,82 @@
     </div>
 </template>
 
-<style scoped lang="less">
-h1 {
-    font-weight: 500;
-    font-size: 2.6rem;
-    position: relative;
-    top: -10px;
-}
+<style lang="less">
+@mobile-max-width: 768px;
+@col-goldenrod: #ffe600;
+@spark-yellow: #f0e130;
+// @col-turmeric: $col-goldenrod; //#fdc029;
+// @bg-dark: 0.7;
 
-h3 {
-    font-size: 1.2rem;
-}
+.nav-link {
+    filter: brightness(100%);
+    background: @spark-yellow;
+    transition: filter 0.2s ease-in-out;
+    outline: none;
 
-.greetings h1,
-.greetings h3 {
-    text-align: center;
-
-    @media (min-width: 1024px) {
-        text-align: left;
+    &:hover,
+    &:focus,
+    &:active {
+        filter: brightness(90%);
+        transition: filter 0.2s ease-in-out;
     }
+}
+
+ul#topbar {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-image: linear-gradient(#000, @col-goldenrod);
+    border: 0 solid black;
+
+    &>* a {
+        // A tags inside the navbar
+        color: white;
+        text-align: center;
+        text-decoration: none;
+
+        &:hover {
+            background-image: linear-gradient(#0c0c0c, @col-goldenrod);
+            text-shadow: 0 0.4vh #000;
+        }
+    }
+
+    // desktop
+    @media only screen and (min-width: (@mobile-max-width + 1px)) {
+        border-bottom-width: 1vh;
+
+        &>* {
+            float: left;
+
+            a {
+                display: inline-block;
+                padding: 3vh;
+                font-size: 5vh;
+                font-weight: 500;
+            }
+        }
+    }
+
+    // mobile
+    @media only screen and (max-width: @mobile-max-width) {
+        display: inline-flex;
+        justify-content: space-between;
+        border-bottom-width: 1vw;
+
+        &>* a {
+            display: block;
+            padding: 2.3vw;
+            font-size: 4.5vw;
+            font-weight: 600;
+        }
+    }
+
+
+
 }
 </style>
