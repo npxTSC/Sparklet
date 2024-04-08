@@ -5,95 +5,45 @@
 </script>
 
 <template>
-    <div id="topbar">
-        <img src="../assets/zap.png" class="logo" alt="logo" />
-        <ul>
-            <li><a href="/">Sparklet</a></li>
-            <li><a href="/about">About</a></li>
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-sm bg-primary mb-5 vert-border-black border-top-0">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse">
+                <a class="navbar-brand text-black" href="/">
+                    <img src="/img/favicon.png" class="d-inline-block img-fluid" width="67" height="57"
+                        alt="MOTHER 3 Short Circuit Zap sprite" />
+                    Sparklet
+                </a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">Rooms</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/rooms/breakout">Breakout</a></li>
+                            <li><a class="dropdown-item" href="/rooms/quiz">Quiz</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/rooms/chat">Just Chat</a></li>
+                            <li><a class="dropdown-item" href="/rooms/stratus">Stratus</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/sparks">Sparks</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/capsules">Capsules</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/about">About</a></li>
+                </ul>
+
+                <!--              <a href="<%= account?.name ? -->
+                <!-- `/conductors/${account.name.toLowerCase()}` : " /login" %>"> -->
+                <!--                  <img <%- include("pfp-src", {pfpSrc: account?.pfpSrc}); %> -->
+                <!--                  width="50" height="50" class="profile-picture me-3" alt="PFP"> -->
+                <!--              </a> -->
+
+                <a href="/login" class="btn btn-black text-primary
+			active float-right ml-5">
+                    <!-- <%= account?.name ?? "[Log In]" %> -->
+                </a>
+            </div>
+        </div>
+    </nav>
 </template>
-
-<style lang="less">
-@mobile-max-width: 768px;
-@spark-yellow: #f0e130;
-// @bg-dark: 0.7;
-
-.nav-link {
-    filter: brightness(100%);
-    transition: filter 0.2s ease-in-out;
-    outline: none;
-
-    &:hover,
-    &:focus,
-    &:active {
-        filter: brightness(90%);
-        transition: filter 0.2s ease-in-out;
-    }
-}
-
-#topbar {
-    display: block;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: @spark-yellow;
-    border: 0 solid black;
-
-    &>img.logo {
-        display: inline;
-        float: left;
-        // width: 8vw;
-        height: 4em;
-        margin: 1vw;
-    }
-
-    &>ul {
-        display: inline;
-        list-style-type: none;
-        margin: auto 0;
-
-        &>li:first-child a {
-            font-weight: 500;
-        }
-
-        &>li a {
-            color: black;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        // desktop
-        @media only screen and (min-width: (@mobile-max-width + 1px)) {
-            border-bottom-width: 1vh;
-
-            &>li {
-                float: left;
-
-                a {
-                    display: inline-block;
-                    padding: 3vh;
-                    font-size: 4vh;
-                }
-            }
-        }
-
-        // mobile
-        @media only screen and (max-width: @mobile-max-width) {
-            display: inline-flex;
-            justify-content: space-between;
-            border-bottom-width: 1vw;
-
-            &>li a {
-                display: block;
-                padding: 2.3vw;
-                font-size: 4.5vw;
-            }
-        }
-    }
-}
-</style>

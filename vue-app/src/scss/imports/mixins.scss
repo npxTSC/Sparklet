@@ -1,0 +1,8 @@
+@mixin selected {
+
+    &:hover,
+    &:focus,
+    &:active {
+        @content;
+    }
+}
