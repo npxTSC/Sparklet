@@ -5,10 +5,12 @@
 </script>
 
 <template>
-    <div>
-        <img src="../assets/zap.png" alt="logo" />
-        <h1 class="green">1</h1>
-        <h3>2</h3>
+    <div id="topbar">
+        <img src="../assets/zap.png" class="logo" alt="logo" />
+        <ul>
+            <li><a href="/">Sparklet</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
     </div>
 </template>
 
@@ -32,61 +34,67 @@
     }
 }
 
-ul#topbar {
+#topbar {
     display: block;
-    list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    background-image: linear-gradient(#000, @col-goldenrod);
+    background: @col-goldenrod;
     border: 0 solid black;
 
-    &>* a {
-        // A tags inside the navbar
-        color: white;
-        text-align: center;
-        text-decoration: none;
-
-        &:hover {
-            background-image: linear-gradient(#0c0c0c, @col-goldenrod);
-            text-shadow: 0 0.4vh #000;
-        }
+    &>img.logo {
+        display: inline;
+        float: left;
+        // width: 8vw;
+        height: 4em;
+        margin: 1vw;
     }
 
-    // desktop
-    @media only screen and (min-width: (@mobile-max-width + 1px)) {
-        border-bottom-width: 1vh;
+    &>ul {
+        display: inline;
+        list-style-type: none;
 
-        &>* {
-            float: left;
+        &>li:first-child a {
+            font-weight: 500;
+        }
 
-            a {
-                display: inline-block;
-                padding: 3vh;
-                font-size: 5vh;
-                font-weight: 500;
+        &>li a {
+            color: black;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        // desktop
+        @media only screen and (min-width: (@mobile-max-width + 1px)) {
+            border-bottom-width: 1vh;
+
+            &>li {
+                float: left;
+
+                a {
+                    display: inline-block;
+                    padding: 3vh;
+                    font-size: 5vh;
+                }
+            }
+        }
+
+        // mobile
+        @media only screen and (max-width: @mobile-max-width) {
+            display: inline-flex;
+            justify-content: space-between;
+            border-bottom-width: 1vw;
+
+            &>li a {
+                display: block;
+                padding: 2.3vw;
+                font-size: 4.5vw;
             }
         }
     }
-
-    // mobile
-    @media only screen and (max-width: @mobile-max-width) {
-        display: inline-flex;
-        justify-content: space-between;
-        border-bottom-width: 1vw;
-
-        &>* a {
-            display: block;
-            padding: 2.3vw;
-            font-size: 4.5vw;
-            font-weight: 600;
-        }
-    }
-
-
-
 }
 </style>
