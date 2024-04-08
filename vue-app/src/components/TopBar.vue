@@ -16,13 +16,11 @@
 
 <style lang="less">
 @mobile-max-width: 768px;
-@col-goldenrod: #ffe600;
 @spark-yellow: #f0e130;
 // @bg-dark: 0.7;
 
 .nav-link {
     filter: brightness(100%);
-    background: @spark-yellow;
     transition: filter 0.2s ease-in-out;
     outline: none;
 
@@ -43,7 +41,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    background: @col-goldenrod;
+    background: @spark-yellow;
     border: 0 solid black;
 
     &>img.logo {
@@ -57,6 +55,7 @@
     &>ul {
         display: inline;
         list-style-type: none;
+        margin: auto 0;
 
         &>li:first-child a {
             font-weight: 500;
@@ -78,7 +77,7 @@
                 a {
                     display: inline-block;
                     padding: 3vh;
-                    font-size: 5vh;
+                    font-size: 4vh;
                 }
             }
         }
