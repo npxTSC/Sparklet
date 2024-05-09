@@ -1,4 +1,3 @@
-use crate::CAPE_JSON;
 use actix_files::NamedFile;
 use actix_web::*;
 use std::path::PathBuf;
@@ -9,6 +8,6 @@ pub fn router(cfg: &mut web::ServiceConfig) {
 }
 
 async fn tea_capes() -> impl Responder {
-    let path = PathBuf::from(CAPE_JSON);
+    let path = PathBuf::from("./tea-capes.json");
     NamedFile::open(path)
 }

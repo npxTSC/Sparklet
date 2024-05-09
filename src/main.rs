@@ -12,17 +12,16 @@ mod api;
 pub const FRONTEND_DIR: &str = "./vue-app";
 pub const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
 pub const ASSETS_DIR: &str = concatcp!(SERVE_DIR, "/assets");
-pub const CAPE_JSON: &str = concatcp!(FRONTEND_DIR, "/tea-capes.json");
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .service(index)
-            .service(Files::new("/", SERVE_DIR))
             .configure(|cfg| {
                 cfg.service(web::scope("/api").configure(api::router));
             })
+            .service(index)
+            .service(Files::new("/", SERVE_DIR))
             .service(Files::new("/assets", ASSETS_DIR))
     })
     .bind(("127.0.0.1", 5001))?
