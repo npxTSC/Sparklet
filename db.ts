@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import fs from "fs";
 import * as util from "./util.js";
 import { ADMINS } from "./consts.js";
+import { v4 as newUUID } from "uuid";
 import {
     AdminRank,
     Option,
@@ -36,8 +37,8 @@ export namespace db {
         const hashed = await bcrypt.hash(pass, 10);
 
         // Put in DB
-        database.prepare(`INSERT INTO users(name, passHash) VALUES(?, ?);`)
-            .run(user, hashed);
+        database.prepare(`INSERT INTO users(name, passHash, uuid) VALUES(?, ?, ?);`)
+            .run(user, hashed, newUUID());
 
         return getUser(user)!;
     }
