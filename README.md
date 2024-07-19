@@ -25,7 +25,7 @@ might want to accept one, but I can't because it includes something unrelated.
 To get started, run `npm i` to install dependencies so your editor can do
 type-checking.
 
-Then, write a .env file with your `DB_USER` and `DB_PASS` environment variables.
+Then, write a .env file with your `DB_USER`, `DB_PASS`, and `MARIADB_ROOT_PASSWORD` environment variables.
 
 That's it! Now, you can start typing away!
 
@@ -39,6 +39,9 @@ npm run tsc
 
 # Runs webpack in watch mode (for frontend)
 npm run pw
+
+# Shorthand to rebuild the container
+npm run dcr
 ```
 
 VS Code tasks are set up, if you'd like to use those instead.
