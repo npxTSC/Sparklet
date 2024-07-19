@@ -14,4 +14,7 @@ data/
 /target
 
 # ignore the db
-sparklet.db
+.sqlx/
+*.db
+*.db-shm
+*.db-wal

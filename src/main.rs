@@ -8,7 +8,7 @@ use http::StatusCode;
 use sailfish::TemplateOnce;
 use sqlx::migrate::MigrateDatabase;
 use sqlx::sqlite::Sqlite;
-use sqlx::Pool;
+use sqlx::{query, Pool};
 use web::Data;
 
 mod api;
@@ -29,13 +29,13 @@ async fn main() -> std::io::Result<()> {
     }
 
     let pool = Pool::connect(DB_URL).await.unwrap();
+    make_tables(&pool).await;
 
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(Sparklet { db: pool.clone() }))
             .service(web::scope("/api").configure(api::router))
             .service(index)
-            .service(Files::new("/", "./dist"))
             .service(Files::new("/", "./dist"))
             .default_service(web::route().guard(guard::Not(guard::Get())).to(custom404))
     })
@@ -63,4 +63,22 @@ async fn custom404() -> impl Responder {
     HttpResponse::build(StatusCode::NOT_FOUND)
         .content_type("text/html; charset=utf-8")
         .body(ctx.render_once().unwrap())
+}
+
+async fn make_tables(pool: &Pool<Sqlite>) {
+    query!(
+        r#"
+        CREATE TABLE IF NOT EXISTS accounts (
+            id INTEGER PRIMARY KEY,
+            uuid TEXT NOT NULL,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            rank INTEGER NOT NULL
+        )
+        "#,
+    )
+    .execute(pool)
+    .await
+    .unwrap();
 }

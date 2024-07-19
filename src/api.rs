@@ -1,5 +1,6 @@
+use super::*;
+
 use actix_files::NamedFile;
-use actix_web::*;
 use std::path::PathBuf;
 
 pub fn router(cfg: &mut web::ServiceConfig) {
@@ -12,6 +13,15 @@ async fn tea_capes() -> impl Responder {
     NamedFile::open(path)
 }
 
-async fn account() -> impl Responder {
-    HttpResponse::Ok().body("Hello, world!")
+async fn account(state: Data<Sparklet>, req: HttpRequest) -> impl Responder {
+    let uuid = req.headers().get("Account-UUID").unwrap().to_str().unwrap();
+
+    let db = req.app_data::<Sparklet>().unwrap().db.clone();
+    let row = query!("SELECT * FROM accounts WHERE uuid = ?", uuid)
+        .fetch_one(&db)
+        .await
+        .unwrap();
+
+    // send the row as a json response
+    HttpResponse::Ok().json(row)
 }
