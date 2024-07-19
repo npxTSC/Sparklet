@@ -5,14 +5,19 @@
 "use strict";
 
 import { elem, post$, sleep$ } from "libdx";
-import { AdminRank } from "../../classes.js";
-import { BIO_CHAR_LIMIT } from "../../consts.js";
 import loaders from "./imports/loaders";
-import { bioFilter } from "../../feutils.js";
 
+const BIO_CHAR_LIMIT = 500;
+
+export function bioFilter(bio: string, defaults?: true): string;
+export function bioFilter(bio: string, defaults: false): string | null;
+export function bioFilter(bio: string, defaults: boolean = true) {
+    const filtered = bio.substring(0, BIO_CHAR_LIMIT).trim();
+    return filtered || (defaults ? "<empty>" : null);
+}
 const currentAccount = loaders.account();
 const profileInfo = (
-  loaders.profileInfo() ??
+    loaders.profileInfo() ??
     (location.href = "/", null)
 )!;
 
@@ -21,60 +26,60 @@ const profileInfo = (
 const BIO_CHECK_DELAY = 2000;
 
 const bioE = document.getElementsByClassName(
-  "profile-bio",
+    "profile-bio",
 )[0] as HTMLParagraphElement;
 
 const ownProfile = profileInfo.uuid === currentAccount?.uuid;
 console.log(`This is ${ownProfile ? "" : "not "}your profile.`);
 
 // this is also validated server-side... don't worry :) <3
-if (ownProfile || currentAccount?.adminRank >= AdminRank.Manager) {
-  bioE.setAttribute("contenteditable", "true");
+if (ownProfile || currentAccount?.adminRank >= 3) {
+    bioE.setAttribute("contenteditable", "true");
 
-  let editCounter = 0;
-  bioE.addEventListener("input", async () => {
-    if (bioE.innerText.length > BIO_CHAR_LIMIT) {
-      bioE.innerText = bioFilter(bioE.innerText);
-    }
+    let editCounter = 0;
+    bioE.addEventListener("input", async () => {
+        if (bioE.innerText.length > BIO_CHAR_LIMIT) {
+            bioE.innerText = bioFilter(bioE.innerText);
+        }
 
-    editCounter++;
+        editCounter++;
 
-    await sleep$(BIO_CHECK_DELAY);
-    editCounter--;
+        await sleep$(BIO_CHECK_DELAY);
+        editCounter--;
 
-    // if was last input in time period, update it
-    if (editCounter === 0) {
-      bioE.blur();
-      submitNewBio(profileInfo.uuid, bioE.innerText);
-    }
-  });
+        // if was last input in time period, update it
+        if (editCounter === 0) {
+            bioE.blur();
+            submitNewBio(profileInfo.uuid, bioE.innerText);
+        }
+    });
 
-  bioE.addEventListener("keydown", async (e) => {
-    if (!(e.key === "Enter" && e.ctrlKey)) return;
+    bioE.addEventListener("keydown", async (e) => {
+        if (!(e.key === "Enter" && e.ctrlKey)) return;
 
-    // If ctrl + enter, submit
-    e.preventDefault();
-    bioE.blur();
-    editCounter = 0;
-    submitNewBio(profileInfo.uuid, bioE.innerText);
-  });
+        // If ctrl + enter, submit
+        e.preventDefault();
+        bioE.blur();
+        editCounter = 0;
+        submitNewBio(profileInfo.uuid, bioE.innerText);
+    });
 }
 
 async function submitNewBio(uuid: string, newBio: string) {
-  const req = await post$("/api/profile-mod/bio", {
-    uuid,
-    newBio,
-  });
+    const req = await post$("/api/profile-mod/bio", {
+        uuid,
+        newBio,
+    });
 
-  if (req.status !== 200) {
-    console.error("Failed to update bio...");
-    return;
-  }
+    if (req.status !== 200) {
+        console.error("Failed to update bio...");
+        return;
+    }
 
-  // Filter with defaults AFTER, so we don't send the default
-  // to the backend if empty (really should be null if default)
-  bioE.innerText = bioFilter(bioE.innerText, true);
+    // Filter with defaults AFTER, so we don't send the default
+    // to the backend if empty (really should be null if default)
+    bioE.innerText = bioFilter(bioE.innerText, true);
 
-  // maybe flash it green or pop up a box saying "submitted" later on
-  elem.shakeElement(bioE, 750, 5);
+    // maybe flash it green or pop up a box saying "submitted" later on
+    elem.shakeElement(bioE, 750, 5);
 }
