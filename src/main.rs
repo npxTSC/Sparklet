@@ -28,8 +28,8 @@ async fn main() -> std::io::Result<()> {
 
 #[get("/")]
 async fn index(_req: HttpRequest) -> impl Responder {
-    let ctx = HelloTemplate {
-        messages: vec![String::from("foo"), String::from("bar")],
+    let ctx = HomeTemplate {
+        account_uuid: "".to_owned(),
     };
 
     HttpResponse::build(StatusCode::OK)
