@@ -9,7 +9,7 @@
         "build": "npx tsc && npx webpack",
         "pw": "npx webpack --watch",
         "tsc": "npx tsc -w",
-        "dcr": "docker-compose up --build"
+        "dcr": "docker compose up --build"
     },
     "keywords": [],
     "author": "dex",
