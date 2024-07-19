@@ -10,5 +10,5 @@ actix-web = "4.3.1"
 const_format = "0.2.31"
 libdx = "1.0.0"
 sailfish = "0.8.3"
-serde = {version = "1.0.188", features = ["derive"]}
+serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.106"
