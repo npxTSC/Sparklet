@@ -1,12 +1,10 @@
-import _sqlite from "better-sqlite3";
+import bsql3 from "better-sqlite3";
 import bcrypt from "bcrypt";
-import waitOn from "wait-on";
 import * as util from "./util.js";
 import { ADMINS } from "./consts.js";
 import {
     AdminRank,
     Nullable,
-    SparkletDB,
 } from "./classes.js";
 
 // for testing purposes... remove when we start
@@ -19,103 +17,56 @@ util.checkEnvReady([
     "DB_PASS",
 ]);
 
-const CONN_OPTIONS = {
-    database: "main",
-    host: "db",
-    user: process.env["DB_USER"]!,
-    password: process.env["DB_PASS"]!,
-    multipleStatements: true,
-};
+const db = new bsql3("/srv/sparklet/sparklet.db");
+db.pragma('journal_mode = WAL');
 
-console.log("Waiting for MariaDB container...");
-await waitOn({
-    resources: [
-        "tcp:db:3306",
-    ],
+await initTables(db);
 
-    delay: 1000,
-});
+export namespace dbActions {
+    export async function getUser(username: string): Promise<any> {
+        return db.prepare(`
+            SELECT * FROM users WHERE LOWER(name) = LOWER(?);
+        `).get(username);
+    }
 
-console.log("MariaDB container is up! Connecting...");
-const conn = mysql.createPool(CONN_OPTIONS);
-
-console.log("Connected to DB.");
-
-await initTables(conn);
-
-const enum DbRunMode {
-    // Default is conn.execute()
-    Execute = 0,
-    Query = 1,
-
-    __LENGTH,
-}
-
-export namespace db {
     export async function register(user: string, pass: string) {
         // Get hash of password
         const hashed = await bcrypt.hash(pass, 10);
 
         // Put in DB
-        const row = await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(
-            `
-        INSERT INTO users(name, passHash) VALUES(?, ?);
-        SELECT * FROM users WHERE LOWER(name) = LOWER(?);
-      `,
-            [user, hashed, user],
-            conn,
-            0,
-            DbRunMode.Query,
-        );
+        db.prepare(`INSERT INTO users(name, passHash) VALUES(?, ?);`)
+            .run(user, hashed);
 
-        return row!;
+        return getUser(user)!;
     }
 
     export async function registerIfNotExists(user: string, pass: string) {
         if (await getUser(user)) return null;
-
         return await register(user, pass);
     }
 
     export async function setAdminRank(uuid: string, rank: number) {
-        return conn.execute(
-            `
-        UPDATE users
-        SET adminRank = ?
-        WHERE LOWER(uuid) = LOWER(?);
-      `,
-            [rank, uuid],
-        );
+        return db.prepare(`UPDATE users SET adminRank = ?
+        WHERE LOWER(uuid) = LOWER(?);`).run(rank, uuid);
     }
 
-    export async function updateBio(uuid: string, bio: Nullable<string>) {
-        return conn.execute(
-            `
-        UPDATE users
-        SET bio = ?
-        WHERE LOWER(uuid) = LOWER(?);
-      `,
-            [bio, uuid],
-        );
+    export function updateBio(uuid: string, bio: Nullable<string>) {
+        return db.prepare(`UPDATE users SET bio = ? WHERE LOWER(uuid) = LOWER(?);`)
+            .run(bio, uuid);
     }
 
     export async function editLoginToken(
         uuid: string,
         newToken: Nullable<string>,
     ) {
-        return conn.execute(
-            `
-        UPDATE users
-        SET authToken = ?
-        WHERE LOWER(uuid) = LOWER(?);
-      `,
-            [newToken, uuid],
-        );
+        return db.prepare(`UPDATE users SET authToken = ?
+                           WHERE LOWER(uuid) = LOWER(?);`)
+            .run(newToken, uuid);
+
     }
 
     export async function verifyLoginTokenWithName(name: string, token: string) {
         const row = await getUser(name);
-
         if (!row) return false;
 
         return verifyLoginToken(row.uuid, token);
@@ -128,18 +79,6 @@ export namespace db {
         WHERE uuid = ? AND authToken = ?;
       `,
             [uuid, token],
-            conn,
-            0,
-        );
-    }
-
-    export async function getUser(username: string) {
-        return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(
-            `
-        SELECT * FROM users
-        WHERE LOWER(name) = LOWER(?);
-      `,
-            [username],
             conn,
             0,
         );
@@ -215,7 +154,7 @@ export namespace db {
 
     export namespace admin {
         export async function lmfao() {
-            return conn.execute(`DROP TABLE IF EXISTS users;`);
+            return db.prepare(`DROP TABLE IF EXISTS users;`);
         }
 
         export async function postSpark(
@@ -223,7 +162,7 @@ export namespace db {
             creator: string,
             desc: string,
         ) {
-            await conn.execute(
+            await db.prepare(
                 `
           INSERT INTO games(title, creator, description, visible)
           VALUES (?, ?, ?, 1);
@@ -256,11 +195,10 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
     db.setAdminRank(row.uuid, rank);
 });
 
-async function initTables(conn: mysql.Pool) {
-    //await conn.execute(`DROP TABLE IF EXISTS users;`);
+async function initTables(conn: Database) {
+    //await db.prepare(`DROP TABLE IF EXISTS users;`);
 
-    await Promise.all([
-        conn.execute(`
+    db.prepare(`
       CREATE TABLE IF NOT EXISTS users(
         uuid            UUID        PRIMARY KEY DEFAULT (UUID()),
         name            TEXT        NOT NULL,
@@ -273,9 +211,9 @@ async function initTables(conn: mysql.Pool) {
         pfpSrc          TEXT,
         bio             TEXT
       );
-    `),
+    `).run();
 
-        conn.execute(`
+    db.prepare(`
       CREATE TABLE IF NOT EXISTS news(
         uuid        UUID        PRIMARY KEY DEFAULT (UUID()),
         title       TEXT        NOT NULL,
@@ -284,9 +222,9 @@ async function initTables(conn: mysql.Pool) {
         visible     BOOL        NOT NULL DEFAULT 1,
         date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP())
       );
-    `),
+    `).run();
 
-        conn.execute(`
+    db.prepare(`
       CREATE TABLE IF NOT EXISTS games(
         uuid        UUID        PRIMARY KEY DEFAULT (UUID()),
         title       TEXT        NOT NULL,
@@ -295,6 +233,5 @@ async function initTables(conn: mysql.Pool) {
         visible     BOOL        NOT NULL DEFAULT 1,
         date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP())
       );
-    `),
-    ]);
+    `).run();
 }

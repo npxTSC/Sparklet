@@ -6,17 +6,6 @@ services:
     restart: always
     volumes:
       - "stateful:/srv/sparklet"
-  db:
-    image: mariadb:latest
-    env_file:
-      - .env
-    environment:
-      - MARIADB_DATABASE=main
-    volumes:
-      - db-data:/var/lib/mysql
-    ports:
-      - "3001:3306"
 
 volumes:
-  db-data: {}
   stateful: {}
