@@ -231,45 +231,6 @@ export namespace db {
         );
     }
 
-    export async function getCapsule(uuid: string) {
-        return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(
-            `
-        SELECT * FROM capsules
-        WHERE uuid = (?) AND visible = 1;
-      `,
-            [uuid],
-            conn,
-            0,
-        );
-    }
-
-    export async function searchCapsules(query: string) {
-        return await dbGet.executeGetArrDateify<SparkletDB.CapsuleRow>(
-            `
-        SELECT *
-        FROM capsules WHERE visible = 1 AND name like '%' || ? || '%'
-        ORDER BY date DESC
-        LIMIT 25;
-      `,
-            [query],
-            conn,
-        );
-    }
-
-    export async function capsuleQPosts() {
-        // TODO select less data... qposts are only surface-level overviews
-        return await dbGet.executeGetArrDateify<SparkletDB.CapsuleRow>(
-            `
-        SELECT *
-        FROM capsules WHERE visible = 1
-        ORDER BY likes DESC
-        LIMIT 25;
-      `,
-            [],
-            conn,
-        );
-    }
-
     export async function getGame(uuid: string) {
         return await dbGet.executeGetDateify<SparkletDB.SparkRow>(
             `
@@ -356,23 +317,6 @@ export namespace db {
                 0,
             ))!;
         }
-
-        export async function postCapsule(
-            name: string,
-            creator: string,
-            version: string,
-            content: string,
-        ) {
-            return await dbGet.executeGetDateify<SparkletDB.CapsuleRow>(
-                `
-          INSERT INTO capsules(name, creator, version, content)
-          VALUES (?, ?, ?, ?, ?);
-        `,
-                [name, creator, version, content],
-                conn,
-                0,
-            );
-        }
     }
 }
 
@@ -424,19 +368,6 @@ async function initTables(conn: mysql.Pool) {
         description TEXT        NOT NULL DEFAULT 'No description given... :(',
         visible     BOOL        NOT NULL DEFAULT 1,
         date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP())
-      );
-    `),
-
-        conn.execute(`
-      CREATE TABLE IF NOT EXISTS capsules(
-        uuid        UUID        PRIMARY KEY DEFAULT (UUID()),
-        name        TEXT        NOT NULL,
-        creator     TEXT        NOT NULL,
-        version     TEXT        NOT NULL,
-        content     TEXT        NOT NULL,
-        visible     BOOL        NOT NULL DEFAULT 1,
-        date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP()),
-        likes       INT         NOT NULL DEFAULT 0
       );
     `),
     ]);

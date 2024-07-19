@@ -103,43 +103,6 @@ app.use("/.well-known", routes.wk);
 app.use("/api", routes.api);
 app.use("/cpl", routes.adminCpl);
 
-app.post("/create-room/:roomType", async (req, res) => {
-    // const { roomType } = req.params;
-    const { cuuid } = req.body;
-
-    const row = await db.getCapsule(cuuid);
-    if (!row) {
-        return res.status(400).json({
-            bruhmoment: "Invalid capsule! You shouldn't be here...",
-        });
-    }
-
-    let jh = "";
-
-    // Make a random join code (repeat until unique)
-    do jh = rand.r_str(6); while (
-        activeRooms.filter((v) => v.joinHash === jh).length > 0
-    );
-
-    // Admin token (doesn't have to be as secure, since rooms are temporary)
-    const tok = generateToken(128);
-
-    // Create new room object, and push it to activeRooms
-    const newRoom = {
-        joinHash: jh,
-        ownerAccId: res.locals.account?.uuid,
-        authToken: tok,
-        quizId: cuuid,
-        currentQ: 0,
-        status: "waiting",
-        players: [],
-    };
-
-    activeRooms.push(newRoom);
-
-    return res.status(200).json(newRoom);
-});
-
 app.get("/host-room/:rid", (_, res) => {
     return res.render("host-room");
 });
@@ -292,25 +255,6 @@ app.get("/sparks", async (_, res) => {
     const qposts = await db.gameQPosts();
 
     res.render("catalog", { qposts });
-});
-
-app.get("/capsules", async (_, res) => {
-    const qposts = (await db.capsuleQPosts()).map((v) => {
-        const jsondata = fs.readFileSync(
-            `./dist/public/capsules/${v.uuid}.json`,
-        ).toString();
-
-        return {
-            ...JSON.parse(jsondata),
-
-            // PLUS the following information:
-
-            uuid: v.uuid,
-            date: v.date,
-        };
-    });
-
-    res.render("capsules", { qposts });
 });
 
 // 404 other routes

@@ -8,20 +8,6 @@ import { bioFilter } from "../feutils.js";
 const router = Express.Router();
 const CHICKEN_WINGS_URL = "https://sparklet.org/public/tea-cape.png";
 
-router.get("/capsules", (req, res) => {
-    let rows;
-
-    if (req.query.q) {
-        const spaced = (<string>req.query.q).replace(/\+/g, " ");
-        const searchQuery = decodeURIComponent(spaced);
-        rows = db.searchCapsules(searchQuery);
-    } else {
-        rows = db.capsuleQPosts();
-    }
-
-    return res.status(200).json(rows);
-});
-
 router.get("/tea-capes", (_, res) => {
     // TODO admin portal for changing capes
     res.json({
