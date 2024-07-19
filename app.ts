@@ -42,14 +42,14 @@ const io = new ioServer(server);
 
 // Middleware
 app.use(
-  rateLimit({
-    // 600 requests per minute allowed
-    windowMs: 60_000,
-    max: 600,
+    rateLimit({
+        // 600 requests per minute allowed
+        windowMs: 60_000,
+        max: 600,
 
-    // Return rate limit info in the `RateLimit-*` headers
-    standardHeaders: true,
-  }),
+        // Return rate limit info in the `RateLimit-*` headers
+        standardHeaders: true,
+    }),
 );
 
 app.use(cparse());
@@ -58,7 +58,7 @@ app.use(accountParser);
 app.use(pathsSupplier);
 app.use(gzipCompression());
 app.use(fileUpload({
-  limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
+    limits: { fileSize: MAX_FILE_UPLOAD_MB * 1024 * 1024 },
 }));
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
@@ -71,31 +71,31 @@ app.locals.Ranks = AdminRank;
 app.set("view engine", "ejs");
 
 app.use((req, _, next) => {
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-  console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
-  next();
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    console.log(`${req.method} @ ${req.originalUrl}\n^^^ from ${ip}\n`);
+    next();
 });
 
 // Routes
 app.get("/", (_, res) => {
-  res.render("home");
+    res.render("home");
 });
 
 // robots.txt -> /public/robots.txt
 app.get("/robots.txt", (_, res) => {
-  res.sendFile(path.join(__dirname, "dist/public/robots.txt"));
+    res.sendFile(path.join(__dirname, "dist/public/robots.txt"));
 });
 
 app.get("/info(/*)?", (_, res) => {
-  res.render("sussy");
+    res.render("sussy");
 });
 
 app.get("/pets", (_, res) => {
-  res.render("pets-info");
+    res.render("pets-info");
 });
 
 app.get("/about", (_, res) => {
-  res.render("about");
+    res.render("about");
 });
 
 app.use("/rooms", routes.rooms);
@@ -104,213 +104,213 @@ app.use("/api", routes.api);
 app.use("/cpl", routes.adminCpl);
 
 app.post("/create-room/:roomType", async (req, res) => {
-  // const { roomType } = req.params;
-  const { cuuid } = req.body;
+    // const { roomType } = req.params;
+    const { cuuid } = req.body;
 
-  const row = await db.getCapsule(cuuid);
-  if (!row) {
-    return res.status(400).json({
-      bruhmoment: "Invalid capsule! You shouldn't be here...",
-    });
-  }
+    const row = await db.getCapsule(cuuid);
+    if (!row) {
+        return res.status(400).json({
+            bruhmoment: "Invalid capsule! You shouldn't be here...",
+        });
+    }
 
-  let jh = "";
+    let jh = "";
 
-  // Make a random join code (repeat until unique)
-  do jh = rand.r_str(6); while (
-    activeRooms.filter((v) => v.joinHash === jh).length > 0
-  );
+    // Make a random join code (repeat until unique)
+    do jh = rand.r_str(6); while (
+        activeRooms.filter((v) => v.joinHash === jh).length > 0
+    );
 
-  // Admin token (doesn't have to be as secure, since rooms are temporary)
-  const tok = generateToken(128);
+    // Admin token (doesn't have to be as secure, since rooms are temporary)
+    const tok = generateToken(128);
 
-  // Create new room object, and push it to activeRooms
-  const newRoom = {
-    joinHash: jh,
-    ownerAccId: res.locals.account?.uuid,
-    authToken: tok,
-    quizId: cuuid,
-    currentQ: 0,
-    status: "waiting",
-    players: [],
-  };
+    // Create new room object, and push it to activeRooms
+    const newRoom = {
+        joinHash: jh,
+        ownerAccId: res.locals.account?.uuid,
+        authToken: tok,
+        quizId: cuuid,
+        currentQ: 0,
+        status: "waiting",
+        players: [],
+    };
 
-  activeRooms.push(newRoom);
+    activeRooms.push(newRoom);
 
-  return res.status(200).json(newRoom);
+    return res.status(200).json(newRoom);
 });
 
 app.get("/host-room/:rid", (_, res) => {
-  return res.render("host-room");
+    return res.render("host-room");
 });
 
 app.get("/login", (_, res) => {
-  res.render("login");
+    res.render("login");
 });
 
 app.post("/login", async (req, res) => {
-  const {
-    username: user,
-    password: pass,
-    loginAction: action,
-  } = req.body;
+    const {
+        username: user,
+        password: pass,
+        loginAction: action,
+    } = req.body;
 
-  // Empty usernames, specially crafted requests with missing fields, etc.
-  if (
-    action !== "Log Out" &&
-    [user, pass, action].some(
-      (v) => (typeof v === "undefined" || v.length === 0),
-    )
-  ) {
-    return fail("l-noInput");
-  }
+    // Empty usernames, specially crafted requests with missing fields, etc.
+    if (
+        action !== "Log Out" &&
+        [user, pass, action].some(
+            (v) => (typeof v === "undefined" || v.length === 0),
+        )
+    ) {
+        return fail("l-noInput");
+    }
 
-  if (str.containsSpecials(user)) return fail("l-specialChars");
-  if (user.length > 30) return fail("l-tooLong");
-  if (pass.length > 100) return fail("l-passTooLong");
+    if (str.containsSpecials(user)) return fail("l-specialChars");
+    if (user.length > 30) return fail("l-tooLong");
+    if (pass.length > 100) return fail("l-passTooLong");
 
-  let row = await db.getUser(user);
+    let row = await db.getUser(user);
 
-  switch (action) {
-    case "Register":
-      // Opposite of login, reject if exists
-      if (row) return fail("r-nameExists");
+    switch (action) {
+        case "Register":
+            // Opposite of login, reject if exists
+            if (row) return fail("r-nameExists");
 
-      await db.register(user, pass);
+            await db.register(user, pass);
 
-      console.log(`New account created: ${user}`);
+            console.log(`New account created: ${user}`);
 
-      // Reassign row to new user object
-      row = await db.getUser(user);
+            // Reassign row to new user object
+            row = await db.getUser(user);
 
-      // Fall-through to Login, because let's be real,
-      // it's fucking annoying when you need to log in
-      // after registering on a site ¯\_(ツ)_/¯
+        // Fall-through to Login, because let's be real,
+        // it's fucking annoying when you need to log in
+        // after registering on a site ¯\_(ツ)_/¯
 
-    case "Log In":
-      // If username not found, reject early
-      if (!row) return fail("l-nameNotFound");
+        case "Log In":
+            // If username not found, reject early
+            if (!row) return fail("l-nameNotFound");
 
-      // Compare password to hash
-      const correct = await bcrypt.compare(pass, row.passHash);
+            // Compare password to hash
+            const correct = await bcrypt.compare(pass, row.passHash);
 
-      // If password is wrong, reject
-      if (!correct) return fail("l-wrongPassword");
+            // If password is wrong, reject
+            if (!correct) return fail("l-wrongPassword");
 
-      // Password is correct
-      console.log(`User ${user} logged in successfully`);
+            // Password is correct
+            console.log(`User ${user} logged in successfully`);
 
-      // Change login token in DB
-      const token = await makeNewTokenFor(row.uuid);
+            // Change login token in DB
+            const token = await makeNewTokenFor(row.uuid);
 
-      res.cookie("uuid", row.uuid, { secure: true, httpOnly: true });
-      res.cookie("luster", token, { secure: true, httpOnly: true });
-      res.redirect("/conductors/" + user.toLowerCase());
+            res.cookie("uuid", row.uuid, { secure: true, httpOnly: true });
+            res.cookie("luster", token, { secure: true, httpOnly: true });
+            res.redirect("/conductors/" + user.toLowerCase());
 
-      break;
+            break;
 
-    case "Log Out":
-      // Remove auth cookie stuff
-      res.cookie("uuid", null, { secure: true, httpOnly: true });
-      res.cookie("luster", null, { secure: true, httpOnly: true });
+        case "Log Out":
+            // Remove auth cookie stuff
+            res.cookie("uuid", null, { secure: true, httpOnly: true });
+            res.cookie("luster", null, { secure: true, httpOnly: true });
 
-      return res.redirect("/login");
+            return res.redirect("/login");
 
-    default:
-      // Malformed requests should be rejected
-      res.status(400);
-      return res.send("Use the form correctly pls :)");
-  }
+        default:
+            // Malformed requests should be rejected
+            res.status(400);
+            return res.send("Use the form correctly pls :)");
+    }
 
-  function fail(code: string) {
-    console.log(`Failed "${action}" on ${user}`);
-    res.redirect("/login?ecode=" + code);
-  }
+    function fail(code: string) {
+        console.log(`Failed "${action}" on ${user}`);
+        res.redirect("/login?ecode=" + code);
+    }
 });
 
 app.get("/conductors/:profile", async (req, res) => {
-  const { profile } = req.params;
-  const user = res.locals.account;
+    const { profile } = req.params;
+    const user = res.locals.account;
 
-  console.log(
-    `${user?.name ?? "<Anon>"} requested profile of "${profile}"`,
-  );
+    console.log(
+        `${user?.name ?? "<Anon>"} requested profile of "${profile}"`,
+    );
 
-  if (str.containsSpecials(profile)) return throw404(res);
+    if (str.containsSpecials(profile)) return throw404(res);
 
-  let row = await db.getUser(profile);
+    let row = await db.getUser(profile);
 
-  if (!row) return throw404(res);
+    if (!row) return throw404(res);
 
-  return res.render("profile", {
-    profileInfo: row,
-  });
+    return res.render("profile", {
+        profileInfo: row,
+    });
 });
 
 app.get("/news/:PostID", async (req, res) => {
-  let postId = req.params["PostID"];
-  if (typeof postId !== "number" || isNaN(postId)) {
-    return throw404(res);
-  }
+    let postId = req.params["PostID"];
+    if (typeof postId !== "number" || isNaN(postId)) {
+        return throw404(res);
+    }
 
-  let post = await db.getNews(postId);
+    let post = await db.getNews(postId);
 
-  if (!post) return throw404(res);
+    if (!post) return throw404(res);
 
-  let passed = {
-    postId: postId,
-    post: post,
-  };
+    let passed = {
+        postId: postId,
+        post: post,
+    };
 
-  res.render("article", passed);
+    res.render("article", passed);
 });
 
 app.get("/news", async (_, res) => {
-  let qposts = await db.newsQPosts();
-  res.render("news", { qposts });
+    let qposts = await db.newsQPosts();
+    res.render("news", { qposts });
 });
 
 app.get("/sparks/:SparkUUID", async (req, res) => {
-  let sparkUUID = req.params["SparkUUID"];
-  if (!sparkUUID) return throw404(res);
+    let sparkUUID = req.params["SparkUUID"];
+    if (!sparkUUID) return throw404(res);
 
-  sparkUUID = sanitize(sparkUUID);
+    sparkUUID = sanitize(sparkUUID);
 
-  let post = await db.getGame(sparkUUID);
+    let post = await db.getGame(sparkUUID);
 
-  if (!post) return throw404(res);
+    if (!post) return throw404(res);
 
-  let passed = {
-    postId: sparkUUID,
-    post: post,
-  };
+    let passed = {
+        postId: sparkUUID,
+        post: post,
+    };
 
-  res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
+    res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
 });
 
 app.get("/sparks", async (_, res) => {
-  const qposts = await db.gameQPosts();
+    const qposts = await db.gameQPosts();
 
-  res.render("catalog", { qposts });
+    res.render("catalog", { qposts });
 });
 
 app.get("/capsules", async (_, res) => {
-  const qposts = (await db.capsuleQPosts()).map((v) => {
-    const jsondata = fs.readFileSync(
-      `./dist/public/capsules/${v.uuid}.json`,
-    ).toString();
+    const qposts = (await db.capsuleQPosts()).map((v) => {
+        const jsondata = fs.readFileSync(
+            `./dist/public/capsules/${v.uuid}.json`,
+        ).toString();
 
-    return {
-      ...JSON.parse(jsondata),
+        return {
+            ...JSON.parse(jsondata),
 
-      // PLUS the following information:
+            // PLUS the following information:
 
-      uuid: v.uuid,
-      date: v.date,
-    };
-  });
+            uuid: v.uuid,
+            date: v.date,
+        };
+    });
 
-  res.render("capsules", { qposts });
+    res.render("capsules", { qposts });
 });
 
 // 404 other routes
@@ -318,34 +318,34 @@ app.get("*", (_, res) => throw404(res));
 
 // Socket.IO handlers
 io.on("connection", (socket) => {
-  //socket.on("disconnect", () => {});
+    //socket.on("disconnect", () => {});
 
-  socket.on("quizHostAction", QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
-  socket.on("queryRoom", QUIZ_SOCKET_HANDLERS.queryRoom(socket));
-  socket.on("joinRoom", QUIZ_SOCKET_HANDLERS.joinRoom(socket));
+    socket.on("quizHostAction", QUIZ_SOCKET_HANDLERS.quizHostAction(socket));
+    socket.on("queryRoom", QUIZ_SOCKET_HANDLERS.queryRoom(socket));
+    socket.on("joinRoom", QUIZ_SOCKET_HANDLERS.joinRoom(socket));
 });
 
 server.listen(PORT, () => {
-  console.log("Listening on port " + PORT);
+    console.log("Listening on port " + PORT);
 });
 
 // Functions
 export function throw404(res: Express.Response) {
-  res.status(404);
-  res.render("404");
+    res.status(404);
+    res.render("404");
 }
 
 export function generateToken(len: number) {
-  return crypto.randomBytes(len).toString("hex");
+    return crypto.randomBytes(len).toString("hex");
 }
 
 export function findRoom(code: string) {
-  return activeRooms.find((v) => v.joinHash === code);
+    return activeRooms.find((v) => v.joinHash === code);
 }
 
 async function makeNewTokenFor(uuid: string) {
-  const token = generateToken(AUTH_TOKEN_BITS);
+    const token = generateToken(AUTH_TOKEN_BITS);
 
-  await db.editLoginToken(uuid, token);
-  return token;
+    await db.editLoginToken(uuid, token);
+    return token;
 }
