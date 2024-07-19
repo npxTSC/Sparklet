@@ -2,12 +2,14 @@
 // aka something that will probably never be completely finished!
 // but then again... all great things take time
 
-use actix_files::{Files, NamedFile};
+use actix_files::Files;
 use actix_web::*;
 use const_format::concatcp;
-use std::path::PathBuf;
+use sailfish::TemplateOnce;
 
 mod api;
+mod templates;
+use templates::*;
 
 pub const FRONTEND_DIR: &str = "./vue-app";
 pub const SERVE_DIR: &str = concatcp!(FRONTEND_DIR, "/dist");
@@ -31,7 +33,9 @@ async fn main() -> std::io::Result<()> {
 
 #[get("/")]
 async fn index(_req: HttpRequest) -> impl Responder {
-    let path = concatcp!(SERVE_DIR, "/index.html");
-    let path = PathBuf::from(path);
-    NamedFile::open(path)
+    let ctx = HelloTemplate {
+        messages: vec![String::from("foo"), String::from("bar")],
+    };
+
+    ctx.render_once().unwrap()
 }

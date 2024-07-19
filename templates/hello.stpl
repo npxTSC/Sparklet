@@ -1,8 +1,0 @@
-<html>
-  <body>
-    <% for msg in &messages { %>
-      <div><%= msg %></div>
-    <% } %>
-  </body>
-</html>
-
