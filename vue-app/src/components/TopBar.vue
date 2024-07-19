@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// defineProps<{
-//   msg: string
-// }>()
+defineProps<{
+    msg: string
+}>()
 </script>
 
 <template>
@@ -27,8 +27,8 @@
                             <li><a class="dropdown-item" href="/rooms/stratus">Stratus</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link active text-black" href="/sparks">Sparks</a></li>
-                    <li class="nav-item"><a class="nav-link active text-black" href="/capsules">Capsules</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active text-black" href="/sparks">Sparks</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link active text-black" href="/capsules">Capsules</a></li> -->
                     <li class="nav-item"><a class="nav-link active text-black" href="/news">News</a></li>
                     <li class="nav-item"><a class="nav-link active text-black" href="/about">About</a></li>
                 </ul>
