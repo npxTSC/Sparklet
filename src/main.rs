@@ -6,15 +6,33 @@ use actix_files::Files;
 use actix_web::*;
 use http::StatusCode;
 use sailfish::TemplateOnce;
+use sqlx::migrate::MigrateDatabase;
+use sqlx::sqlite::Sqlite;
+use sqlx::Pool;
+use web::Data;
 
 mod api;
 mod templates;
 use templates::*;
 
+const DB_URL: &str = "sqlite://sparklet.db";
+
+pub struct Sparklet {
+    db: Pool<Sqlite>,
+}
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    // create database file if not exists
+    if !Sqlite::database_exists(DB_URL).await.unwrap() {
+        Sqlite::create_database(DB_URL).await.unwrap();
+    }
+
+    let pool = Pool::connect(DB_URL).await.unwrap();
+
+    HttpServer::new(move || {
         App::new()
+            .app_data(Data::new(Sparklet { db: pool.clone() }))
             .service(web::scope("/api").configure(api::router))
             .service(index)
             .service(Files::new("/", "./dist"))
