@@ -100,22 +100,6 @@ export namespace db {
         });
     }
 
-    export async function getNews(uuid: string) {
-        return database.prepare(`
-            SELECT * FROM news
-            WHERE uuid = (?) AND visible = 1;
-        `).get(uuid);
-    }
-
-    export async function newsQPosts() {
-        return await database.prepare(`
-            SELECT title, author, date, uuid
-            FROM news WHERE visible = 1
-            ORDER BY date DESC
-            LIMIT 25;
-        `).get();
-    }
-
     export namespace admin {
         export async function lmfao() {
             return database.prepare(`DROP TABLE IF EXISTS users; `);
@@ -152,11 +136,12 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
 });
 
 async function initTables() {
-    //await db.prepare(`DROP TABLE IF EXISTS users; `);
+    database.prepare(`DROP TABLE IF EXISTS users;`).run();
+    database.prepare(`DROP TABLE IF EXISTS games;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
-            uuid            UUID        PRIMARY KEY DEFAULT(UUID()),
+            uuid            TEXT        PRIMARY KEY,
             name            TEXT        NOT NULL,
             passHash        TEXT        NOT NULL,
             date            BIGINT      NOT NULL DEFAULT(unixepoch()),
@@ -170,19 +155,8 @@ async function initTables() {
         `).run();
 
     database.prepare(`
-      CREATE TABLE IF NOT EXISTS news(
-            uuid        UUID        PRIMARY KEY DEFAULT(UUID()),
-            title       TEXT        NOT NULL,
-            author      TEXT        NOT NULL DEFAULT 'Anonymous',
-            content     TEXT        NOT NULL,
-            visible     BOOL        NOT NULL DEFAULT 1,
-            date        BIGINT      NOT NULL DEFAULT(unixepoch())
-        );
-        `).run();
-
-    database.prepare(`
       CREATE TABLE IF NOT EXISTS games(
-            uuid        UUID        PRIMARY KEY DEFAULT(UUID()),
+            uuid        TEXT        PRIMARY KEY,
             title       TEXT        NOT NULL,
             creator     TEXT        NOT NULL DEFAULT 'Anonymous',
             description TEXT        NOT NULL DEFAULT 'No description given... :(',

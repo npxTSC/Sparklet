@@ -210,29 +210,6 @@ app.get("/conductors/:profile", async (req, res) => {
     });
 });
 
-app.get("/news/:PostID", async (req, res) => {
-    let postId = req.params["PostID"];
-    if (typeof postId !== "number" || isNaN(postId)) {
-        return throw404(res);
-    }
-
-    let post = await db.getNews(postId);
-
-    if (!post) return throw404(res);
-
-    let passed = {
-        postId: postId,
-        post: post,
-    };
-
-    res.render("article", passed);
-});
-
-app.get("/news", async (_, res) => {
-    let qposts = await db.newsQPosts();
-    res.render("news", { qposts });
-});
-
 app.get("/sparks/:SparkUUID", async (req, res) => {
     let sparkUUID = req.params["SparkUUID"];
     if (!sparkUUID) return throw404(res);
