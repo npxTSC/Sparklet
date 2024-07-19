@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<title>Sparklet | <%= profileInfo.name %>'s Profile</title>
+	<%- include("parts/head") %>
+	<script src="/js/profile.js" defer></script>
+	<meta name="profile-info" content="<%= JSON.stringify(profileInfo) %>">
+</head>
+
+<body>
+	<%- include("parts/topbar") %>
+	<div class="bb1" style="margin-bottom: 5%;">
+		<div class="container bg-black border border-primary pb-3">
+			<h1 class="display-1 center text-white mb-5">
+				<span class="profile-rank">
+					<%= Ranks[profileInfo.adminRank] %>
+				</span>
+				<span class="profile-name">
+					<%= profileInfo.name %>
+				</span>
+			</h1>
+			
+			<div class="text-center mb-4">
+				<img <%- include("parts/pfp-src", {pfpSrc: profileInfo?.pfpSrc ?? false }); %>
+				width="400" height="400" class="profile-picture-big mx-auto"
+				alt="<%= profileInfo.name %>'s PFP">
+			</div>
+
+			<div class="col-8 mx-auto bg-carbon border border-primary
+				text-white text-center pb-3">
+				<p class="display-3">-About-</p>
+				<p class="profile-bio">
+<%= profileInfo.bio ?? "This user has not written a bio yet..." %>
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

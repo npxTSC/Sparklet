@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<%- include("parts/head") %>
+	<script src="/js/login.js" defer></script>
+</head>
+
+<body>
+	<%- include("parts/topbar") %>
+	<div class="bb1" style="margin-bottom: 5%;">
+		<h1 class="title center text-white">Sparklet Login</h1>
+	</div>
+
+	<div class="bb1 container">
+		<form action="/login" method="post" class="mb-5">
+			<div class="form-group mx-auto mb-4">
+				<input class="form-control" name="username" id="usernameBox"
+					placeholder="Conductor ID" type="text">
+			</div>
+			
+			<div class="form-group mx-auto mb-4">
+				<input class="form-control" name="password"
+					placeholder="Password" type="password">
+			</div>
+
+			<!--div class="form-group mx-auto mb-5">
+				<input class="form-control" name="email"
+					placeholder="Email (if registering)" type="email">
+			</div-->
+			
+			<input type="submit" name="loginAction" value="Log In"
+				class="btn btn-primary border-black mx-auto">
+		
+			<input type="submit" name="loginAction" value="Register"
+				class="btn btn-primary border-black mx-auto">
+			
+			<% if (account) { %>
+			<input type="submit" name="loginAction" value="Log Out"
+				class="btn btn-primary border-black mx-auto">
+			<% } %>
+			
+		</form>
+
+		<div class="container bg-primary rounded
+			pt-1 invisible" id="ecBox">
+			<p class="display-6 text-black" id="ecText">//</p>
+		</div>
+	</div>
+</body>
+
+</html>
