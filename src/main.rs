@@ -4,15 +4,12 @@
 
 use actix_files::Files;
 use actix_web::*;
-use const_format::concatcp;
 use http::StatusCode;
 use sailfish::TemplateOnce;
 
 mod api;
 mod templates;
 use templates::*;
-
-pub const ASSETS_DIR: &str = concatcp!("/dist");
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -22,7 +19,7 @@ async fn main() -> std::io::Result<()> {
                 cfg.service(web::scope("/api").configure(api::router));
             })
             .service(index)
-            .service(Files::new("/dist", ASSETS_DIR))
+            .service(Files::new("/", "./dist"))
     })
     .bind(("127.0.0.1", 5001))?
     .run()
