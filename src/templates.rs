@@ -10,7 +10,7 @@ pub struct HomeTemplate {
 }
 
 #[derive(TemplateOnce)]
-#[template(path = "topbar.html")]
+#[template(path = "parts/topbar.html")]
 pub struct TopBarTemplate {
     // data to be passed to the template
     pub account_uuid: String,
