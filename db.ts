@@ -1,10 +1,11 @@
 import bsql3 from "better-sqlite3";
 import bcrypt from "bcrypt";
+import fs from "fs";
 import * as util from "./util.js";
 import { ADMINS } from "./consts.js";
 import {
     AdminRank,
-    Nullable,
+    Option,
 } from "./classes.js";
 
 // for testing purposes... remove when we start
@@ -17,14 +18,15 @@ util.checkEnvReady([
     "DB_PASS",
 ]);
 
-const db = new bsql3("/srv/sparklet/sparklet.db");
-db.pragma('journal_mode = WAL');
+fs.mkdirSync("/srv/sparklet/", { recursive: true });
+const database = new bsql3("/srv/sparklet/sparklet.db");
+database.pragma('journal_mode = WAL');
 
-await initTables(db);
+await initTables();
 
-export namespace dbActions {
+export namespace db {
     export async function getUser(username: string): Promise<any> {
-        return db.prepare(`
+        return database.prepare(`
             SELECT * FROM users WHERE LOWER(name) = LOWER(?);
         `).get(username);
     }
@@ -34,7 +36,7 @@ export namespace dbActions {
         const hashed = await bcrypt.hash(pass, 10);
 
         // Put in DB
-        db.prepare(`INSERT INTO users(name, passHash) VALUES(?, ?);`)
+        database.prepare(`INSERT INTO users(name, passHash) VALUES(?, ?);`)
             .run(user, hashed);
 
         return getUser(user)!;
@@ -46,20 +48,20 @@ export namespace dbActions {
     }
 
     export async function setAdminRank(uuid: string, rank: number) {
-        return db.prepare(`UPDATE users SET adminRank = ?
+        return database.prepare(`UPDATE users SET adminRank = ?
         WHERE LOWER(uuid) = LOWER(?);`).run(rank, uuid);
     }
 
-    export function updateBio(uuid: string, bio: Nullable<string>) {
-        return db.prepare(`UPDATE users SET bio = ? WHERE LOWER(uuid) = LOWER(?);`)
+    export function updateBio(uuid: string, bio: Option<string>) {
+        return database.prepare(`UPDATE users SET bio = ? WHERE LOWER(uuid) = LOWER(?);`)
             .run(bio, uuid);
     }
 
     export async function editLoginToken(
         uuid: string,
-        newToken: Nullable<string>,
+        newToken: Option<string>,
     ) {
-        return db.prepare(`UPDATE users SET authToken = ?
+        return database.prepare(`UPDATE users SET authToken = ?
                            WHERE LOWER(uuid) = LOWER(?);`)
             .run(newToken, uuid);
 
@@ -73,88 +75,50 @@ export namespace dbActions {
     }
 
     export async function verifyLoginToken(uuid: string, token: string) {
-        return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(
-            `
-        SELECT * FROM users
-        WHERE uuid = ? AND authToken = ?;
-      `,
-            [uuid, token],
-            conn,
-            0,
-        );
+        return database.prepare(`SELECT * FROM users WHERE uuid = ? AND authToken = ?;`)
+            .get(uuid, token);
     }
 
     export async function getUserByUUID(uuid: string) {
-        return await dbGet.executeGetDateify<SparkletDB.SparkletUserRow>(
-            `
-        SELECT * FROM users
-        WHERE uuid = ?;
-      `,
-            [uuid],
-            conn,
-            0,
-        );
+        return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
+            .get(uuid);
     }
 
     export async function getGame(uuid: string) {
-        return await dbGet.executeGetDateify<SparkletDB.SparkRow>(
-            `
-        SELECT * FROM games
-        WHERE uuid = (?) AND visible = 1;
-      `,
-            [uuid],
-            conn,
-            0,
-        );
+        return database.prepare(`SELECT * FROM games WHERE uuid = (?) AND visible = 1;`)
+            .get(uuid);
     }
 
-    export async function gameQPosts(): Promise<SparkletDB.SparkDisp[]> {
-        const row = await dbGet.executeGetArrDateify<SparkletDB.SparkRow>(
-            `
-        SELECT *
-        FROM games WHERE visible = 1
-        ORDER BY date DESC
-        LIMIT 25;
-      `,
-            [],
-            conn,
-        );
+    export async function gameQPosts(): Promise<any[]> {
+        const rows = database.prepare(`SELECT * FROM games WHERE visible = 1
+                                ORDER BY date DESC LIMIT 25;`).all();
 
-        return Promise.all(row.map(async (v) => {
-            const creatorRow = (await db.getUserByUUID(v.creator))!;
-            v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name}`;
-            return v as SparkletDB.SparkDisp;
-        }));
+        return rows.map(async (v: any) => {
+            const creatorRow: any = (await getUserByUUID(v.creator))!;
+            v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name} `;
+            return v;
+        });
     }
 
     export async function getNews(uuid: string) {
-        return await dbGet.executeGetDateify<SparkletDB.NewsPostRow>(
-            `
-        SELECT * FROM news
-        WHERE uuid = (?) AND visible = 1;
-      `,
-            [uuid],
-            conn,
-            0,
-        );
+        return database.prepare(`
+            SELECT * FROM news
+            WHERE uuid = (?) AND visible = 1;
+        `).get(uuid);
     }
 
     export async function newsQPosts() {
-        return await dbGet.executeGetArrDateify<SparkletDB.NewsPostRow>(
-            `
-        SELECT title, author, date, uuid
-        FROM news WHERE visible = 1
-        ORDER BY date DESC
-        LIMIT 25;
-      `,
-            [],
-            conn,
-        );
+        return await database.prepare(`
+            SELECT title, author, date, uuid
+            FROM news WHERE visible = 1
+            ORDER BY date DESC
+            LIMIT 25;
+        `).get();
     }
 
     export namespace admin {
         export async function lmfao() {
-            return db.prepare(`DROP TABLE IF EXISTS users;`);
+            return database.prepare(`DROP TABLE IF EXISTS users; `);
         }
 
         export async function postSpark(
@@ -162,25 +126,17 @@ export namespace dbActions {
             creator: string,
             desc: string,
         ) {
-            await db.prepare(
-                `
-          INSERT INTO games(title, creator, description, visible)
-          VALUES (?, ?, ?, 1);
-        `,
-                [title, creator, desc],
-            );
+            database.prepare(`
+              INSERT INTO games(title, creator, description, visible)
+        VALUES(?, ?, ?, 1);
+        `).run(title, creator, desc);
 
-            return (await dbGet.executeGetDateify<SparkletDB.SparkRow>(
-                `
-          SELECT * FROM games
-          WHERE LOWER(creator) = LOWER(?)
-          ORDER BY date DESC
-          LIMIT 1;
-        `,
-                [creator],
-                conn,
-                0,
-            ))!;
+            return (database.prepare(`
+        SELECT * FROM games
+              WHERE LOWER(creator) = LOWER(?)
+              ORDER BY date DESC
+              LIMIT 1;
+        `).get(creator))!;
         }
     }
 }
@@ -195,43 +151,43 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
     db.setAdminRank(row.uuid, rank);
 });
 
-async function initTables(conn: Database) {
-    //await db.prepare(`DROP TABLE IF EXISTS users;`);
+async function initTables() {
+    //await db.prepare(`DROP TABLE IF EXISTS users; `);
 
-    db.prepare(`
+    database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
-        uuid            UUID        PRIMARY KEY DEFAULT (UUID()),
-        name            TEXT        NOT NULL,
-        passHash        TEXT        NOT NULL,
-        date            BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP()),
-        adminRank       INT         NOT NULL DEFAULT 0,
-        emailVerified   BOOL        NOT NULL DEFAULT 0,
-        emailVToken     TEXT,
-        authToken       TEXT,
-        pfpSrc          TEXT,
-        bio             TEXT
-      );
-    `).run();
+            uuid            UUID        PRIMARY KEY DEFAULT(UUID()),
+            name            TEXT        NOT NULL,
+            passHash        TEXT        NOT NULL,
+            date            BIGINT      NOT NULL DEFAULT(unixepoch()),
+            adminRank       INT         NOT NULL DEFAULT 0,
+            emailVerified   BOOL        NOT NULL DEFAULT 0,
+            emailVToken     TEXT,
+            authToken       TEXT,
+            pfpSrc          TEXT,
+            bio             TEXT
+        );
+        `).run();
 
-    db.prepare(`
+    database.prepare(`
       CREATE TABLE IF NOT EXISTS news(
-        uuid        UUID        PRIMARY KEY DEFAULT (UUID()),
-        title       TEXT        NOT NULL,
-        author      TEXT        NOT NULL DEFAULT 'Anonymous',
-        content     TEXT        NOT NULL,
-        visible     BOOL        NOT NULL DEFAULT 1,
-        date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP())
-      );
-    `).run();
+            uuid        UUID        PRIMARY KEY DEFAULT(UUID()),
+            title       TEXT        NOT NULL,
+            author      TEXT        NOT NULL DEFAULT 'Anonymous',
+            content     TEXT        NOT NULL,
+            visible     BOOL        NOT NULL DEFAULT 1,
+            date        BIGINT      NOT NULL DEFAULT(unixepoch())
+        );
+        `).run();
 
-    db.prepare(`
+    database.prepare(`
       CREATE TABLE IF NOT EXISTS games(
-        uuid        UUID        PRIMARY KEY DEFAULT (UUID()),
-        title       TEXT        NOT NULL,
-        creator     TEXT        NOT NULL DEFAULT 'Anonymous',
-        description TEXT        NOT NULL DEFAULT 'No description given... :(',
-        visible     BOOL        NOT NULL DEFAULT 1,
-        date        BIGINT      NOT NULL DEFAULT (UNIX_TIMESTAMP())
-      );
-    `).run();
+            uuid        UUID        PRIMARY KEY DEFAULT(UUID()),
+            title       TEXT        NOT NULL,
+            creator     TEXT        NOT NULL DEFAULT 'Anonymous',
+            description TEXT        NOT NULL DEFAULT 'No description given... :(',
+            visible     BOOL        NOT NULL DEFAULT 1,
+            date        BIGINT      NOT NULL DEFAULT(unixepoch())
+        );
+        `).run();
 }

@@ -2,7 +2,7 @@
 
 import Express from "express";
 import db from "../db.js";
-import { AdminRank, SparkletDB } from "../classes.js";
+import { AdminRank } from "../classes.js";
 import { bioFilter } from "../feutils.js";
 
 const router = Express.Router();
@@ -29,7 +29,7 @@ router.post("/profile-mod/bio", (req, res) => {
         return res.status(400).end();
     }
 
-    const acc = res.locals.account as SparkletDB.SparkletUser;
+    const acc = res.locals.account;
 
     if (acc.uuid !== targetUUID && acc.adminRank < AdminRank.Manager) {
         // must be Manager+ to edit bios of other users

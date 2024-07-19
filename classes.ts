@@ -1,10 +1,8 @@
 // Module for providing classes/types to app.ts
 "use strict";
 
-import { RowDataPacket } from "mysql2/promise";
-
-// iguana noises
-export type Nullable<T> = T | null;
+// crab noises
+export type Option<T> = T | null;
 
 export interface Conductor {
     username: string;
@@ -26,7 +24,7 @@ export interface QuizPlayer {
     uuid: string;
     correctQs: number;
     tempToken: string;
-    account?: SparkletDB.SparkletUser;
+    account?: any;
 }
 
 export interface QuizHostCommand {
@@ -48,62 +46,4 @@ export enum AdminRank {
     Electrician,
     Manager,
     Operator,
-}
-
-// unfortunately i do not implement this type irl
-export type Dateable = {
-    date: number;
-    [key: string]: any;
-};
-
-export type TimestampIntoDate<Inner> = Omit<Inner, "date"> & { date: Date };
-
-export type DateablePacket = RowDataPacket & Dateable;
-
-export namespace SparkletDB {
-    // Row stuff, except date goes from number -> Date
-    export type SparkletUser = TimestampIntoDate<SparkletUserRow>;
-    export type NewsPost = TimestampIntoDate<NewsPostRow>;
-    export type Spark = TimestampIntoDate<SparkRow>;
-    export type SparkDisp = Spark & { creatorName: string };
-
-    export type SparkletUserPublic = Omit<
-        SparkletUser,
-        "passHash" | "emailVToken" | "authToken"
-    >;
-
-    /*
-     * These types should only be used by code in db.ts!!!!
-     */
-
-    export type SparkletUserRow = DateablePacket & {
-        uuid: string;
-        name: string;
-        passHash: string;
-        date: number;
-        adminRank: number;
-        emailVerified: boolean;
-        emailVToken?: string;
-        authToken?: string;
-        pfpSrc?: string;
-        bio?: string;
-    };
-
-    export type NewsPostRow = DateablePacket & {
-        uuid: string;
-        title: string;
-        author: string;
-        content: string;
-        visible: boolean;
-        date: number;
-    };
-
-    export type SparkRow = DateablePacket & {
-        uuid: string;
-        title: string;
-        creator: string;
-        description: string;
-        visible: boolean;
-        date: number;
-    };
 }
