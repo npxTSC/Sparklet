@@ -137,8 +137,8 @@ Object.entries(ADMINS).forEach(async ([name, rank]) => {
 });
 
 async function initTables() {
-    database.prepare(`DROP TABLE IF EXISTS users;`).run();
-    database.prepare(`DROP TABLE IF EXISTS games;`).run();
+    // database.prepare(`DROP TABLE IF EXISTS users;`).run();
+    // database.prepare(`DROP TABLE IF EXISTS games;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
