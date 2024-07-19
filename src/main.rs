@@ -15,11 +15,11 @@ use templates::*;
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .configure(|cfg| {
-                cfg.service(web::scope("/api").configure(api::router));
-            })
+            .service(web::scope("/api").configure(api::router))
             .service(index)
             .service(Files::new("/", "./dist"))
+            .service(Files::new("/", "./dist"))
+            .default_service(web::route().guard(guard::Not(guard::Get())).to(custom404))
     })
     .bind(("127.0.0.1", 5001))?
     .run()
@@ -33,6 +33,16 @@ async fn index(_req: HttpRequest) -> impl Responder {
     };
 
     HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(ctx.render_once().unwrap())
+}
+
+async fn custom404() -> impl Responder {
+    let ctx = Error404Template {
+        account_uuid: "".to_owned(),
+    };
+
+    HttpResponse::build(StatusCode::NOT_FOUND)
         .content_type("text/html; charset=utf-8")
         .body(ctx.render_once().unwrap())
 }
