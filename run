@@ -1,21 +1,24 @@
 #!/bin/bash
 
-# This script is not meant for frontend devs!
-#
-# It only builds the frontend once, so rebuild manually
-# if you change the frontend code.
-#
-# Only use this if actually deploying the app or for
-# working on the backend where you don't really change
-# the frontend code.
-
-function build-frontend() (
-    cd vue-app || exit
-
-    npm i
-    npm run build
-
-)
-
-build-frontend
+echo "Using \`cargo watch\`, this script will probably be removed soon"
 cargo watch -x run
+
+# # This script is not meant for frontend devs!
+# #
+# # It only builds the frontend once, so rebuild manually
+# # if you change the frontend code.
+# #
+# # Only use this if actually deploying the app or for
+# # working on the backend where you don't really change
+# # the frontend code.
+#
+# function build-frontend() (
+#     cd vue-app || exit
+#
+#     npm i
+#     npm run build
+#
+# )
+#
+# build-frontend
+# cargo watch -x run
