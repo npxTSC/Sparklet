@@ -1,14 +1,12 @@
-import mysql from "mysql2/promise";
+import _sqlite from "better-sqlite3";
 import bcrypt from "bcrypt";
 import waitOn from "wait-on";
 import * as util from "./util.js";
 import { ADMINS } from "./consts.js";
 import {
     AdminRank,
-    DateablePacket,
     Nullable,
     SparkletDB,
-    TimestampIntoDate,
 } from "./classes.js";
 
 // for testing purposes... remove when we start
@@ -44,78 +42,6 @@ const conn = mysql.createPool(CONN_OPTIONS);
 console.log("Connected to DB.");
 
 await initTables(conn);
-
-namespace dbGet {
-    /*
-     * Ideally, we only use conn.execute() for tasks that don't
-     * return anything related to the SQL command...
-     *
-     * Think of stuff like updating tokens, setting passwords, etc.
-     */
-
-    export async function executeGetArr<T extends mysql.RowDataPacket>(
-        sql: string,
-        values: any[],
-        conn: mysql.Pool,
-        query?: DbRunMode,
-    ): Promise<T[]> {
-        let res;
-
-        if (!query) {
-            // execute
-            res = conn.execute<T[]>(sql, values);
-        } else {
-            // query
-            res = conn.query<T[]>(sql, values);
-        }
-
-        return (await res)[0];
-    }
-
-    // type-safe shorthand for doing execute()[0][n]
-    export async function executeGet<T extends mysql.RowDataPacket>(
-        sql: string,
-        values: any[],
-        conn: mysql.Pool,
-        nth: number,
-        query?: DbRunMode,
-    ): Promise<T | undefined> {
-        const res = await executeGetArr<T>(sql, values, conn, query);
-        return res[nth];
-    }
-
-    // shorthand to executeGet() and then dateify
-    export async function executeGetDateify<T extends DateablePacket>(
-        sql: string,
-        values: any[],
-        conn: mysql.Pool,
-        nth: number,
-        query?: DbRunMode,
-    ): Promise<TimestampIntoDate<T> | undefined> {
-        const atNth = await executeGet<T>(sql, values, conn, nth, query);
-        return typeof atNth === "undefined" ? undefined : util.dateify(atNth);
-    }
-
-    // shorthand to executeGet() and then dateify
-    export async function executeGetArrDateify<T extends DateablePacket>(
-        sql: string,
-        values: any[],
-        conn: mysql.Pool,
-        query?: DbRunMode,
-    ): Promise<TimestampIntoDate<T>[]> {
-        const res = await executeGetArr<T>(sql, values, conn, query);
-
-        /*
-         * we can safely say it's not undefined because...
-         * well, that'd be stupid. The only reason we used
-         * T | undefined earlier was because there was a chance
-         * that row 0 doesn't exist, but if someone calls this
-         * function, it's their responsibility to check length.
-         */
-
-        return res.map(util.dateify);
-    }
-}
 
 const enum DbRunMode {
     // Default is conn.execute()
