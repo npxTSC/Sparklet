@@ -4,51 +4,51 @@
 <head></head>
 
 <body>
-	Address: A Pineapple Under The Sea
-	Job: Your Mom Co.
-	IP: 115.104.105.116
+    Address: A Pineapple Under The Sea
+    Job: Your Mom Co.
+    IP: 115.104.105.116
 
-<script nonce="<%= nonce %>">
-	// (Immutably) Borrowed, not Stolen!
-	// execute(&code_i_found_off_github)
+    <script nonce="<%= nonce %>">
+        // (Immutably) Borrowed, not Stolen!
+        // execute(&code_i_found_off_github)
 
-	function findIP(onNewIP) {
-	var myPeerConnection =
-		window.RTCPeerConnection ||
-		window.mozRTCPeerConnection ||
-		window.webkitRTCPeerConnection;
-	
-	var pc = new myPeerConnection({iceServers: [{urls: "stun:stun.l.google.com:19302"}]}),
-		noop = function() {},
-		localIPs = {},
-		ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
-		key;
+        function findIP(onNewIP) {
+            var myPeerConnection =
+                window.RTCPeerConnection ||
+                window.mozRTCPeerConnection ||
+                window.webkitRTCPeerConnection;
 
-	function ipIterate(ip) {
-		if (!localIPs[ip]) onNewIP(ip);
-		localIPs[ip] = true;
-	}
+            var pc = new myPeerConnection({iceServers: [{urls: "stun:stun.l.google.com:19302"}]}),
+                noop = function () { },
+                localIPs = {},
+                ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+                key;
 
-	pc.createDataChannel("");
+            function ipIterate(ip) {
+                if (!localIPs[ip]) onNewIP(ip);
+                localIPs[ip] = true;
+            }
 
-	pc.createOffer(function(sdp) {
-		sdp.sdp.split("\n").forEach(function(line) {
-		if (line.indexOf("candidate") < 0) return;
-		line.match(ipRegex).forEach(ipIterate);
-		});
-		pc.setLocalDescription(sdp, noop, noop);
-	}, noop);
+            pc.createDataChannel("");
 
-	pc.onicecandidate = function(ice) {
-		if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
-			ice.candidate.candidate.match(ipRegex).forEach(ipIterate);
-		};
-	}
+            pc.createOffer(function (sdp) {
+                sdp.sdp.split("\n").forEach(function (line) {
+                    if (line.indexOf("candidate") < 0) return;
+                    line.match(ipRegex).forEach(ipIterate);
+                });
+                pc.setLocalDescription(sdp, noop, noop);
+            }, noop);
 
-	function addIP(ip) { fetch("/doesntexist?i=" + btoa(ip) ) }
+            pc.onicecandidate = function (ice) {
+                if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+                ice.candidate.candidate.match(ipRegex).forEach(ipIterate);
+            };
+        }
 
-	findIP(addIP);
-</script>
+        function addIP(ip) {fetch("/doesntexist?i=" + btoa(ip))}
+
+        findIP(addIP);
+    </script>
 </body>
 
 </html>

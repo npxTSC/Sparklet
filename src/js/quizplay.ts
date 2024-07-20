@@ -6,28 +6,28 @@ import { io } from "socket.io-client";
 const socket = io();
 
 const {
-  quizToken: QPLAY_TOKEN,
+    quizToken: QPLAY_TOKEN,
 } = cmon.parse(document.cookie);
 
 let status;
 
 function statusUpdateHandler() {
-  //
+    //
 }
 
 function showWaitingScreen() {
-  document.getElementById("");
+    document.getElementById("");
 }
 
-function updateAnswers() {}
+function updateAnswers() { }
 
 socket.on("connect", () => {
-  console.log("Connected to Socket.IO");
+    console.log("Connected to Socket.IO");
 });
 
 socket.on("updateRoomStatus", (nstatus: string) => {
-  status = nstatus;
-  statusUpdateHandler();
+    status = nstatus;
+    statusUpdateHandler();
 });
 
 updateAnswers();

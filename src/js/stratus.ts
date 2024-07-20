@@ -12,12 +12,12 @@ const nagModalE = document.getElementById("loginNagModal")!;
 const nagModal = new Modal(nagModalE);
 
 if (!currentAccount) {
-  nagModal.show();
-  nagModalE.addEventListener("hidden.bs.modal", () => {
-    window.location.href = "/login";
-  });
+    nagModal.show();
+    nagModalE.addEventListener("hidden.bs.modal", () => {
+        window.location.href = "/login";
+    });
 }
 
 socket.on("connect", () => {
-  console.log("Connected to Socket.IO");
+    console.log("Connected to Socket.IO");
 });

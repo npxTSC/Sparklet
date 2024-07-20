@@ -1,23 +1,23 @@
 {
-	"compilerOptions": {
-		"module": "ES2022",
-		"moduleResolution": "nodenext",
-		"target": "ES2022",
-		"skipLibCheck": true,
-		"removeComments": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
-		"strictNullChecks": true,
-		"sourceMap": false,
-		"esModuleInterop": true,
-		"noUnusedLocals": false,
-		"allowUnreachableCode": false,
-		"strict": true,
-		"noImplicitReturns": true
-	},
-	"exclude": [
-		"node_modules",
-		"src",
-		"dist"
-	]
+    "compilerOptions": {
+        "module": "ES2022",
+        "moduleResolution": "nodenext",
+        "target": "ES2022",
+        "skipLibCheck": true,
+        "removeComments": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "sourceMap": false,
+        "esModuleInterop": true,
+        "noUnusedLocals": false,
+        "allowUnreachableCode": false,
+        "strict": true,
+        "noImplicitReturns": true
+    },
+    "exclude": [
+        "node_modules",
+        "src",
+        "dist"
+    ]
 }

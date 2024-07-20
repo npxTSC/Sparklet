@@ -21,8 +21,6 @@ fs.mkdirSync("/srv/sparklet/", { recursive: true });
 const database = new bsql3("/srv/sparklet/sparklet.db");
 database.pragma('journal_mode = WAL');
 
-await initTables();
-
 export namespace db {
     export async function getUser(username: string): Promise<any> {
         return database.prepare(`
@@ -128,8 +126,6 @@ export namespace db {
     }
 }
 
-export default db;
-
 async function initTables() {
     // database.prepare(`DROP TABLE IF EXISTS users;`).run();
     // database.prepare(`DROP TABLE IF EXISTS games;`).run();
@@ -164,3 +160,6 @@ async function initTables() {
     const row = await db.registerIfNotExists("Anonymous", ANON_PASSWORD);
     if (row) db.setAdminRank(row.uuid, AdminRank.Conductor);
 }
+
+await initTables();
+export default db;
