@@ -112,9 +112,9 @@ export namespace db {
             desc: string,
         ) {
             database.prepare(`
-              INSERT INTO games(title, creator, description, visible)
-        VALUES(?, ?, ?, 1);
-        `).run(title, creator, desc);
+              INSERT INTO games(title, creator, description, uuid, visible)
+        VALUES(?, ?, ?, ?, 1);
+        `).run(title, creator, desc, newUUID());
 
             return (database.prepare(`
         SELECT * FROM games
