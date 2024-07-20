@@ -2,16 +2,14 @@ import bsql3 from "better-sqlite3";
 import bcrypt from "bcrypt";
 import fs from "fs";
 import * as util from "./util.js";
-import { ADMINS } from "./consts.js";
 import { v4 as newUUID } from "uuid";
 import {
     AdminRank,
     Option,
 } from "./classes.js";
 
-// for testing purposes... remove when we start
-// processing important information someday
-const DEFAULT_PASSWORD = "asdf";
+// for testing purposes...
+const ANON_PASSWORD = "asdf";
 
 util.loadEnv();
 util.checkEnvReady([
@@ -132,14 +130,6 @@ export namespace db {
 
 export default db;
 
-// Remove this once there's a way for user "Mira" to assign ranks.
-Object.entries(ADMINS).forEach(async ([name, rank]) => {
-    const row = await db.registerIfNotExists(name, DEFAULT_PASSWORD);
-    if (!row) return;
-
-    db.setAdminRank(row.uuid, rank);
-});
-
 async function initTables() {
     // database.prepare(`DROP TABLE IF EXISTS users;`).run();
     // database.prepare(`DROP TABLE IF EXISTS games;`).run();
@@ -169,4 +159,8 @@ async function initTables() {
             date        BIGINT      NOT NULL DEFAULT(unixepoch())
         );
         `).run();
+
+    // Create "Anonymous" user if not exists
+    const row = await db.registerIfNotExists("Anonymous", ANON_PASSWORD);
+    if (row) db.setAdminRank(row.uuid, AdminRank.Conductor);
 }
