@@ -24,7 +24,7 @@ util.loadEnv();
 // Local Modules
 import { AdminRank, Room } from "./classes.js";
 import { AUTH_TOKEN_BITS, MAX_FILE_UPLOAD_MB, PORT } from "./consts.js";
-import { sparksFolder, STATEFUL } from "./paths.js";
+import { SPARKS_FOLDER, STATEFUL } from "./paths.js";
 import db from "./db.js";
 import accountParser from "./middleware/accounts.js";
 import pathsSupplier from "./middleware/paths.js";
@@ -224,13 +224,11 @@ app.get("/sparks/:SparkUUID", async (req, res) => {
         post: post,
     };
 
-    res.render(`${sparksFolder}/${sparkUUID}/main`, passed);
+    res.render(`${SPARKS_FOLDER}/${sparkUUID}/main`, passed);
 });
 
 app.get("/sparks", async (_, res) => {
     const qposts = await db.gameQPosts();
-
-    console.log("Queried games: ", qposts);
 
     res.render("catalog", { qposts });
 });

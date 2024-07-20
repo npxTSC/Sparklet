@@ -7,4 +7,4 @@
 import path from "path";
 
 export const STATEFUL = path.resolve("/srv/sparklet");
-export const sparksFolder = path.resolve(STATEFUL, "sparks");
+export const SPARKS_FOLDER = path.resolve(STATEFUL, "sparks");

@@ -8,7 +8,7 @@ import { UploadedFile } from "express-fileupload";
 
 import { AdminRank, Option } from "../classes.js";
 import db from "../db.js";
-import { sparksFolder } from "../paths.js";
+import { SPARKS_FOLDER } from "../paths.js";
 
 const router = Express.Router();
 const ZIP_MIMETYPES = [
@@ -84,7 +84,7 @@ router.post("/new-spark", async (req, res) => {
                 zip.openReadStream(entry, (err, readStream) => {
                     if (err) throw err;
 
-                    const sparkRoute = path.join(sparksFolder, sparkUUID);
+                    const sparkRoute = path.join(SPARKS_FOLDER, sparkUUID);
 
                     // Create a write stream to write the file contents to disk
                     let fname = (entry.fileName).replace(/\\/g, "/");
