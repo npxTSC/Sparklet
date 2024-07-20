@@ -8,9 +8,8 @@ import bcrypt from "bcrypt";
 import path from "path";
 import http from "http";
 import { Server as ioServer } from "socket.io";
-import { rand, str } from "libdx";
+import { str } from "libdx";
 import gzipCompression from "compression";
-import fs from "fs";
 import sanitize from "sanitize-filename";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
@@ -230,6 +229,8 @@ app.get("/sparks/:SparkUUID", async (req, res) => {
 
 app.get("/sparks", async (_, res) => {
     const qposts = await db.gameQPosts();
+
+    console.log("Queried games: ", qposts);
 
     res.render("catalog", { qposts });
 });
