@@ -9,12 +9,12 @@
 
 <body>
     <%- include("parts/topbar") %>
-        <div class="container d-flex align-items-center min-vh-100">
+        <div class="container d-flex align-items-center">
             <div class="chatbox container text-center p-0 rounded-more
 			bg-white border border-black shadow-lg flex-column">
 
                 <div class="topbar mt-0 bg-lgray py-2">
-                    <h4 class="display-4">☠ Crossbones Chat ☠</h4>
+                    <h4 class="display-4">Just Chat</h4>
                 </div>
 
                 <div class="users-online row container-fluid px-0 mx-0 mt-2 flex-grow-1">
@@ -23,11 +23,11 @@
                             <div class="container mx-auto rounded-more bg-xss
 							text-white pt-4 h-100 flex-grow-1">
 
-                                <h6 class="display-6">Users</h6>
+                                <h6 class="display-6 text-black">Users</h6>
                                 <hr class="border border-secondary">
 
                                 <!-- bruh apparently css doesn't support dash as list type -->
-                                <div class="text-start font-monospace">
+                                <div class="text-start font-monospace text-black">
                                     <span id="usersList"></span><br><br>
                                     <span id="currentUser"></span><br>
                                     ^^^ (you)
@@ -70,12 +70,7 @@
                     </div>
                     <div class="modal-body">
                         <ol>
-                            <li>Don't be spammin' th' chat, ya bots!</li>
-                            <li>No mutineers!</li>
-                            <li>Share yer treasure with th' crew</li>
-                            <li>Don't post malware / IP grabbers</li>
-                            <li>The poop deck is NAHT for poopin' on!</li>
-                            <li>Don't spoil 'er secrets!</li>
+                            <li>Be kind. That's about it.</li>
                         </ol>
                     </div>
                     <div class="modal-footer">
