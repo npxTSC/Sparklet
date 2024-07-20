@@ -3,6 +3,7 @@ import TopBar from "./components/TopBar.vue";
 </script>
 
 <template>
+    <TopBar msg="Vite + Vue" />
     <div>
         <a href="https://vitejs.dev" target="_blank">
             <img src="/img/vite.svg" class="logo" alt="Vite logo" />
@@ -11,7 +12,6 @@ import TopBar from "./components/TopBar.vue";
             <img src="/img/vue.svg" class="logo vue" alt="Vue logo" />
         </a>
     </div>
-    <TopBar msg="Vite + Vue" />
 </template>
 
 <style scoped>
