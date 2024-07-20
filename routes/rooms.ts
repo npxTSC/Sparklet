@@ -9,6 +9,10 @@ router.get("/quiz", (_, res) => {
     res.render("quiz");
 });
 
+router.get("/chat", (_, res) => {
+    res.render("justchat");
+});
+
 router.get("/stratus", (_, res) => {
     res.render("stratus");
 });
@@ -19,8 +23,6 @@ router.get("/stratus", (_, res) => {
 
 router.get("/quiz/:room", (req, res) => {
     const room = findRoom(req.params.room);
-
-    // Guard clause for invalid inputs
     if (!room) return throw404(res);
 
     res.render("quizplay", { room: room });
