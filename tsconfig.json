@@ -1,23 +1,19 @@
 {
-    "compilerOptions": {
-        "module": "ES2022",
-        "moduleResolution": "nodenext",
-        "target": "ES2022",
-        "skipLibCheck": true,
-        "removeComments": true,
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "strictNullChecks": true,
-        "sourceMap": false,
-        "esModuleInterop": true,
-        "noUnusedLocals": false,
-        "allowUnreachableCode": false,
-        "strict": true,
-        "noImplicitReturns": true
-    },
-    "exclude": [
-        "node_modules",
-        "src",
-        "dist"
-    ]
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "NodeNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
 }

@@ -1,7 +1,0 @@
-# Sparklet robots.txt
-# As you can see, we do not discriminate against our
-# robot overlords. Steal my job, please! :D <3
-
-User-agent: *
-
-Sitemap: https://sparklet.org/public/sitemap.xml
