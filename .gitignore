@@ -2,6 +2,7 @@
 !_*.js
 *.js.map
 !webpack.config.js
+!vite.config.js
 node_modules
 db/
 dist/

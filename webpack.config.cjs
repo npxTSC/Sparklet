@@ -9,7 +9,7 @@ const webpack = require("webpack");
 const cd = __dirname;
 
 const tsEntries = glob.sync("src/js/*.ts").map(v => path.parse(v).name);
-//const sassEntries = glob.sync("src/css/*.scss").map(v => path.parse(v).name);
+// const sassEntries = glob.sync("src/css/*.scss").map(v => path.parse(v).name);
 
 const entries = tsEntries.reduce((entries, name) => {
     const outTS = `${cd}/src/js/${name}.ts`;
