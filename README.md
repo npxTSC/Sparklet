@@ -7,11 +7,6 @@
 This repo is a newer version of Sparklet, my failed attempt at putting together
 a decent-looking website :P
 
-I'm making this to eventually be able to host helpful learning material on here
-and help other students learn more easily in school. Best of all, the site is
-100% freeware (no greedy subscription plans), and the backend is also completely
-open-source.
-
 ## Contributions
 
 Feel free to make pull requests, but your code has to be readable and not have
