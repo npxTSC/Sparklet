@@ -5,35 +5,27 @@
 use actix_files::Files;
 use actix_web::*;
 use http::StatusCode;
+use rusqlite::Connection;
 use sailfish::TemplateOnce;
-use sqlx::migrate::MigrateDatabase;
-use sqlx::sqlite::Sqlite;
-use sqlx::{query, Pool};
 use web::Data;
 
 mod api;
 mod templates;
 use templates::*;
 
-const DB_URL: &str = "sqlite://sparklet.db";
+const DB_URL: &str = "./sparklet.db";
 
 pub struct Sparklet {
-    db: Pool<Sqlite>,
+    db: Connection,
 }
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    // create database file if not exists
-    if !Sqlite::database_exists(DB_URL).await.unwrap() {
-        Sqlite::create_database(DB_URL).await.unwrap();
-    }
-
-    let pool = Pool::connect(DB_URL).await.unwrap();
-    make_tables(&pool).await;
-
     HttpServer::new(move || {
         App::new()
-            .app_data(Data::new(Sparklet { db: pool.clone() }))
+            .app_data(Data::new(Sparklet {
+                db: Connection::open(DB_URL).unwrap(),
+            }))
             .service(web::scope("/api").configure(api::router))
             .service(index)
             .service(Files::new("/", "./dist"))
@@ -65,20 +57,20 @@ async fn custom404() -> impl Responder {
         .body(ctx.render_once().unwrap())
 }
 
-async fn make_tables(pool: &Pool<Sqlite>) {
-    query!(
-        r#"
-        CREATE TABLE IF NOT EXISTS accounts (
-            id INTEGER PRIMARY KEY,
-            uuid TEXT NOT NULL,
-            email TEXT NOT NULL,
-            password TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            rank INTEGER NOT NULL
-        )
-        "#,
-    )
-    .execute(pool)
-    .await
-    .unwrap();
+async fn make_tables(conn: Connection) {
+    // query!(
+    //     r#"
+    //     CREATE TABLE IF NOT EXISTS accounts (
+    //         id INTEGER PRIMARY KEY,
+    //         uuid TEXT NOT NULL,
+    //         email TEXT NOT NULL,
+    //         password TEXT NOT NULL,
+    //         created_at TEXT NOT NULL,
+    //         rank INTEGER NOT NULL
+    //     )
+    //     "#,
+    // )
+    // .execute(pool)
+    // .await
+    // .unwrap();
 }

@@ -14,12 +14,21 @@ async fn tea_capes() -> impl Responder {
 }
 
 async fn account(state: Data<Sparklet>, req: HttpRequest) -> impl Responder {
+    let conn = state.db;
+
     let uuid = req.headers().get("Account-UUID").unwrap().to_str().unwrap();
 
     let db = req.app_data::<Sparklet>().unwrap().db.clone();
-    let row = query!("SELECT * FROM accounts WHERE uuid = ?", uuid)
-        .fetch_one(&db)
-        .await
+    let row = conn
+        .prepare("SELECT * FROM accounts WHERE uuid = ?")
+        .unwrap()
+        .query_map([], |row| {
+            Ok(Account {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                data: row.get(2)?,
+            })
+        })
         .unwrap();
 
     // send the row as a json response
