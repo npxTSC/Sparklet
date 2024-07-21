@@ -1,8 +1,13 @@
 import express from "express";
 import ViteExpress from "vite-express";
+import fs from "fs";
 
+import db from "./db.js";
 import api from "./api.js";
 
+const APP_FOLDER = "/srv/sparklet/";
+
+fs.mkdirSync(APP_FOLDER, { recursive: true });
 const app = express();
 
 // app.use(gzipCompression());

@@ -1,7 +1,10 @@
 import { Router } from "express";
-const router = Router();
+
+import db from "./db.js";
 
 const CHICKEN_WINGS_URL = "https://sparklet.org/img/tea-cape.png";
+
+const router = Router();
 
 router.get("/tea-capes", (_, res) => {
     // TODO admin portal for changing capes
@@ -18,17 +21,20 @@ router.get("/tea-capes", (_, res) => {
 });
 
 router.get("/accounts/:id", (req, res) => {
-    res.json({
-        "uuid": "4772c57f-ca43-440c-be84-d5a97b676792",
-        "username": "Cherry_Flanger",
-        "date_joined": "1721577153000",
-        "last_login": "1721577153000",
-    })
+    const acc = db.getAccountByUUID(req.params.id);
+    res.json(acc);
+
+    // res.json({
+    //     "uuid": "4772c57f-ca43-440c-be84-d5a97b676792",
+    //     "username": "Cherry_Flanger",
+    //     "date_joined": "1721577153000",
+    //     "rank": 1,
+    // })
 });
 
 router.post("/accounts/register/", (req, res) => {
     // TODO implement account registration
-    const { username, password, } = req.body;
+    // const { username, password, } = req.body;
 });
 
 
