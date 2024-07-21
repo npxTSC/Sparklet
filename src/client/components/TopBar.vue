@@ -43,5 +43,3 @@ defineProps<{ account: any }>();
         </div>
     </nav>
 </template>
-
-<style scoped></style>

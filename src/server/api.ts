@@ -18,7 +18,17 @@ router.get("/tea-capes", (_, res) => {
 });
 
 router.get("/accounts/:id", (req, res) => {
-    //
+    res.json({
+        "uuid": "4772c57f-ca43-440c-be84-d5a97b676792",
+        "username": "Cherry_Flanger",
+        "date_joined": "1721577153000",
+        "last_login": "1721577153000",
+    })
+});
+
+router.post("/accounts/register/", (req, res) => {
+    // TODO implement account registration
+    const { username, password, } = req.body;
 });
 
 

@@ -146,32 +146,6 @@ div.qpostBox {
     }
 }
 
-ul#topbar {
-    display: block;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-image: linear-gradient(#000, $col-goldenrod);
-    border: 0 solid black;
-
-    &>* a {
-        // A tags inside the navbar
-        color: white;
-        text-align: center;
-        text-decoration: none;
-
-        &:hover {
-            background-image: linear-gradient(#0c0c0c, $col-goldenrod);
-            text-shadow: 0 0.4vh #000;
-        }
-    }
-}
-
-
 /* Desktop CSS */
 @media only screen and (min-width: ($mobile-max-width + 1px)) {
     .bigsubtitle {
@@ -185,21 +159,6 @@ ul#topbar {
     article>p {
         font-size: 4vh;
         margin-bottom: 2vh;
-    }
-
-    ul#topbar {
-        border-bottom-width: 1vh;
-
-        &>* {
-            float: left;
-
-            a {
-                display: inline-block;
-                padding: 3vh;
-                font-size: 5vh;
-                font-weight: 500;
-            }
-        }
     }
 
     div.backbar {
@@ -225,20 +184,6 @@ ul#topbar {
     article>p {
         font-size: 4vw;
         margin-bottom: 2vw;
-    }
-
-    ul#topbar {
-        // flexbox design for mobile
-        display: inline-flex;
-        justify-content: space-between;
-        border-bottom-width: 1vw;
-
-        &>* a {
-            display: block;
-            padding: 2.3vw;
-            font-size: 4.5vw;
-            font-weight: 600;
-        }
     }
 
     div.backbar {
