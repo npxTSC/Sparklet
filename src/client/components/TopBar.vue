@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
-defineProps<{ msg: string }>();
-
-const count = ref(0);
+// import { ref } from "vue";
+defineProps<{ account: any }>();
 </script>
 
 <template>
@@ -33,15 +30,14 @@ const count = ref(0);
                     <li class="nav-item"><a class="nav-link active text-black" href="/about">About</a></li>
                 </ul>
 
-                <!--              <a href="<%= account?.name ? -->
-                <!-- `/conductors/${account.name.toLowerCase()}` : " /login" %>"> -->
-                <!--                  <img <%- include("pfp-src", {pfpSrc: account?.pfpSrc}); %> -->
-                <!--                  width="50" height="50" class="profile-picture me-3" alt="PFP"> -->
-                <!--              </a> -->
+                <a :href="account?.name ? `/conductors/${account.name.toLowerCase()}` : `/login`">
+                    <img :src="`/conductors/${account?.name.toLowerCase() ?? 'anonymous'}/pfp`" width="50" height="50"
+                        class="profile-picture me-3" alt="PFP">
+                </a>
 
                 <a href="/login" class="btn btn-black text-primary
 			active float-right ml-5">
-                    <!-- <%= account?.name ?? "[Log In]" %> -->
+                    {{ account?.name ?? "[Log In]" }}
                 </a>
             </div>
         </div>
