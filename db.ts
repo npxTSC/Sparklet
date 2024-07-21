@@ -1,7 +1,7 @@
 import bsql3 from "better-sqlite3";
 import bcrypt from "bcrypt";
 import fs from "fs";
-import * as util from "./util.js";
+// import * as util from "./util.js";
 import { v4 as newUUID } from "uuid";
 import {
     AdminRank,
@@ -11,11 +11,11 @@ import {
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
 
-util.loadEnv();
-util.checkEnvReady([
-    "DB_USER",
-    "DB_PASS",
-]);
+// util.loadEnv();
+// util.checkEnvReady([
+//     "DB_USER",
+//     "DB_PASS",
+// ]);
 
 fs.mkdirSync("/srv/sparklet/", { recursive: true });
 const database = new bsql3("/srv/sparklet/sparklet.db");
