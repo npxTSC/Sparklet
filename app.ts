@@ -97,6 +97,10 @@ app.get("/about", (_, res) => {
     res.render("about");
 });
 
+app.get("/portfolio", (_, res) => {
+    res.render("portfolio");
+});
+
 app.use("/rooms", routes.rooms);
 app.use("/.well-known", routes.wk);
 app.use("/api", routes.api);

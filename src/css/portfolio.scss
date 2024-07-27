@@ -1,0 +1,17 @@
+@import "./main.scss";
+
+body {
+    background: pink;
+}
+
+.white-on-pink {
+    @include kaiseiTokumin;
+    color: white;
+
+    /* text-shadow: 0.8vw 0.8vw 0.8vw #000; */
+    -webkit-text-stroke: 0.05vw black;
+}
+
+.project-card {
+    box-shadow: 0 0 1vw black;
+}
