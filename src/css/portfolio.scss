@@ -14,4 +14,18 @@ body {
 
 .project-card {
     box-shadow: 0 0 1vw black;
+    min-height: 100%;
+
+    &>.card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    & a.btn {
+        margin-top: auto;
+    }
+}
+
+.project-img {
+    object-fit: cover;
 }
