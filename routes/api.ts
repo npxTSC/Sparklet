@@ -6,7 +6,7 @@ import { AdminRank } from "../classes.js";
 import { bioFilter } from "../feutils.js";
 
 const router = Express.Router();
-const CHICKEN_WINGS_URL = "https://sparklet.org/public/tea-cape.png";
+const CHICKEN_WINGS_URL = "https://sparklet.org/public/img/tea-cape.png";
 
 router.get("/tea-capes", (_, res) => {
     // TODO admin portal for changing capes
