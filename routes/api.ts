@@ -41,4 +41,12 @@ router.post("/profile-mod/bio", (req, res) => {
     return res.status(200).end();
 });
 
+router.get("/profile", async (req, res) => {
+    const { uuid } = req.query;
+    if (!uuid) return res.status(400).end();
+
+    const user = await db.getUserByUUID(uuid as string);
+    return res.json(user);
+});
+
 export default router;

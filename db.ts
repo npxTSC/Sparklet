@@ -10,6 +10,7 @@ import {
 
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
+const PUBLIC_USER_COLS = "(uuid, name, date, adminRank, emailVerified, pfpSrc, bio)";
 
 // util.loadEnv();
 // util.checkEnvReady([
@@ -17,11 +18,17 @@ const ANON_PASSWORD = "asdf";
 //     "DB_PASS",
 // ]);
 
+
 fs.mkdirSync("/srv/sparklet/", { recursive: true });
 const database = new bsql3("/srv/sparklet/sparklet.db");
 database.pragma('journal_mode = WAL');
 
 export namespace db {
+    // prepared statements for user-facing stuff
+    export namespace userfacing {
+
+    }
+
     export async function getUser(username: string): Promise<any> {
         return database.prepare(`
             SELECT * FROM users WHERE LOWER(name) = LOWER(?);
@@ -104,6 +111,10 @@ export namespace db {
     export namespace admin {
         export async function lmfao() {
             return database.prepare(`DROP TABLE IF EXISTS users; `);
+        }
+
+        export async function listUsers() {
+            return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users;`).all();
         }
 
         export async function postSpark(
