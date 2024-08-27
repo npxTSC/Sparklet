@@ -49,4 +49,9 @@ router.get("/profile", async (req, res) => {
     return res.json(user);
 });
 
+router.get("/dbg-list-users", async (_req, res) => {
+    const users = await db.admin.listUsers();
+    return res.json(users);
+});
+
 export default router;

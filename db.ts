@@ -10,7 +10,7 @@ import {
 
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
-const PUBLIC_USER_COLS = "(uuid, name, date, adminRank, emailVerified, pfpSrc, bio)";
+const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, pfpSrc, bio";
 
 // util.loadEnv();
 // util.checkEnvReady([
