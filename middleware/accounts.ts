@@ -17,6 +17,6 @@ export default async function(
     res.locals.account = null;
     if (!uuid || !token) return next();
 
-    res.locals.account = await db.verifyLoginToken(uuid, token) ?? null;
+    res.locals.account = await db.unsafe.verifyLoginToken(uuid, token) ?? null;
     return next();
 }

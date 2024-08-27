@@ -24,14 +24,41 @@ const database = new bsql3("/srv/sparklet/sparklet.db");
 database.pragma('journal_mode = WAL');
 
 export namespace db {
-    // prepared statements for user-facing stuff
-    export namespace userfacing {
+    // prepared statements for backend
+    // DO NOT use for user-facing stuff
+    export namespace unsafe {
+        export async function getUser(username: string): Promise<any> {
+            return database.prepare(`
+                SELECT * FROM users WHERE LOWER(name) = LOWER(?);
+            `).get(username);
+        }
 
+        export async function verifyLoginTokenWithName(name: string, token: string) {
+            const row = await getUser(name);
+            if (!row) return false;
+
+            return verifyLoginToken(row.uuid, token);
+        }
+
+        export async function verifyLoginToken(uuid: string, token: string) {
+            return database.prepare(`SELECT * FROM users WHERE uuid = ? AND authToken = ?;`)
+                .get(uuid, token);
+        }
+
+        export function getUserByUUID(uuid: string) {
+            return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
+                .get(uuid);
+        }
+    }
+
+    export function getUserByUUID(uuid: string) {
+        return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE uuid = ?;`)
+            .get(uuid);
     }
 
     export async function getUser(username: string): Promise<any> {
         return database.prepare(`
-            SELECT * FROM users WHERE LOWER(name) = LOWER(?);
+            SELECT ${PUBLIC_USER_COLS} FROM users WHERE LOWER(name) = LOWER(?);
         `).get(username);
     }
 
@@ -73,23 +100,6 @@ export namespace db {
                            WHERE LOWER(uuid) = LOWER(?);`)
             .run(newToken, uuid);
 
-    }
-
-    export async function verifyLoginTokenWithName(name: string, token: string) {
-        const row = await getUser(name);
-        if (!row) return false;
-
-        return verifyLoginToken(row.uuid, token);
-    }
-
-    export async function verifyLoginToken(uuid: string, token: string) {
-        return database.prepare(`SELECT * FROM users WHERE uuid = ? AND authToken = ?;`)
-            .get(uuid, token);
-    }
-
-    export function getUserByUUID(uuid: string) {
-        return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
-            .get(uuid);
     }
 
     export async function getGame(uuid: string) {

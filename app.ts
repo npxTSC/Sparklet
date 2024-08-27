@@ -135,7 +135,7 @@ app.post("/login", async (req, res) => {
     if (user.length > 30) return fail("l-tooLong");
     if (pass.length > 100) return fail("l-passTooLong");
 
-    let row = await db.getUser(user);
+    let row = await db.unsafe.getUser(user);
 
     switch (action) {
         case "Register":
@@ -147,7 +147,7 @@ app.post("/login", async (req, res) => {
             console.log(`New account created: ${user}`);
 
             // Reassign row to new user object
-            row = await db.getUser(user);
+            row = await db.unsafe.getUser(user);
 
         // Fall-through to Login, because let's be real,
         // it's fucking annoying when you need to log in
@@ -205,7 +205,6 @@ app.get("/conductors/:profile", async (req, res) => {
     if (str.containsSpecials(profile)) return throw404(res);
 
     let row = await db.getUser(profile);
-
     if (!row) return throw404(res);
 
     return res.render("profile", {
