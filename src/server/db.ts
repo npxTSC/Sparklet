@@ -12,7 +12,8 @@ const enum Ranks {
     ADMIN = 2,
 }
 
-const database = new bsql3("/srv/sparklet/sparklet.db");
+// const database = new bsql3("/srv/sparklet/sparklet.db");
+const database = new bsql3("/home/refcherry/sparklet.db");
 database.pragma('journal_mode = WAL');
 
 namespace db {
