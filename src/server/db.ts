@@ -5,6 +5,7 @@ import { v4 as newUUID } from "uuid";
 
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
+const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, pfpSrc, bio";
 
 const enum Ranks {
     USER = 0,
@@ -12,64 +13,166 @@ const enum Ranks {
     ADMIN = 2,
 }
 
-// const database = new bsql3("/srv/sparklet/sparklet.db");
 const database = new bsql3("/home/refcherry/sparklet.db");
 database.pragma('journal_mode = WAL');
 
-namespace db {
-    export function register(username: string, password: string, rank?: number = 0): string {
-        const uuid = newUUID();
-        const passHash = bcrypt.hashSync(password, 10);
+export namespace db {
+    // prepared statements for backend
+    // DO NOT use for user-facing stuff
+    export namespace unsafe {
+        export async function getUser(username: string): Promise<any> {
+            return database.prepare(`
+                SELECT * FROM users WHERE LOWER(name) = LOWER(?);
+            `).get(username);
+        }
 
-        database.prepare(`
-            INSERT INTO users(uuid, username, passHash)
-            VALUES(?, ?, ?);
-        `).run(uuid, username, passHash);
+        export async function verifyLoginTokenWithName(name: string, token: string) {
+            const row = await getUser(name);
+            if (!row) return false;
 
-        return uuid;
+            return verifyLoginToken(row.uuid, token);
+        }
+
+        export async function verifyLoginToken(uuid: string, token: string) {
+            return database.prepare(`SELECT * FROM users WHERE uuid = ? AND authToken = ?;`)
+                .get(uuid, token);
+        }
+
+        export function getUserByUUID(uuid: string) {
+            return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
+                .get(uuid);
+        }
     }
 
-    export function getAccountByUUID(uuid: string): any {
+    export function getUserByUUID(uuid: string) {
+        return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE uuid = ?;`)
+            .get(uuid);
+    }
+
+    export async function getUser(username: string): Promise<any> {
         return database.prepare(`
-            SELECT uuid, username, rank, dateJoined FROM users WHERE uuid = ?;
-        `).get(uuid);
+            SELECT ${PUBLIC_USER_COLS} FROM users WHERE LOWER(name) = LOWER(?);
+        `).get(username);
+    }
+
+    export async function register(user: string, pass: string) {
+        // Get hash of password
+        const hashed = await bcrypt.hash(pass, 10);
+
+        // Put in DB
+        database.prepare(`INSERT INTO users(name, passHash, uuid) VALUES(?, ?, ?);`)
+            .run(user, hashed, newUUID());
+
+        // for debugging purposes, anyone with name Cherry is Operator
+        database.prepare(`UPDATE users SET adminRank = 4
+                          WHERE LOWER(name) = 'cherry';`)
+
+        return getUser(user)!;
+    }
+
+    export async function registerIfNotExists(user: string, pass: string) {
+        if (await getUser(user)) return null;
+        return await register(user, pass);
+    }
+
+    export async function setAdminRank(uuid: string, rank: number) {
+        return database.prepare(`UPDATE users SET adminRank = ?
+        WHERE LOWER(uuid) = LOWER(?);`).run(rank, uuid);
+    }
+
+    export function updateBio(uuid: string, bio: Option<string>) {
+        return database.prepare(`UPDATE users SET bio = ? WHERE LOWER(uuid) = LOWER(?);`)
+            .run(bio, uuid);
+    }
+
+    export async function editLoginToken(
+        uuid: string,
+        newToken: Option<string>,
+    ) {
+        return database.prepare(`UPDATE users SET authToken = ?
+                           WHERE LOWER(uuid) = LOWER(?);`)
+            .run(newToken, uuid);
+
+    }
+
+    export async function getGame(uuid: string) {
+        return database.prepare(`SELECT * FROM games WHERE uuid = (?) AND visible = 1;`)
+            .get(uuid);
+    }
+
+    export async function gameQPosts(): Promise<any[]> {
+        const rows = database.prepare(`SELECT * FROM games WHERE visible = 1
+                                ORDER BY date DESC LIMIT 25;`).all();
+
+        return rows.map((v: any) => {
+            const creatorRow: any = getUserByUUID(v.creator)!;
+            v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name} `;
+            return v;
+        });
+    }
+
+    export namespace admin {
+        export async function lmfao() {
+            return database.prepare(`DROP TABLE IF EXISTS users;`);
+        }
+
+        export async function listUsers() {
+            return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users;`).all();
+        }
+
+        export async function postSpark(
+            title: string,
+            creator: string,
+            desc: string,
+        ) {
+            database.prepare(`
+              INSERT INTO games(title, creator, description, uuid, visible)
+        VALUES(?, ?, ?, ?, 1);
+        `).run(title, creator, desc, newUUID());
+
+            return (database.prepare(`
+        SELECT * FROM games
+              WHERE LOWER(creator) = LOWER(?)
+              ORDER BY date DESC
+              LIMIT 1;
+        `).get(creator))!;
+        }
     }
 }
 
-
 async function initTables() {
-    database.prepare(`DROP TABLE IF EXISTS users;`).run();
-    database.prepare(`DROP TABLE IF EXISTS games;`).run();
+    // database.prepare(`DROP TABLE IF EXISTS users;`).run();
+    // database.prepare(`DROP TABLE IF EXISTS games;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
             uuid            TEXT        PRIMARY KEY,
-            username        TEXT        NOT NULL,
-            rank            INT         NOT NULL DEFAULT 0,
-            dateJoined      BIGINT      NOT NULL DEFAULT(unixepoch()),
-
-            bio             TEXT,
-
+            name            TEXT        NOT NULL,
             passHash        TEXT        NOT NULL,
+            date            BIGINT      NOT NULL DEFAULT(unixepoch()),
+            adminRank       INT         NOT NULL DEFAULT 0,
             emailVerified   BOOL        NOT NULL DEFAULT 0,
             emailVToken     TEXT,
-            authToken       TEXT
+            authToken       TEXT,
+            pfpSrc          TEXT,
+            bio             TEXT
         );
         `).run();
 
-    // database.prepare(`
-    //   CREATE TABLE IF NOT EXISTS games(
-    //         uuid        TEXT        PRIMARY KEY,
-    //         title       TEXT        NOT NULL,
-    //         creator     TEXT        NOT NULL DEFAULT 'Anonymous',
-    //         description TEXT        NOT NULL DEFAULT 'No description given... :(',
-    //         visible     BOOL        NOT NULL DEFAULT 1,
-    //         date        BIGINT      NOT NULL DEFAULT(unixepoch())
-    //     );
-    //     `).run();
+    database.prepare(`
+      CREATE TABLE IF NOT EXISTS games(
+            uuid        TEXT        PRIMARY KEY,
+            title       TEXT        NOT NULL,
+            creator     TEXT        NOT NULL DEFAULT 'Anonymous',
+            description TEXT        NOT NULL DEFAULT 'No description given... :(',
+            visible     BOOL        NOT NULL DEFAULT 1,
+            date        BIGINT      NOT NULL DEFAULT(unixepoch())
+        );
+        `).run();
 
     // Create "Anonymous" user if not exists
-    db.register("Anonymous", ANON_PASSWORD, Ranks.USER);
+    const row = await db.registerIfNotExists("Anonymous", ANON_PASSWORD);
+    if (row) db.setAdminRank(row.uuid, Ranks.USER);
 }
 
 await initTables();
