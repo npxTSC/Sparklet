@@ -27,6 +27,7 @@ defineProps<{ account: any }>();
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link active text-black" href="/sparks/">Sparks</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/portfolio/">Portfolio</a></li>
                     <li class="nav-item"><a class="nav-link active text-black" href="/about/">About</a></li>
                 </ul>
 
