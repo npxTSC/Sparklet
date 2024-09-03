@@ -62,7 +62,7 @@ accounts.get("/by-uuid", async (req, res) => {
 
 accounts.get("/session-self", async (req, res) => {
     const { session } = req.cookies;
-    if (!session) return res.status(401).end();
+    if (!session) return res.json({ account: null });
 
     const user = await db.getUserBySessionToken(session);
     if (!user) return res.status(401).end();
