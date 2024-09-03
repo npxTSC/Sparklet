@@ -4,5 +4,11 @@
         "id": "speedrun-wordle",
         "creatorName": "Cherry",
         "description": "Solve as many 6-letter wordles as you can in the given time limit!"
+    },
+    {
+        "title": "Sparkwave",
+        "id": "sparkwave",
+        "creatorName": "Cherry",
+        "description": "Little audio workstation. Doesn't really do anything useful, but it makes sound, I guess."
     }
 ]
