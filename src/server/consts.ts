@@ -3,7 +3,7 @@ import path from "path";
 
 // for testing purposes...
 export const ANON_PASSWORD = "asdf";
-export const AUTH_TOKEN_LEN = 512;
+export const AUTH_TOKEN_LEN = 128;
 
 export const HOME_DIR = homedir();
 export const APP_FOLDER = path.join(HOME_DIR, "sparklet/");
