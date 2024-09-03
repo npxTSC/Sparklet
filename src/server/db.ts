@@ -4,10 +4,9 @@ import fs from "fs";
 import { v4 as newUUID } from "uuid";
 import crypto from "crypto";
 
-// for testing purposes...
-const ANON_PASSWORD = "asdf";
+import { ANON_PASSWORD, AUTH_TOKEN_LEN, DB_PATH } from "./consts.js";
+
 const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, bio";
-const AUTH_TOKEN_LEN = 512;
 
 const enum Ranks {
     USER = 0,
@@ -15,7 +14,7 @@ const enum Ranks {
     ADMIN = 2,
 }
 
-const database = new bsql3("/home/refcherry/sparklet.db");
+const database = new bsql3(DB_PATH);
 database.pragma('journal_mode = WAL');
 
 export namespace db {

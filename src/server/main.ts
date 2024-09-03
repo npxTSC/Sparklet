@@ -5,8 +5,7 @@ import fs from "fs";
 
 import db from "./db.js";
 import api from "./api.js";
-
-const APP_FOLDER = "/home/refcherry/sparklet/";
+import { APP_FOLDER } from "./consts.js";
 
 fs.mkdirSync(APP_FOLDER, { recursive: true });
 const app = express();
