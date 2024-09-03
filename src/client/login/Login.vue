@@ -21,7 +21,7 @@ fetch("/sparks.json")
     </div>
 
     <div class="bb1 container">
-        <form action="/api/login" method="post" class="mb-5">
+        <form action="/api/accounts/login" method="post" class="mb-6">
             <div class="form-group mx-auto mb-4">
                 <input class="form-control" name="username" id="usernameBox" placeholder="Username" type="text">
             </div>
@@ -30,10 +30,16 @@ fetch("/sparks.json")
                 <input class="form-control" name="password" placeholder="Password" type="password">
             </div>
 
-            <input type="submit" name="loginAction" value="Log In" class="btn btn-primary border-black mx-auto">
-            <input type="submit" name="loginAction" value="Register" class="btn btn-primary border-black mx-auto">
-            <input v-if="account" type="submit" name="loginAction" value="Log Out"
+            <button type="submit" name="loginAction" value="log in" class="btn btn-primary border-black mx-auto">
+                Log In
+            </button>
+            <button type="submit" name="loginAction" value="register" class="btn btn-primary border-black mx-auto">
+                Register
+            </button>
+            <button v-if="account" type="submit" name="loginAction" value="log out"
                 class="btn btn-primary border-black mx-auto">
+                Log Out
+            </button>
 
         </form>
 

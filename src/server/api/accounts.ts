@@ -2,7 +2,6 @@ import { Router } from "express";
 export const accounts = Router();
 
 accounts.post("/login", (req, res) => {
-    // TODO implement account registration
     const { username, password, loginAction } = req.body;
     if (!username || !password) return res.status(400).end();
 });
