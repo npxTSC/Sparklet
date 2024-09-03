@@ -1,10 +1,10 @@
 import { reactive } from 'vue'
 
 export async function getAccount() {
-    try {
-        const response = await fetch(`/api/accounts/session-self`);
-        return await response.json();
-    } catch {
+    const res = await fetch(`/api/accounts/session-self`);
+    if (res.ok) {
+        return await res.json()
+    } else {
         return null;
     }
 
