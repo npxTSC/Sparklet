@@ -5,7 +5,7 @@ import { v4 as newUUID } from "uuid";
 
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
-const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, pfpSrc, bio";
+const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, bio";
 
 const enum Ranks {
     USER = 0,
@@ -107,7 +107,7 @@ export namespace db {
 }
 
 async function initTables() {
-    // database.prepare(`DROP TABLE IF EXISTS users;`).run();
+    database.prepare(`DROP TABLE IF EXISTS users;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
@@ -119,7 +119,6 @@ async function initTables() {
             emailVerified   BOOL        NOT NULL DEFAULT 0,
             emailVToken     TEXT,
             authToken       TEXT,
-            pfpSrc          TEXT,
             bio             TEXT
         );
         `).run();

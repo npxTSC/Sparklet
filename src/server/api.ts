@@ -36,6 +36,13 @@ router.post("/accounts/register/", (req, res) => {
     // const { username, password, } = req.body;
 });
 
+router.get("/profile/pfp", async (req, res) => {
+    const { _uuid } = req.query;
+
+    return res.redirect("/img/pfps/deft.png");
+});
+
+
 router.get("/profile", async (req, res) => {
     const { uuid } = req.query;
     if (!uuid) return res.status(400).end();

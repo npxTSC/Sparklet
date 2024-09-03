@@ -5,7 +5,6 @@ export async function getAccount() {
         date: 1630876800000,
         adminRank: 2,
         emailVerified: true,
-        pfpSrc: "https://example.com/pfp.jpg",
         bio: "deez nuts",
     }
 }
