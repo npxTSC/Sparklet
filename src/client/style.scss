@@ -217,21 +217,6 @@ div.qpostBox {
     }
 }
 
-.profile-picture {
-    border-radius: 50%;
-    border-width: 0.2rem;
-    border-color: black;
-    border-style: solid;
-
-    &-big {
-        @extend .profile-picture;
-        border-width: 0.4rem;
-        //border-color: map-get($theme-colors, "primary");
-        box-shadow: 0 0 2rem -0.5rem map-get($theme-colors, "primary");
-        animation: bigPfpGlow 3s ease-in infinite alternate;
-    }
-}
-
 .profile-bio {
     font-size: 1.6em;
 }
@@ -273,11 +258,5 @@ div.qpostBox {
     @include selected {
         transition: background-color 0.1s linear;
         background-color: #3bff3e;
-    }
-}
-
-@keyframes bigPfpGlow {
-    to {
-        box-shadow: 0 0 5rem 2rem map-get($theme-colors, "primary");
     }
 }

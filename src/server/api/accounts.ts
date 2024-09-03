@@ -53,6 +53,11 @@ accounts.post("/login", async (req, res) => {
 
 accounts.get("/by-uuid", async (req, res) => {
     const { uuid } = req.query;
+    if (!uuid) return res.status(400).end();
+
+    return res.json({
+        account: await db.getUserByUUID(uuid),
+    });
 });
 
 accounts.get("/session-self", async (req, res) => {

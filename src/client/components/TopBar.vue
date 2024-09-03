@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ProfilePic from "./ProfilePic.vue";
+
 import { ref } from "vue";
 import accountStore from "./accounts";
 
@@ -33,10 +35,8 @@ const account = accountStore.account;
                     <li class="nav-item"><a class="nav-link active text-black" href="/about/">About</a></li>
                 </ul>
 
-                <a :href="account?.name ? `/conductors/${account.name.toLowerCase()}` : `/login/`">
-                    <img v-if="account" :src="`/api/profile/pfp?account=${account?.name.toLowerCase() ?? 'anonymous'}`"
-                        width="50" height="50" class="profile-picture me-3" alt="PFP">
-                </a>
+
+                <ProfilePic v-if="account" :diameter="50" />
 
                 <a href="/login/" class="btn btn-black text-primary
 			active float-right ml-5">
