@@ -35,8 +35,6 @@ const account = accountStore.account;
 
         </form>
 
-        <p class="text-white">{{ JSON.stringify(account) }}</p>
-
         <div class="container bg-primary rounded pt-1 invisible" ref="errorCodeBox">
             <p class="display-6 text-black" ref="errorCodeText">//</p>
         </div>

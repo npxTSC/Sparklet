@@ -2,10 +2,12 @@ import bsql3 from "better-sqlite3";
 import bcrypt from "bcrypt";
 import fs from "fs";
 import { v4 as newUUID } from "uuid";
+import crypto from "crypto";
 
 // for testing purposes...
 const ANON_PASSWORD = "asdf";
 const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, bio";
+const AUTH_TOKEN_LEN = 512;
 
 const enum Ranks {
     USER = 0,
@@ -20,25 +22,13 @@ export namespace db {
     // prepared statements for backend
     // DO NOT use for user-facing stuff
     export namespace unsafe {
-        export async function getUser(username: string): Promise<any> {
+        export async function getUserUnsafe(username: string): Promise<any> {
             return database.prepare(`
                 SELECT * FROM users WHERE LOWER(name) = LOWER(?);
             `).get(username);
         }
 
-        export async function verifyLoginTokenWithName(name: string, token: string) {
-            const row = await getUser(name);
-            if (!row) return false;
-
-            return verifyLoginToken(row.uuid, token);
-        }
-
-        export async function verifyLoginToken(uuid: string, token: string) {
-            return database.prepare(`SELECT * FROM users WHERE uuid = ? AND authToken = ?;`)
-                .get(uuid, token);
-        }
-
-        export function getUserByUUID(uuid: string) {
+        export function getUserByUUIDUnsafe(uuid: string) {
             return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
                 .get(uuid);
         }
@@ -47,6 +37,10 @@ export namespace db {
             return database.prepare(`SELECT * FROM users;`).all();
         }
     }
+
+    //
+    // Regular functions for user-facing stuff
+    //
 
     export function getUserByUUID(uuid: string) {
         return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE uuid = ?;`)
@@ -97,13 +91,21 @@ export namespace db {
             .run(bio, uuid);
     }
 
-    export async function editLoginToken(
-        uuid: string,
-        newToken: Option<string>,
-    ) {
-        return database.prepare(`UPDATE users SET authToken = ?
+    /// Returns a token if successful, null otherwise
+    export async function userLogin(name: string, pass: string) {
+        const user = await unsafe.getUserUnsafe(name);
+
+        const correctPassword = await bcrypt.compare(pass, user.passHash);
+        if (!correctPassword) return null;
+
+
+        const newToken = crypto.randomBytes(AUTH_TOKEN_LEN).toString("hex");
+
+        await database.prepare(`UPDATE users SET session = ?
                            WHERE LOWER(uuid) = LOWER(?);`)
-            .run(newToken, uuid);
+            .run(newToken, user.uuid);
+
+        return newToken;
 
     }
 
@@ -119,7 +121,7 @@ export namespace db {
 }
 
 async function initTables() {
-    database.prepare(`DROP TABLE IF EXISTS users;`).run();
+    // database.prepare(`DROP TABLE IF EXISTS users;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(

@@ -7,7 +7,7 @@ export const accounts = Router();
 
 accounts.post("/login", async (req, res) => {
     const { username, password, loginAction } = req.body;
-    if (!username || !password) return res.status(400).end();
+    if (loginAction !== "log out" && (!username || !password)) return res.status(400).end();
 
     console.log(`${username} is attempting to ${loginAction}.`);
 
@@ -26,10 +26,19 @@ accounts.post("/login", async (req, res) => {
                 error: "User not found."
             });
 
+            const token = await db.userLogin(username, password);
+
+            res.cookie('session', token, { maxAge: 604800, httpOnly: true });
+
+            res.json({
+                account: user,
+            });
+
             break;
 
         case "log out":
             res.clearCookie("session");
+            res.json({});
             break;
 
         default:
@@ -38,6 +47,7 @@ accounts.post("/login", async (req, res) => {
             });
     }
 
+    console.log(`\\- ${username} was successful!`);
     res.status(200).end();
 });
 
@@ -50,5 +60,10 @@ accounts.get("/session-self", async (req, res) => {
     if (!session) return res.status(401).end();
 
     const user = await db.getUserBySessionToken(session);
+    if (!user) return res.status(401).end();
+
+    return res.json({
+        account: user,
+    });
 });
 
