@@ -1,12 +1,14 @@
 import { Router } from "express";
+import { accounts } from "./api/accounts.js";
 
 import db from "./db.js";
 
 const CHICKEN_WINGS_URL = "https://sparklet.org/img/tea-cape.png";
 
-const router = Router();
+const api = Router();
+api.use("/accounts", accounts);
 
-router.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
+api.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
     res.json({
         "Cherry_Flanger": CHICKEN_WINGS_URL,
         "4772c57f-ca43-440c-be84-d5a97b676792": CHICKEN_WINGS_URL,
@@ -19,22 +21,13 @@ router.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
     });
 });
 
-router.post("/accounts/register", (req, res) => {
-    // TODO implement account registration
-    // const { username, password, } = req.body;
-});
-
-router.get("/accounts/by-uuid", async (req, res) => {
-    const { uuid } = req.query;
-});
-
-router.get("/profile/pfp", async (req, res) => {
+api.get("/profile/pfp", async (req, res) => {
     const { _uuid } = req.query;
 
     return res.redirect("/pfps/deft.png");
 });
 
-router.get("/profile", async (req, res) => {
+api.get("/profile", async (req, res) => {
     const { uuid } = req.query;
     if (!uuid) return res.status(400).end();
 
@@ -42,9 +35,9 @@ router.get("/profile", async (req, res) => {
     return res.json(user);
 });
 
-router.get("/dbg-list-users", async (_req, res) => {
-    const users = await db.admin.listUsers();
+api.get("/dbg-list-users", async (_req, res) => {
+    const users = await db.unsafe.listUsers();
     return res.json(users);
 });
 
-export default router;
+export default api;

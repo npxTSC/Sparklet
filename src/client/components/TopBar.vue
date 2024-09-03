@@ -34,7 +34,8 @@ const account = accountStore.account;
                 </ul>
 
                 <a :href="account?.name ? `/conductors/${account.name.toLowerCase()}` : `/login/`">
-                    <img :src="`/api/profile/pfp?account=${account?.name.toLowerCase() ?? 'anonymous'}`" width="50"
+                    <img v-if="console.log(account)"
+                        :src="`/api/profile/pfp?account=${account?.name.toLowerCase() ?? 'anonymous'}`" width="50"
                         height="50" class="profile-picture me-3" alt="PFP">
                 </a>
 

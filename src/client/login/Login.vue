@@ -21,7 +21,7 @@ fetch("/sparks.json")
     </div>
 
     <div class="bb1 container">
-        <form action="/login" method="post" class="mb-5">
+        <form action="/api/login" method="post" class="mb-5">
             <div class="form-group mx-auto mb-4">
                 <input class="form-control" name="username" id="usernameBox" placeholder="Username" type="text">
             </div>

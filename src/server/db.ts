@@ -42,11 +42,23 @@ export namespace db {
             return database.prepare(`SELECT * FROM users WHERE uuid = ?;`)
                 .get(uuid);
         }
+
+        export function listUsers() {
+            return database.prepare(`SELECT * FROM users;`).all();
+        }
     }
 
     export function getUserByUUID(uuid: string) {
         return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE uuid = ?;`)
             .get(uuid);
+    }
+
+    // TODO when we have more private data that should only be seen by the owner
+    // of an account OR admins, we should have a separate function for this that
+    // returns more columns.
+    export function getUserBySessionToken(token: string) {
+        return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users WHERE session = ?;`)
+            .get(token);
     }
 
     export async function getUser(username: string): Promise<any> {
@@ -118,7 +130,7 @@ async function initTables() {
             adminRank       INT         NOT NULL DEFAULT 0,
             emailVerified   BOOL        NOT NULL DEFAULT 0,
             emailVToken     TEXT,
-            authToken       TEXT,
+            session         TEXT,
             bio             TEXT
         );
         `).run();

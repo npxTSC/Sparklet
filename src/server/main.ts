@@ -1,5 +1,6 @@
 import express from "express";
 import ViteExpress from "vite-express";
+import cookieParser from "cookie-parser";
 import fs from "fs";
 
 import db from "./db.js";
@@ -16,6 +17,7 @@ const app = express();
 // }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // app.use("/.well-known", routes.wk);
 app.use("/api", api);
