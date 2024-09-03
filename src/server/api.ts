@@ -6,8 +6,7 @@ const CHICKEN_WINGS_URL = "https://sparklet.org/img/tea-cape.png";
 
 const router = Router();
 
-router.get("/tea-capes", (_, res) => {
-    // TODO admin portal for changing capes
+router.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
     res.json({
         "Cherry_Flanger": CHICKEN_WINGS_URL,
         "4772c57f-ca43-440c-be84-d5a97b676792": CHICKEN_WINGS_URL,
@@ -35,6 +34,19 @@ router.get("/accounts/:id", (req, res) => {
 router.post("/accounts/register/", (req, res) => {
     // TODO implement account registration
     // const { username, password, } = req.body;
+});
+
+router.get("/profile", async (req, res) => {
+    const { uuid } = req.query;
+    if (!uuid) return res.status(400).end();
+
+    const user = await db.getUserByUUID(uuid as string);
+    return res.json(user);
+});
+
+router.get("/dbg-list-users", async (_req, res) => {
+    const users = await db.admin.listUsers();
+    return res.json(users);
 });
 
 
