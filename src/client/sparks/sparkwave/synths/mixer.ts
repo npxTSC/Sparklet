@@ -12,14 +12,7 @@ import {
     SYNTH_TITLEBAR_HEIGHT,
     pointWithin
 } from "../util";
-import {
-    Synth, Effect, Vec2_i,
-    MixerTrack
-} from "../classes";
-import {
-    Rectangle, Text,
-    UIComponent
-} from "../dtools";
+import { Synth, Effect, Vec2_i, MixerTrack, Rectangle, Text, UIComponent } from "../classes";
 import { dman } from "libdx";
 
 const OUTSET_W = 4;

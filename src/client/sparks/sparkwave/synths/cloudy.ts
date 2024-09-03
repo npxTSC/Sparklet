@@ -6,14 +6,8 @@
 
 "use strict";
 
-import { Synth, theme, Vec2_i } from "../classes";
-import {
-    noteHz,
-    SYNTH_BORDERS,
-    SYNTH_TITLEBAR_HEIGHT,
-    pointWithin,
-} from "../util";
-import { Rectangle, Text, PianoWidget } from "../dtools";
+import { Rectangle, Text, PianoWidget, Synth, theme, Vec2_i } from "../classes";
+import { noteHz, SYNTH_BORDERS, SYNTH_TITLEBAR_HEIGHT, pointWithin, } from "../util";
 import { dman } from "libdx";
 
 export default class Cloudy extends Synth {

@@ -12,11 +12,7 @@ import {
     SYNTH_TITLEBAR_HEIGHT,
     pointWithin
 } from "../util";
-import { Synth, Sample, Vec2_i } from "../classes";
-import {
-    Rectangle, Text,
-    UIComponent, PianoWidget
-} from "../dtools";
+import { Synth, Sample, Vec2_i, Rectangle, Text, UIComponent, PianoWidget } from "../classes";
 import { dman } from "libdx";
 
 export default class RePlay extends Synth {

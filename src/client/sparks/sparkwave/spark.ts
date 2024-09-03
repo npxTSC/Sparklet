@@ -16,17 +16,11 @@ import {
     SYNTH_TITLEBAR_HEIGHT,
     pointWithin,
 } from "./util";
+import { ctx } from "./context";
 
 // Web prep stuff
 const { setInterval } = window;
 
-export const octx = new OfflineAudioContext({
-    numberOfChannels: 2,
-    length: 44100 * 40,
-    sampleRate: 44100,
-});
-
-export const ctx = new AudioContext();
 const canvas = <HTMLCanvasElement>document.getElementById("mainCanvas");
 const c = canvas.getContext("2d")!;
 const FPS = 60;
