@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { getAccount } from "./accounts";
+import accountStore from "./accounts";
 
-let account = ref(null);
-getAccount().then((data) => {
-    account.value = data;
-});
+const account = accountStore.account;
 </script>
 
 <template>

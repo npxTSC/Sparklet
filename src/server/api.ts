@@ -19,9 +19,13 @@ router.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
     });
 });
 
-router.post("/accounts/register/", (req, res) => {
+router.post("/accounts/register", (req, res) => {
     // TODO implement account registration
     // const { username, password, } = req.body;
+});
+
+router.get("/accounts/by-uuid", async (req, res) => {
+    const { uuid } = req.query;
 });
 
 router.get("/profile/pfp", async (req, res) => {

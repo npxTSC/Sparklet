@@ -1,8 +1,4 @@
 <script setup lang="ts">
-// import { ref } from "vue";
-// import TopBar from "/components/TopBar.vue";
-//
-// defineProps<{ account: any }>();
 </script>
 
 <template>
