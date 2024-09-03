@@ -1,6 +1,11 @@
 <script setup lang="ts">
-// import { ref } from "vue";
-defineProps<{ account: any }>();
+import { ref } from "vue";
+import { getAccount } from "./accounts";
+
+let account = ref(null);
+getAccount().then((data) => {
+    account.value = data;
+});
 </script>
 
 <template>
@@ -36,7 +41,7 @@ defineProps<{ account: any }>();
                         height="50" class="profile-picture me-3" alt="PFP">
                 </a>
 
-                <a href="/login" class="btn btn-black text-primary
+                <a href="/login/" class="btn btn-black text-primary
 			active float-right ml-5">
                     {{ account?.name ?? "[Log In]" }}
                 </a>

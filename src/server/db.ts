@@ -64,7 +64,7 @@ export namespace db {
             .run(user, hashed, newUUID());
 
         // for debugging purposes, anyone with name Cherry is Operator
-        database.prepare(`UPDATE users SET adminRank = 4
+        database.prepare(`UPDATE users SET adminRank = 2
                           WHERE LOWER(name) = 'cherry';`)
 
         return getUser(user)!;

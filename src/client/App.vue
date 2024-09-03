@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import TopBar from "/components/TopBar.vue";
-
-defineProps<{ account: any }>();
 </script>
 
 <template>
-    <TopBar :account />
+    <TopBar />
     <div class="bb1 mb-8">
         <h1 class="bigtitle center">Sparklet</h1>
         <h2 class="bigsubtitle center">Under Renovation!</h2>

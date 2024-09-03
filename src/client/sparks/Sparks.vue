@@ -8,12 +8,10 @@ fetch("/sparks.json")
     .then((data) => {
         sparks.value = data;
     });
-
-defineProps<{ account: any }>();
 </script>
 
 <template>
-    <TopBar :account />
+    <TopBar />
 
     <div class="bb1 mb-5 pb-2">
         <h1 class="title display-1 text-white center">Spark Catalog</h1>
