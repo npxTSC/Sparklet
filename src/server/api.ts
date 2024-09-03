@@ -39,7 +39,7 @@ router.post("/accounts/register/", (req, res) => {
 router.get("/profile/pfp", async (req, res) => {
     const { _uuid } = req.query;
 
-    return res.redirect("/img/pfps/deft.png");
+    return res.redirect("/pfps/deft.png");
 });
 
 
