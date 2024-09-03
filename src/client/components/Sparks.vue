@@ -4,7 +4,7 @@ import TopBar from "./TopBar.vue";
 
 let sparks = ref([{ title: "Loading...", creatorName: "Loading...", date: 0, uuid: "Loading..." }])
 
-fetch("/api/sparks")
+fetch("/api/list-sparks")
     .then((response) => response.json())
     .then((data) => {
         sparks.value = data;

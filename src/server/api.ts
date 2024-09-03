@@ -49,5 +49,9 @@ router.get("/dbg-list-users", async (_req, res) => {
     return res.json(users);
 });
 
+router.get("/list-sparks", async (_req, res) => {
+    const games = await db.gameQPosts();
+    return res.json(games);
+});
 
 export default router;
