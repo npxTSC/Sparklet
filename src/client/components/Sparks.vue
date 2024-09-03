@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import TopBar from "./TopBar.vue";
+import TopBar from "/components/TopBar.vue";
 
 let sparks = ref([]);
 fetch("/sparks.json")

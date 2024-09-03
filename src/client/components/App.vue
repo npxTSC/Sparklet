@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TopBar from "./TopBar.vue";
+import TopBar from "/components/TopBar.vue";
 
 defineProps<{ account: any }>();
 </script>
