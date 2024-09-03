@@ -2,10 +2,9 @@
 import { ref } from "vue";
 import TopBar from "./TopBar.vue";
 
-let sparks = ref([{ title: "Loading...", creatorName: "Loading...", date: 0, uuid: "Loading..." }])
-
-fetch("/api/list-sparks")
-    .then((response) => response.json())
+let sparks = ref([]);
+fetch("/sparks.json")
+    .then((res) => res.json())
     .then((data) => {
         sparks.value = data;
     });
@@ -22,14 +21,13 @@ defineProps<{ account: any }>();
     </div>
 
     <div class="bb1">
-        <a v-for="spark in sparks" :key="spark.uuid" :href="'/sparks/' + spark.uuid" class="nodec">
+        <a v-for="spark in sparks" :key="spark.id" :href="'/sparks/' + spark.id" class="nodec">
             <div class="qpostBox">
-                <h2 class="fst-italic text-white">{{ spark.title }}</h2>
+                <h1 class="fst-italic text-white">{{ spark.title }}</h1>
                 <h3 class="fst-italic text-white">
                     from {{ spark.creatorName }}<br /><br />
-                    Posted on {{ new Date(spark.date * 1000).toLocaleDateString() }} at {{ new Date(spark.date *
-                        1000).toLocaleTimeString(undefined, { timeZone: "America/New_York" }) }}
                 </h3>
+                <p class="fst-italic text-white">{{ spark.description }}</p>
             </div>
         </a>
     </div>
