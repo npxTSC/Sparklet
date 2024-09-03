@@ -17,7 +17,7 @@ accounts.post("/login", async (req, res) => {
                 error: "Username already exists."
             });
 
-            db.register(username, password);
+            await db.register(username, password);
 
         // fallthrough to login
         case "log in":
