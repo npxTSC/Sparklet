@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// import TopBar from "/components/TopBar.vue";
-//
-// defineProps<{ account: any }>();
+import TopBar from "/components/TopBar.vue";
+
+defineProps<{ account: any }>();
 </script>
 
 <style lang="scss">
@@ -41,8 +41,10 @@ body {
 </style>
 
 <template>
-    <h1 class="mx-auto text-center py-5 white-on-pink">Some projects I've worked on...</h1>
-    <div class="container">
+    <TopBar :account />
+
+    <h1 class="mx-auto text-center pb-5 white-on-pink">Some projects I've worked on...</h1>
+    <div class="container mb-5">
         <div class="row">
             <div class="col-md-4">
                 <div class="card project-card">
