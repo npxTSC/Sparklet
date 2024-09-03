@@ -17,22 +17,22 @@ defineProps<{ account: any }>();
                         <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">Rooms</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/rooms/breakout">Breakout</a></li>
-                            <li><a class="dropdown-item" href="/rooms/quiz">Quiz</a></li>
+                            <li><a class="dropdown-item" href="/rooms/breakout/">Breakout</a></li>
+                            <li><a class="dropdown-item" href="/rooms/quiz/">Quiz</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/rooms/chat">Just Chat</a></li>
-                            <li><a class="dropdown-item" href="/rooms/stratus">Stratus</a></li>
+                            <li><a class="dropdown-item" href="/rooms/chat/">Just Chat</a></li>
+                            <li><a class="dropdown-item" href="/rooms/stratus/">Stratus</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link active text-black" href="/sparks">Sparks</a></li>
-                    <li class="nav-item"><a class="nav-link active text-black" href="/about">About</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/sparks/">Sparks</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black" href="/about/">About</a></li>
                 </ul>
 
-                <a :href="account?.name ? `/conductors/${account.name.toLowerCase()}` : `/login`">
-                    <img :src="`/conductors/${account?.name.toLowerCase() ?? 'anonymous'}/pfp`" width="50" height="50"
-                        class="profile-picture me-3" alt="PFP">
+                <a :href="account?.name ? `/conductors/${account.name.toLowerCase()}` : `/login/`">
+                    <img :src="`/api/conductors/pfp/${account?.name.toLowerCase() ?? 'anonymous'}`" width="50"
+                        height="50" class="profile-picture me-3" alt="PFP">
                 </a>
 
                 <a href="/login" class="btn btn-black text-primary
