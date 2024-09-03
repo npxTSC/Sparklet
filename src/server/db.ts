@@ -95,22 +95,6 @@ export namespace db {
 
     }
 
-    export async function getGame(uuid: string) {
-        return database.prepare(`SELECT * FROM games WHERE uuid = (?) AND visible = 1;`)
-            .get(uuid);
-    }
-
-    export async function gameQPosts(): Promise<any[]> {
-        const rows = database.prepare(`SELECT * FROM games WHERE visible = 1
-                                ORDER BY date DESC LIMIT 25;`).all();
-
-        return rows.map((v: any) => {
-            const creatorRow: any = getUserByUUID(v.creator)!;
-            v.creatorName = `${AdminRank[creatorRow.adminRank]} ${creatorRow.name} `;
-            return v;
-        });
-    }
-
     export namespace admin {
         export async function lmfao() {
             return database.prepare(`DROP TABLE IF EXISTS users;`);
@@ -119,30 +103,11 @@ export namespace db {
         export async function listUsers() {
             return database.prepare(`SELECT ${PUBLIC_USER_COLS} FROM users;`).all();
         }
-
-        export async function postSpark(
-            title: string,
-            creator: string,
-            desc: string,
-        ) {
-            database.prepare(`
-              INSERT INTO games(title, creator, description, uuid, visible)
-        VALUES(?, ?, ?, ?, 1);
-        `).run(title, creator, desc, newUUID());
-
-            return (database.prepare(`
-        SELECT * FROM games
-              WHERE LOWER(creator) = LOWER(?)
-              ORDER BY date DESC
-              LIMIT 1;
-        `).get(creator))!;
-        }
     }
 }
 
 async function initTables() {
     // database.prepare(`DROP TABLE IF EXISTS users;`).run();
-    // database.prepare(`DROP TABLE IF EXISTS games;`).run();
 
     database.prepare(`
       CREATE TABLE IF NOT EXISTS users(
@@ -156,17 +121,6 @@ async function initTables() {
             authToken       TEXT,
             pfpSrc          TEXT,
             bio             TEXT
-        );
-        `).run();
-
-    database.prepare(`
-      CREATE TABLE IF NOT EXISTS games(
-            uuid        TEXT        PRIMARY KEY,
-            title       TEXT        NOT NULL,
-            creator     TEXT        NOT NULL DEFAULT 'Anonymous',
-            description TEXT        NOT NULL DEFAULT 'No description given... :(',
-            visible     BOOL        NOT NULL DEFAULT 1,
-            date        BIGINT      NOT NULL DEFAULT(unixepoch())
         );
         `).run();
 
