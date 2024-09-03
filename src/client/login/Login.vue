@@ -37,9 +37,8 @@ const account = accountStore.account;
 
         <p class="text-white">{{ JSON.stringify(account) }}</p>
 
-        <div class="container bg-primary rounded
-			pt-1 invisible" id="ecBox">
-            <p class="display-6 text-black" id="ecText">//</p>
+        <div class="container bg-primary rounded pt-1 invisible" ref="errorCodeBox">
+            <p class="display-6 text-black" ref="errorCodeText">//</p>
         </div>
     </div>
 </template>
@@ -48,6 +47,8 @@ const account = accountStore.account;
 export default {
     mounted() {
         const form = this.$refs.loginForm;
+        const ecBox = this.$refs.errorCodeBox;
+        const ecText = this.$refs.errorCodeText;
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -67,12 +68,14 @@ export default {
                 headers: { "Content-Type": "application/json", },
             });
 
-            if (response.status !== 200) {
-                return console.log("Error submitting form. Code: " + response.status);
-            }
-
             const data = await response.json();
-            if (data.success) {
+
+            if (data.error) {
+                console.log("Error submitting form. Code: " + response.status);
+                ecBox.classList.remove("invisible");
+                ecText.textContent = data.error;
+            } else {
+                console.log("Form submitted successfully. Account updated.");
                 accountStore.account = data.account;
             }
         });

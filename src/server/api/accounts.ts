@@ -1,3 +1,5 @@
+"use strict";
+
 import { Router } from "express";
 import db from "../db.js";
 
@@ -8,13 +10,21 @@ accounts.post("/login", async (req, res) => {
     if (!username || !password) return res.status(400).end();
 
     console.log(`${username} is attempting to ${loginAction}.`);
+
     switch (loginAction) {
         case "register":
+            if (await db.getUser(username)) return res.status(409).json({
+                error: "Username already exists."
+            });
+
+            db.register(username, password);
 
         // fallthrough to login
         case "log in":
             const user = await db.getUser(username);
-            if (!user) return res.status(404).end();
+            if (!user) return res.status(404).json({
+                error: "User not found."
+            });
 
             break;
 
@@ -23,9 +33,12 @@ accounts.post("/login", async (req, res) => {
             break;
 
         default:
-            console.log(`${loginAction} is not a valid login action.`);
-            return res.status(400).end();
+            return res.status(400).json({
+                error: "Invalid login action."
+            });
     }
+
+    res.status(200).end();
 });
 
 accounts.get("/by-uuid", async (req, res) => {
