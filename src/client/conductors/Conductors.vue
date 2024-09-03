@@ -21,7 +21,7 @@ import ProfilePic from "/components/ProfilePic.vue";
             </h1>
 
             <div class="text-center mb-4">
-                <ProfilePic :uuid="'anon'" :glow="true" :diameter="400" />
+                <ProfilePic :uuid="'a7236354-36b8-461d-b7f4-c68870ed0d09'" :glow="true" :diameter="400" />
             </div>
 
             <div class="col-8 mx-auto bg-carbon border border-primary

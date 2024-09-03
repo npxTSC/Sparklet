@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { uuid2Account } from "/components/accounts";
 
 const props = defineProps<{
     uuid: string,
@@ -9,18 +10,12 @@ const props = defineProps<{
 
 let name = ref("");
 
-if (props.uuid === "anon") {
-    name.value = "anonymous";
-} else {
-    fetch("/api/accounts/by-uuid?uuid=" + props.uuid).then(async (req) => {
-        name.value = (await req.json()).account.name;
-    });
-}
+uuid2Account(props.uuid).then((v) => { name.value = v.name; }).catch((v) => console.error("error: ", v));
 </script>
 
 <template>
     <a :href="`/conductors/${name.toLowerCase()}`">
-        <img :src="`/api/profile/pfp?account=${name.toLowerCase() ?? 'anonymous'}`" :width="diameter" :height="diameter"
+        <img :src="`/api/profile/pfp?account=${name.toLowerCase()}`" :width="diameter" :height="diameter"
             :class="`profile-picture${glow ? '-big' : ''} me-3`" :alt="name + `'s PFP`">
     </a>
 </template>
