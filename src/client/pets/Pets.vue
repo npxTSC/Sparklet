@@ -29,13 +29,13 @@ console.log(
         </h6>
 
         <div class="d-block my-8 mx-auto text-center">
-            <img class="align-bottom" width="90" height="144" src="/public/pets/ethan-surprised.png">
-            <img class="align-bottom" width="90" height="174" src="/public/pets/siva-angle.png">
+            <img class="align-bottom" width="90" height="144" src="/pets/ethan-surprised.png">
+            <img class="align-bottom" width="90" height="174" src="/pets/siva-angle.png">
         </div>
     </div>
 
     <div class="container mb-8 pb-8">
-        <img class="mx-auto d-block" width="198" height="96" src="/public/pets/rodrick-sign.png">
+        <img class="mx-auto d-block" width="198" height="96" src="/pets/rodrick-sign.png">
         <p class="text-white center">
             "Would you like to play this game?"
         </p>
@@ -50,11 +50,11 @@ console.log(
         <p class="text-white center mb-8">
             sl33p.
         </p>
-        <img class="float-end d-block" width="198" height="96" src="/public/pets/mira-sl33p.png">
+        <img class="float-end d-block" width="198" height="96" src="/pets/mira-sl33p.png">
     </div>
 
     <div id="bottombar">
-        <img src="/public/pets/combo-note.png">
+        <img src="/pets/combo-note.png">
     </div>
 </template>
 
