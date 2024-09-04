@@ -7,7 +7,8 @@
         "dev": "nodemon -w src/server -x tsx src/server/main.ts",
         "start": "NODE_ENV=production tsx src/server/main.ts",
         "build": "vite build",
-        "pw": "playwright test"
+        "pw": "playwright test",
+        "dcr": "docker compose up --build"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",

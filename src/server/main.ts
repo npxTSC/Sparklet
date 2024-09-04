@@ -3,11 +3,11 @@ import ViteExpress from "vite-express";
 import cookieParser from "cookie-parser";
 import fs from "fs";
 
-import db from "./db.js";
-import api from "./api.js";
 import { APP_FOLDER } from "./consts.js";
 
-fs.mkdirSync(APP_FOLDER, { recursive: true });
+import db from "./db.js";
+import api from "./api.js";
+
 const app = express();
 
 // app.use(gzipCompression());

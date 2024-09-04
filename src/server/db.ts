@@ -4,7 +4,7 @@ import fs from "fs";
 import { v4 as newUUID } from "uuid";
 import crypto from "crypto";
 
-import { ANON_PASSWORD, AUTH_TOKEN_LEN, DB_PATH } from "./consts.js";
+import { APP_FOLDER, ANON_PASSWORD, AUTH_TOKEN_LEN, DB_PATH } from "./consts.js";
 
 const PUBLIC_USER_COLS = "uuid, name, date, adminRank, emailVerified, bio";
 
@@ -14,6 +14,7 @@ const enum Ranks {
     ADMIN = 2,
 }
 
+fs.mkdirSync(APP_FOLDER, { recursive: true });
 const database = new bsql3(DB_PATH);
 database.pragma('journal_mode = WAL');
 

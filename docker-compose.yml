@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - "stateful:/srv/sparklet"
+
+volumes:
+  stateful: {}
