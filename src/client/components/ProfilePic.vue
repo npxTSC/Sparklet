@@ -10,7 +10,7 @@ const props = defineProps<{
 
 let name = ref("");
 
-uuid2Account(props.uuid).then((v) => { name.value = v.name; }).catch((v) => console.error("error: ", v));
+uuid2Account(props.uuid).then((acct) => { name.value = acct.name; });
 </script>
 
 <template>

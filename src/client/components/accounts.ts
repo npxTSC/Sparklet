@@ -11,10 +11,14 @@ export async function getOwnAccount() {
 
 export async function uuid2Account(uuid: string) {
     const res = await fetch(`/api/accounts/by-uuid?uuid=${uuid}`);
+    if (!res.ok) return null;
 
-    if (!res.ok) {
-        return null;
-    }
+    return (await res.json()).account
+}
+
+export async function username2Account(username: string) {
+    const res = await fetch(`/api/accounts/by-username?username=${username}`);
+    if (!res.ok) return null;
 
     return (await res.json()).account
 }

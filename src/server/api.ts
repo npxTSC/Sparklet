@@ -27,14 +27,6 @@ api.get("/profile/pfp", async (req, res) => {
     return res.redirect("/pfps/deft.png");
 });
 
-api.get("/profile", async (req, res) => {
-    const { uuid } = req.query;
-    if (!uuid) return res.status(400).end();
-
-    const user = await db.getUserByUUID(uuid as string);
-    return res.json(user);
-});
-
 api.get("/dbg-list-users", async (_req, res) => {
     const users = await db.unsafe.listUsers();
     return res.json(users);

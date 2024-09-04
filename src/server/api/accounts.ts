@@ -60,6 +60,15 @@ accounts.get("/by-uuid", async (req, res) => {
     });
 });
 
+accounts.get("/by-username", async (req, res) => {
+    const { username } = req.query;
+    if (!username) return res.status(400).end();
+
+    return res.json({
+        account: await db.getUser(username),
+    });
+});
+
 accounts.get("/session-self", async (req, res) => {
     const { session } = req.cookies;
     if (!session) return res.json({ account: null });
