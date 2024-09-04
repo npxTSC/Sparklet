@@ -1,0 +1,23 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import TopBar from "/components/TopBar.vue";
+</script>
+
+<template>
+    <TopBar />
+
+    <!-- <%- include(viewsFolder + "/parts/topbar" ) %> -->
+    <div class="container col-10">
+        <h1 class="display-1 text-center text-white mb-2">Speedrun Wordle</h1>
+
+        <div class="container p-4 bg-white rounded" id="gameFrame">
+            <h3 id="lagWarning" class="display-3">Downloading static files...</h3>
+
+            <div class="container" id="cellFrame"></div>
+
+            <input type="text" id="inputBox" class="col-6" placeholder="WORDLE" autocomplete="off" />
+        </div>
+
+        <h4 class="display-4 text-center text-white" id="timer">-=- 360s -=-</h4>
+    </div>
+</template>

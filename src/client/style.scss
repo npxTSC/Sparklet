@@ -1,0 +1,262 @@
+@import "./custombs.scss";
+@import "~bootstrap/scss/bootstrap";
+
+// Constants
+$mobile-max-width: 768px;
+$col-goldenrod: #ffe600;
+$col-turmeric: $col-goldenrod; //#fdc029;
+$bg-dark: 0.7;
+
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@1,700&display=swap");
+
+@mixin selected {
+
+    &:hover,
+    &:focus,
+    &:active {
+        @content;
+    }
+}
+
+body {
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, $bg-dark),
+            rgba(0, 0, 0, $bg-dark)),
+        url("/img/city.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-x: center;
+    background-attachment: fixed;
+
+    // Hide outline when tabbing
+    /*& * {
+		outline: none;
+	}*/
+
+    // Hide Scrollbars
+    -ms-overflow-style: none; // IE
+    scrollbar-width: none; // Firefox
+
+    &::-webkit-scrollbar {
+        display: none; // Safari/Chrome
+    }
+}
+
+.strike {
+    text-decoration-line: line-through;
+}
+
+p.formal-text {
+    font-size: 1.5em;
+    text-indent: 2em;
+}
+
+.center {
+    text-align: center;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.nodec,
+.nodec>* {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+// Font used in title
+@mixin kaiseiTokumin {
+    font-family: "Kaisei Tokumin", Georgia, serif;
+}
+
+h1.bigtitle {
+    @include kaiseiTokumin;
+
+    color: black;
+    font-size: 15vw;
+    text-shadow: 0.8vw 0.8vw 0.8vw #000;
+    -webkit-text-stroke: 0.2vw $col-turmeric;
+    margin: 5vh 0;
+}
+
+h1.title:extend(h1.bigtitle) {
+    font-size: 8vw;
+    -webkit-text-stroke: 0.1vw $col-turmeric;
+    margin-top: 6vh;
+    margin-bottom: 0;
+}
+
+.bigsubtitle {
+    @include kaiseiTokumin;
+    font-size: 4vw;
+    color: white;
+    text-shadow: 0.5vw 0.5vw 0.5vw #000;
+}
+
+.header {
+    @include kaiseiTokumin;
+    color: white;
+    text-shadow: 0.1vw 0.1vw 0.5vw #000;
+}
+
+article>p {
+    //
+    color: white;
+}
+
+
+
+
+
+// Containers
+div.backbar {
+    width: 100%;
+    margin: 0;
+    border: 0 solid black;
+
+    & * {
+        margin: 0 7%;
+    }
+}
+
+div.bb1:extend(div.backbar) {
+    background-image: linear-gradient(#666, #333);
+    padding: 5vh 0;
+
+    & * {
+        margin: 0 7%;
+    }
+}
+
+div.qpostBox {
+    margin: 2% auto;
+    padding: 2% 0 4% 0;
+    background-color: black;
+    width: 75%;
+    text-align: center;
+    border: 1vh solid white;
+    border-radius: 3em;
+    transition: border-radius 100ms linear;
+    //cursor: pointer;
+
+    @include selected {
+        border-radius: 2em;
+    }
+}
+
+/* Desktop CSS */
+@media only screen and (min-width: ($mobile-max-width + 1px)) {
+    .bigsubtitle {
+        margin-bottom: 20vh;
+    }
+
+    .header {
+        font-size: 7vh;
+    }
+
+    article>p {
+        font-size: 4vh;
+        margin-bottom: 2vh;
+    }
+
+    div.backbar {
+        border-width: 1vh 0;
+    }
+}
+
+.vert-border-black {
+    border: 0.5em #000;
+    border-style: solid none;
+}
+
+/* Mobile-friendly CSS */
+@media only screen and (max-width: $mobile-max-width) {
+    .bigsubtitle {
+        margin-bottom: 35vh;
+    }
+
+    .header {
+        font-size: 7vw;
+    }
+
+    article>p {
+        font-size: 4vw;
+        margin-bottom: 2vw;
+    }
+
+    div.backbar {
+        border-width: 1vw 0;
+    }
+}
+
+.nav-link {
+    filter: brightness(100%);
+    background: $spark-yellow; //theme-color("primary");
+    transition: filter 0.2s ease-in-out;
+    outline: none;
+
+    @include selected {
+        filter: brightness(90%);
+        transition: filter 0.2s ease-in-out;
+    }
+}
+
+.no-aa {
+    image-rendering: pixelated;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 100%;
+    }
+
+    100% {
+        opacity: 0%;
+    }
+}
+
+.profile-bio {
+    font-size: 1.6em;
+}
+
+.searchbox {
+    border: 0.3rem solid map-get($theme-colors, "carbon");
+    border-bottom: 1.5rem solid map-get($theme-colors, "carbon");
+    transition: border 0.5s linear;
+
+    &:focus,
+    &:not(:placeholder-shown) {
+        border: 0.3rem solid map-get($theme-colors, "primary");
+        border-bottom: 1.5rem solid map-get($theme-colors, "primary");
+        transition: border 0.1s linear;
+    }
+}
+
+.quizStartButton {
+    transition: background-color 0.1s linear;
+
+    @include selected {
+        transition: background-color 0.1s linear;
+        background-color: map-get($theme-colors, "danger");
+    }
+}
+
+.qhostBanButton {
+    transition: background-color 0.1s linear;
+
+    @include selected {
+        transition: background-color 0.1s linear;
+        background-color: map-get($theme-colors, "danger");
+    }
+}
+
+.copyUUIDButton {
+    transition: background-color 0.1s linear;
+
+    @include selected {
+        transition: background-color 0.1s linear;
+        background-color: #3bff3e;
+    }
+}
