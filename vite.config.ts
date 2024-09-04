@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import path from "path";
 import { resolve } from "path";
 
 // https://vitejs.dev/config/
@@ -9,7 +8,7 @@ export default defineConfig({
     plugins: [vue()],
     resolve: {
         alias: {
-            '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+            '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
         }
     },
 
@@ -17,6 +16,9 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 "main": resolve(__dirname, 'src/client/index.html'),
+                "about": resolve(__dirname, 'src/client/about/index.html'),
+                "pets": resolve(__dirname, 'src/client/pets/index.html'),
+                "login": resolve(__dirname, 'src/client/login/index.html'),
                 "sparks": resolve(__dirname, 'src/client/sparks/index.html'),
                 "portfolio": resolve(__dirname, 'src/client/portfolio/index.html'),
                 "conductors": resolve(__dirname, 'src/client/conductors/index.html'),
