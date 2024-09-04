@@ -1,36 +1,38 @@
 {
-  "name": "vite-vue-typescript-starter",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon -w src/server -x tsx src/server/main.ts",
-    "start": "NODE_ENV=production tsx src/server/main.ts",
-    "build": "vite build"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "better-sqlite3": "^11.1.2",
-    "bootstrap": "^5.3.3",
-    "cookie-parser": "^1.4.6",
-    "express": "^4.18.2",
-    "libdx": "^1.10.3",
-    "tsx": "^4.4.0",
-    "typescript": "^5.3.2",
-    "uuid": "^10.0.0",
-    "vite-express": "*",
-    "vue": "^3.3.8"
-  },
-  "devDependencies": {
-    "@types/better-sqlite3": "^7.6.11",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.9.3",
-    "@vitejs/plugin-vue": "^4.5.0",
-    "nodemon": "^3.0.1",
-    "playwright": "^1.46.1",
-    "sass": "1.77.6",
-    "vite": "^5.4.3",
-    "vitest": "^2.0.5",
-    "vue-tsc": "^2.1.4"
-  }
+    "name": "vite-vue-typescript-starter",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon -w src/server -x tsx src/server/main.ts",
+        "start": "NODE_ENV=production tsx src/server/main.ts",
+        "build": "vite build",
+        "pw": "playwright test"
+    },
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "better-sqlite3": "^11.1.2",
+        "bootstrap": "^5.3.3",
+        "cookie-parser": "^1.4.6",
+        "express": "^4.18.2",
+        "libdx": "^1.10.3",
+        "tsx": "^4.4.0",
+        "typescript": "^5.3.2",
+        "uuid": "^10.0.0",
+        "vite-express": "*",
+        "vue": "^3.3.8"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.46.1",
+        "@types/better-sqlite3": "^7.6.11",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.9.3",
+        "@vitejs/plugin-vue": "^4.5.0",
+        "nodemon": "^3.0.1",
+        "playwright": "^1.46.1",
+        "sass": "1.77.6",
+        "vite": "^5.4.3",
+        "vitest": "^2.0.5",
+        "vue-tsc": "^2.1.4"
+    }
 }
