@@ -27,6 +27,9 @@ accounts.post("/login", async (req, res) => {
             });
 
             const token = await db.userLogin(username, password);
+            if (!token) return res.status(401).json({
+                error: "Invalid password."
+            });
 
             res.cookie('session', token, { maxAge: 604800, httpOnly: true });
 

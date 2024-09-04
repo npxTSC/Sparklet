@@ -11,16 +11,12 @@ import TopBar from "/components/TopBar.vue";
 
     <div class="container-fluid mt-6 py-5 bg-primary vert-border-black border-bottom-0">
         <div class="container bg-carbon text-white rounded mt-4 py-2">
-            <h5 class="display-5">What is this site?</h5>
+            <h5 class="display-5">Hey!</h5>
             <p class="formal-text">
-                I post my TypeScript / JavaScript experiments and labs on here once
-                in a while. The site is constantly being edited, so the next time you
-                come here, it probably won't be the exact same as it is now.
-            </p>
-            <p class="formal-text">
-                You can create an account if you want, but it's not required unless
-                you want to use the incomplete `Rooms` feature.
-                Remember to never reuse passwords!
+                You probably found this from my email address or my GitHub profile. This
+                is a little experiment site for pretty much anything I want to put up on it.
+                Confused what to do? Check out the <a href="/about/">About</a> page for a
+                little more info.
             </p>
         </div>
     </div>
