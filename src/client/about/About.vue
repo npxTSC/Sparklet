@@ -26,10 +26,11 @@ const account = accountStore.account;
             <p class="formal-text">
                 If you're here for curiosity, check out the
                 <a href="/sparks/">sparks</a> page.
-
                 If you're here from my resume or, to be quite honest, just want
                 something with a little more effort put into it, maybe take a look
                 at the <a href="/portfolio/">portfolio</a> page.
+                If you want some stuff to read, check out the
+                <a href="https://blog.sparklet.org/">Cafe</a>.
             </p>
             <hr>
             <p class="formal-text">
