@@ -35,6 +35,8 @@ const account = accountStore.account;
                     <li class="nav-item"><a class="nav-link active text-black" href="/about/">About</a></li>
                     <li class="nav-item"><a class="nav-link active text-black"
                             href="https://blog.sparklet.org/">Cafe</a></li>
+                    <li class="nav-item"><a class="nav-link active text-black"
+                            href="https://pond.sparklet.org/">Pond</a></li>
                 </ul>
 
 
