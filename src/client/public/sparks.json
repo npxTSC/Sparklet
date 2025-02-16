@@ -6,6 +6,12 @@
         "description": "Solve as many 6-letter wordles as you can in the given time limit!"
     },
     {
+        "title": "Rainbow L",
+        "id": "rainbow-l",
+        "creatorName": "Cherry",
+        "description": "Editable rainbow text. This'll be sure to grab someone's attention. Go into fullscreen on a phone/laptop to use it as a neon sign thingy. I made this in middle school to communicate with my friend across the room during study hall since the teacher said we had to be silent."
+    },
+    {
         "title": "Sparkwave",
         "id": "sparkwave",
         "creatorName": "Cherry",
