@@ -1,0 +1,10 @@
+{
+    "restartable": "rs",
+    "verbose": true,
+    "ignore": [
+        "**/.git",
+        "**/src/client/dist",
+        "**/node_modules/**/node_modules",
+        "**/vite.config.ts.**"
+    ]
+}

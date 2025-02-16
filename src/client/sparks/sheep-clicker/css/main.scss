@@ -1,0 +1,100 @@
+@import "bootstrapConstants.scss";
+@import "~bootstrap/scss/bootstrap";
+
+body {
+    background-image: url("../public/connectwork.png");
+    color: white;
+    height: 100%;
+
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    user-select: none;
+}
+
+@mixin ct() {
+    text-align: center;
+}
+
+.ct {
+    @include ct();
+}
+
+.fixed {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    //left: 0;
+}
+
+div#clickspace {
+    @include ct();
+    background: #f0f0f0;
+    display: block;
+}
+
+div#clickarea {
+    @include ct();
+    display: grid;
+    place-content: center;
+    height: 20em;
+}
+
+img#sheep {
+    cursor: pointer;
+    width: 100%;
+    vertical-align: middle;
+}
+
+#bulkbuy {
+    color: black;
+    background: #ccffcc;
+}
+
+#store {
+    display: block;
+}
+
+#wbps,
+#wbpc,
+#pts,
+#max {
+    color: black;
+}
+
+.upgrade,
+.supgrade {
+    font-family: "Lucida Console", Monaco, monospace;
+    user-select: none;
+    cursor: pointer;
+}
+
+.upgrade {
+    display: block;
+}
+
+#tbt,
+#topbar {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.hidelink {
+    text-decoration: none;
+}
+
+.white {
+    color: white;
+}
+
+.black {
+    color: black;
+}
+
+.red {
+    color: red;
+}

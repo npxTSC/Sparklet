@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "nodemon -w src/server -x tsx src/server/main.ts",
+        "dev": "nodemon -x tsx src/server/main.ts",
         "start": "NODE_ENV=production tsx src/server/main.ts",
         "build": "vite build",
         "pw": "playwright test",
@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
-        "better-sqlite3": "^11.1.2",
+        "better-sqlite3": "^11.8.1",
         "bootstrap": "^5.3.3",
         "cookie-parser": "^1.4.7",
         "express": "^4.21.1",

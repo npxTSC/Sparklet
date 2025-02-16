@@ -30,6 +30,7 @@ export default defineConfig({
                 "conductors": resolve(__dirname, 'src/client/conductors/index.html'),
                 "sparks/speedrun-wordle": resolve(__dirname, 'src/client/sparks/speedrun-wordle/index.html'),
                 "sparks/sparkwave": resolve(__dirname, 'src/client/sparks/sparkwave/index.html'),
+                "sparks/sheep-clicker": resolve(__dirname, 'src/client/sparks/sheep-clicker/index.html'),
             }
         }
     }
