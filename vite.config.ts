@@ -31,6 +31,7 @@ export default defineConfig({
                 "sparks/speedrun-wordle": resolve(__dirname, 'src/client/sparks/speedrun-wordle/index.html'),
                 "sparks/sparkwave": resolve(__dirname, 'src/client/sparks/sparkwave/index.html'),
                 "sparks/sheep-clicker": resolve(__dirname, 'src/client/sparks/sheep-clicker/index.html'),
+                "sparks/rainbow-l": resolve(__dirname, 'src/client/sparks/rainbow-l/index.html'),
             }
         }
     }
