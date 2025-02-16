@@ -10,5 +10,11 @@
         "id": "sparkwave",
         "creatorName": "Cherry",
         "description": "Little audio workstation. Doesn't really do anything useful, but it makes sound, I guess."
+    },
+    {
+        "title": "Sheep Clicker",
+        "id": "sheep-clicker",
+        "creatorName": "Cherry",
+        "description": "Probably my first HTML game, made in 6th grade. Click the sheep for wool. That's about all there is to it."
     }
 ]
