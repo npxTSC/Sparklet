@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "nodemon -x tsx src/server/main.ts",
+        "dev": "nodemon -w src/server -x tsx src/server/main.ts",
         "start": "NODE_ENV=production tsx src/server/main.ts",
         "build": "vite build",
         "pw": "playwright test",
