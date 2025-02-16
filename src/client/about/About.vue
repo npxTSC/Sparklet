@@ -34,7 +34,7 @@ const account = accountStore.account;
             </p>
             <hr>
             <p class="formal-text">
-                The site is built with Vue 3, Bootstrap, Sass, and TypeScript, and
+                The site is built with Vue 3, TailwindCSS, Sass, and TypeScript, and
                 the backend is built with Node.js and Express. The site is hosted
                 on my Vultr VPS via a docker container.
             </p>
