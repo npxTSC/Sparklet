@@ -6,7 +6,6 @@ import TopBar from "/components/TopBar.vue";
 <template>
     <TopBar />
 
-    <!-- <%- include(viewsFolder + "/parts/topbar" ) %> -->
     <div class="container col-10">
         <h1 class="display-1 text-center text-white mb-2">Speedrun Wordle</h1>
 
