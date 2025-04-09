@@ -24,13 +24,14 @@ const account = accountStore.account;
                 come here, it probably won't be the exact same as it is now.
             </p>
             <p class="formal-text">
-                If you're here for curiosity, check out the
-                <a href="/sparks/">sparks</a> page.
-                If you're here from my resume or, to be quite honest, just want
-                something with a little more effort put into it, maybe take a look
-                at the <a href="/portfolio/">portfolio</a> page.
-                If you want some stuff to read, check out the
-                <a href="https://blog.sparklet.org/">Cafe</a>.
+                If you're here out of curiosity, check out the
+                <a href="/sparks/">sparks</a> page. There's a little more
+                to this website, but it's currently a little stripped down for privacy.
+                <!-- If you're here from my resume or, to be quite honest, just want -->
+                <!-- something with a little more effort put into it, maybe take a look -->
+                <!-- at the <a href="/portfolio/">portfolio</a> page. -->
+                <!-- If you want some stuff to read, check out the -->
+                <!-- <a href="https://blog.sparklet.org/">Cafe</a>. -->
             </p>
             <hr>
             <p class="formal-text">
