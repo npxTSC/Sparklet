@@ -25,7 +25,9 @@
     },
     "devDependencies": {
         "@playwright/test": "^1.50.1",
+        "@types/bcrypt": "^5.0.2",
         "@types/better-sqlite3": "^7.6.12",
+        "@types/cookie-parser": "^1.4.8",
         "@types/express": "^5.0.0",
         "@types/node": "^22.13.4",
         "@vitejs/plugin-vue": "^5.2.1",
