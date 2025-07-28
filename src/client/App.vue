@@ -20,6 +20,12 @@ import TopBar from "/components/TopBar.vue";
                 anything I want to put up on it. Confused what to do? Check out
                 the <a href="/about/">About</a> page for a little more info.
             </p>
+            <p class="formal-text">
+                This site has consistently been accruing tech debt over the
+                years as I work on other stuff and continue to ignore it. Don't
+                judge it as anything serious. See issue #95 on
+                <a href="https://github.com/npxTSC/Sparklet/">the repo</a>.
+            </p>
         </div>
     </div>
 </template>
