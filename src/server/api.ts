@@ -8,7 +8,8 @@ const TEA_CAPE_URL = "https://sparklet.org/img/tea-cape.png";
 const api = Router();
 api.use("/accounts", accounts);
 
-api.get("/tea-capes", (_, res) => { // TODO admin portal for changing capes
+api.get("/tea-capes", (_, res) => {
+    // TODO admin portal for changing capes
     res.json({
         // Cherry
         "4772c57f-ca43-440c-be84-d5a97b676792": TEA_CAPE_URL,

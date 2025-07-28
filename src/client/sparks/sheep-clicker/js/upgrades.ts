@@ -10,8 +10,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEPHERD]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -21,8 +21,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -32,8 +32,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEPHERD]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -43,8 +43,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -54,8 +54,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.KNITTER]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -65,8 +65,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 1,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -76,8 +76,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.KNITTER]: 2,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -87,8 +87,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEPHERD]: 2,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -99,7 +99,7 @@ export default [
             /*multiBoost: {
                 [$Unit.SHEPHERD]:	2,
             }*/
-        }
+        },
     },
 
     {
@@ -110,7 +110,7 @@ export default [
             /*multiBoost: {
                 [$Unit.SHEPHERD]:	2,
             }*/
-        }
+        },
     },
 
     {
@@ -120,8 +120,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.KNITTER]: 4,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -131,8 +131,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 1.5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -142,8 +142,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 2.5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -153,8 +153,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEPHERD]: 2.5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -164,8 +164,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.KNITTER]: 2.5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -175,8 +175,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -186,8 +186,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEPHERD]: 6,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -197,8 +197,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.KNITTER]: 15,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -208,8 +208,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.SHEARER]: 10,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -219,8 +219,8 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.BABYSITTER]: 1.5,
-            }
-        }
+            },
+        },
     },
 
     {
@@ -230,7 +230,7 @@ export default [
         upgrade: {
             multiBoost: {
                 [$Unit.BABYSITTER]: 3,
-            }
-        }
+            },
+        },
     },
 ];

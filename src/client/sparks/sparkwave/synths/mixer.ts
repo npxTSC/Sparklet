@@ -1,8 +1,8 @@
 /*
-* Sparkwave's default mixer plugin
-* Made by DexieTheSheep for Sparklet
-* Licensed under GPLv3
-*/
+ * Sparkwave's default mixer plugin
+ * Made by DexieTheSheep for Sparklet
+ * Licensed under GPLv3
+ */
 
 "use strict";
 
@@ -10,9 +10,17 @@ import {
     noteHz,
     SYNTH_BORDERS,
     SYNTH_TITLEBAR_HEIGHT,
-    pointWithin
+    pointWithin,
 } from "../util";
-import { Synth, Effect, Vec2_i, MixerTrack, Rectangle, Text, UIComponent } from "../classes";
+import {
+    Synth,
+    Effect,
+    Vec2_i,
+    MixerTrack,
+    Rectangle,
+    Text,
+    UIComponent,
+} from "../classes";
 import { dman } from "libdx";
 
 const OUTSET_W = 4;
@@ -27,11 +35,7 @@ export default class Mixer extends Synth {
     constructor(ctx: AudioContext) {
         super(ctx);
 
-        const bg = new Rectangle(
-            0, 0,
-            this.w,
-            this.h,
-        );
+        const bg = new Rectangle(0, 0, this.w, this.h);
 
         bg.color = "lightgray";
         bg.borderWidth = OUTSET_W;
@@ -42,21 +46,15 @@ export default class Mixer extends Synth {
 
         this.ui.bg = bg;
 
-
         const mxCmp = new MixerUI(0, 0, 0, 0);
-        dman.ptr(mxCmp, "w", () => this.w * 0.7 - (2 * OUTSET_W));
-        dman.ptr(mxCmp, "h", () => this.h * 0.75 - (2 * OUTSET_W));
+        dman.ptr(mxCmp, "w", () => this.w * 0.7 - 2 * OUTSET_W);
+        dman.ptr(mxCmp, "h", () => this.h * 0.75 - 2 * OUTSET_W);
         dman.ptr(mxCmp, "x", () => OUTSET_W + this.x);
-        dman.ptr(mxCmp, "y", () => OUTSET_W + this.y + (this.h * 0.25));
+        dman.ptr(mxCmp, "y", () => OUTSET_W + this.y + this.h * 0.25);
         dman.ptr(mxCmp, "trackPtr", () => this.tracks);
         this.ui.mixer = mxCmp;
 
-
-        const titletext = new Text(
-            "Mixer Rack",
-            15,
-            50
-        );
+        const titletext = new Text("Mixer Rack", 15, 50);
 
         titletext.color = "black";
         titletext.z = 50;
@@ -65,16 +63,14 @@ export default class Mixer extends Synth {
     }
 
     override draw(c: CanvasRenderingContext2D) {
-        const sorted = Object.values(this.ui)
-            .sort((a, b) => a.z - b.z);
+        const sorted = Object.values(this.ui).sort((a, b) => a.z - b.z);
 
         const offset = new Vec2_i(this.x, this.y);
-        sorted.forEach(cmp => cmp.draw(c, offset));
+        sorted.forEach((cmp) => cmp.draw(c, offset));
     }
 }
 
-class MixerUI extends Rectangle
-    implements UIComponent {
+class MixerUI extends Rectangle implements UIComponent {
     private trackWidgets: MixerTrackUI[] = [];
     private trackCount: number = 16;
 
@@ -85,7 +81,7 @@ class MixerUI extends Rectangle
         // Make new keys
         for (let i = 0; i < this.trackCount; i++) {
             const track = new MixerTrackUI(
-                this.x + (i * (this.w / this.trackCount)),
+                this.x + i * (this.w / this.trackCount),
                 this.y,
                 this.w / this.trackCount,
                 this.h,
@@ -101,15 +97,8 @@ class MixerUI extends Rectangle
     }
 }
 
-class MixerTrackUI extends Rectangle
-    implements UIComponent {
-
-    constructor(
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-    ) {
+class MixerTrackUI extends Rectangle implements UIComponent {
+    constructor(x: number, y: number, w: number, h: number) {
         super(x, y, w, h);
         this.color = TRACK_BG_COL;
         this.borderWidth = TRACK_BORDER_W;

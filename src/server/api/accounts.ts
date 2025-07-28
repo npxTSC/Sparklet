@@ -7,31 +7,35 @@ export const accounts = Router();
 
 accounts.post("/login", async (req, res) => {
     const { username, password, loginAction } = req.body;
-    if (loginAction !== "log out" && (!username || !password)) return res.status(400).end();
+    if (loginAction !== "log out" && (!username || !password))
+        return res.status(400).end();
 
     console.log(`${username} is attempting to ${loginAction}.`);
 
     switch (loginAction) {
         case "register":
-            if (await db.getUser(username)) return res.status(409).json({
-                error: "Username already exists."
-            });
+            if (await db.getUser(username))
+                return res.status(409).json({
+                    error: "Username already exists.",
+                });
 
             await db.register(username, password);
 
         // fallthrough to login
         case "log in":
             const user = await db.getUser(username);
-            if (!user) return res.status(404).json({
-                error: "User not found."
-            });
+            if (!user)
+                return res.status(404).json({
+                    error: "User not found.",
+                });
 
             const token = await db.userLogin(username, password);
-            if (!token) return res.status(401).json({
-                error: "Invalid password."
-            });
+            if (!token)
+                return res.status(401).json({
+                    error: "Invalid password.",
+                });
 
-            res.cookie('session', token, { maxAge: 604800, httpOnly: true });
+            res.cookie("session", token, { maxAge: 604800, httpOnly: true });
 
             res.json({
                 account: user,
@@ -46,7 +50,7 @@ accounts.post("/login", async (req, res) => {
 
         default:
             return res.status(400).json({
-                error: "Invalid login action."
+                error: "Invalid login action.",
             });
     }
 
@@ -83,4 +87,3 @@ accounts.get("/session-self", async (req, res) => {
         account: user,
     });
 });
-

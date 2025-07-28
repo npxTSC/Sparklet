@@ -21,6 +21,4 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/.well-known", routes.wk);
 app.use("/api", api);
 
-ViteExpress.listen(app, 3000, () =>
-    console.log("Listening on port 3000..."),
-);
+ViteExpress.listen(app, 3000, () => console.log("Listening on port 3000..."));

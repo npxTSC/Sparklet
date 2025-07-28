@@ -16,7 +16,7 @@ export class Sample {
     public root: number = 60;
 
     static async load(src?: string) {
-        const res = await fetch(src ?? DEFAULT_SAMPLE_SRC)
+        const res = await fetch(src ?? DEFAULT_SAMPLE_SRC);
         const buffer = await res.arrayBuffer();
         const abuffer = await ctx.decodeAudioData(buffer);
 
@@ -30,7 +30,7 @@ export interface MixerTrack {
 }
 
 export class SWPlugin {
-    constructor(protected ctx: AudioContext) { }
+    constructor(protected ctx: AudioContext) {}
 
     visible: boolean = true;
     isBeingDragged: boolean = false;
@@ -40,9 +40,9 @@ export class SWPlugin {
     h: number = 300;
     ui: Record<string, UIComponent> = {};
 
-    draw(c: CanvasRenderingContext2D) { }
-    updateDisplay() { }
-    mouseStyle(): (`${CURSOR_STYLES}` | null) {
+    draw(c: CanvasRenderingContext2D) {}
+    updateDisplay() {}
+    mouseStyle(): `${CURSOR_STYLES}` | null {
         return null;
     }
 
@@ -61,10 +61,10 @@ export class SWPlugin {
         }
     }
 
-    onClick(x: number, y: number, rel: boolean, mb: number) { }
+    onClick(x: number, y: number, rel: boolean, mb: number) {}
 
-    noteOn(note: number, velocity: number) { }
-    noteOff(note: number) { }
+    noteOn(note: number, velocity: number) {}
+    noteOff(note: number) {}
 }
 
 // Produces sound
@@ -83,7 +83,10 @@ export type OrderedPair = Vec2_i<number>;
 
 // Immutable Vector2
 export class Vec2_i<CT> {
-    constructor(private _x: CT, private _y: CT) { }
+    constructor(
+        private _x: CT,
+        private _y: CT,
+    ) {}
 
     static ZEROES() {
         return new Vec2_i(0, 0);
@@ -119,7 +122,7 @@ export enum MOUSEBUTTONS {
     Middle,
     Right,
     Thumb1,
-    Thumb2
+    Thumb2,
 }
 
 export const theme = {
@@ -128,7 +131,7 @@ export const theme = {
     PLUGIN_TITLEBAR: "#333",
     PLUGIN_BACKGROUND: "#4f4f4f",
     PLUGIN_EMPTY: "aliceblue", //"#fff",
-}
+};
 
 export const enum CURSOR_STYLES {
     Drag = "move",
@@ -145,13 +148,12 @@ export class Point implements UIComponent {
     constructor(
         public x: number,
         public y: number,
-    ) { }
+    ) {}
 
-    draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) { }
+    draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {}
 }
 
-export class Rectangle extends Point
-    implements UIComponent {
+export class Rectangle extends Point implements UIComponent {
     public borderColor: string = "black";
     public borderWidth: number = 0;
 
@@ -167,12 +169,7 @@ export class Rectangle extends Point
     draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {
         // Draw border
         c.fillStyle = this.borderColor;
-        c.fillRect(
-            this.x + offset.x,
-            this.y + offset.y,
-            this.w,
-            this.h
-        );
+        c.fillRect(this.x + offset.x, this.y + offset.y, this.w, this.h);
 
         // Draw inner section
         c.fillStyle = this.color;
@@ -180,13 +177,12 @@ export class Rectangle extends Point
             this.x + offset.x + this.borderWidth,
             this.y + offset.y + this.borderWidth,
             this.w - 2 * this.borderWidth,
-            this.h - 2 * this.borderWidth
+            this.h - 2 * this.borderWidth,
         );
     }
 }
 
-export class Text extends Point
-    implements UIComponent {
+export class Text extends Point implements UIComponent {
     public fontSize: number = 32;
     public font: string = "serif";
 
@@ -205,22 +201,14 @@ export class Text extends Point
     }
 }
 
-
-
 // Piano Widget classes
 
-export class PianoWidget extends Rectangle
-    implements UIComponent {
+export class PianoWidget extends Rectangle implements UIComponent {
     private keys: PianoKey[] = [];
     public keyCount: number = 12;
     public startKey: number = 36; // Middle C
 
-    constructor(
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-    ) {
+    constructor(x: number, y: number, w: number, h: number) {
         super(x, y, w, h);
         this.color = "white";
         this.updateKeys();
@@ -233,7 +221,7 @@ export class PianoWidget extends Rectangle
         // Make new keys
         for (let i = 0; i < this.keyCount; i++) {
             const key = new PianoKey(
-                this.x + (i * (this.w / this.keyCount)),
+                this.x + i * (this.w / this.keyCount),
                 this.y,
                 this.w / this.keyCount,
                 this.h,
@@ -247,7 +235,7 @@ export class PianoWidget extends Rectangle
 
     updateKeyActions(
         keyAction: (key: number) => void,
-        keyReleaseAction: (key: number) => void
+        keyReleaseAction: (key: number) => void,
     ) {
         this.keys.forEach((v, i) => {
             v.onClick = () => keyAction(this.startKey + i);
@@ -264,72 +252,56 @@ export class PianoWidget extends Rectangle
     ) {
         // Relative position
         const lpos = {
-            x: (hostPos.x + this.x),
-            y: (hostPos.y + this.y)
-        }
+            x: hostPos.x + this.x,
+            y: hostPos.y + this.y,
+        };
 
         const keyWidth = this.w / this.keyCount;
         const keyFromW = Math.floor((mx - lpos.x) / keyWidth);
 
-        const keyPressedN = (
-            ((my - lpos.y) < (this.h * BLACK_KEY_HEIGHT_COEFFICIENT)) ?
-                keyFromW :
-                whiteKeyBelow(keyFromW)
-        );
+        const keyPressedN =
+            my - lpos.y < this.h * BLACK_KEY_HEIGHT_COEFFICIENT
+                ? keyFromW
+                : whiteKeyBelow(keyFromW);
 
         const keyPressedO = this.keys[keyPressedN];
 
         if (mb === MOUSEBUTTONS.Left) {
-            (rel ?
-                keyPressedO.onRelease :
-                keyPressedO.onClick
-            )();
+            (rel ? keyPressedO.onRelease : keyPressedO.onClick)();
         }
     }
 
     draw(c: CanvasRenderingContext2D, offset: OrderedPair = Vec2_i.ZEROES()) {
         c.fillStyle = this.color;
-        c.fillRect(
-            this.x + offset.x,
-            this.y + offset.y,
-            this.w,
-            this.h
-        );
+        c.fillRect(this.x + offset.x, this.y + offset.y, this.w, this.h);
 
         this.keys.forEach((key) => key.draw(c, offset, [this.color, "black"]));
     }
 }
 
-export class NotePlayerWidget extends Rectangle
-    implements UIComponent {
+export class NotePlayerWidget extends Rectangle implements UIComponent {
     public note = 60;
 
-    constructor(
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-    ) {
+    constructor(x: number, y: number, w: number, h: number) {
         super(x, y, w, h);
     }
 
-    onClick(): void { }
-    onRelease(): void { }
+    onClick(): void {}
+    onRelease(): void {}
 }
 
-export class PianoKey extends NotePlayerWidget
-    implements UIComponent {
-
-    draw(c: CanvasRenderingContext2D,
+export class PianoKey extends NotePlayerWidget implements UIComponent {
+    draw(
+        c: CanvasRenderingContext2D,
         offset: OrderedPair = Vec2_i.ZEROES(),
-        keyColors: string[] = ["white", "black"]) {
-
+        keyColors: string[] = ["white", "black"],
+    ) {
         c.fillStyle = isBlackKey(this.note) ? keyColors[1] : keyColors[0];
         c.fillRect(
             this.x + offset.x,
             this.y + offset.y,
             this.w,
-            this.h * (isBlackKey(this.note) ? BLACK_KEY_HEIGHT_COEFFICIENT : 1)
+            this.h * (isBlackKey(this.note) ? BLACK_KEY_HEIGHT_COEFFICIENT : 1),
         );
     }
 }

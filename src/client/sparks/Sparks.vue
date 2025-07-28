@@ -19,7 +19,12 @@ fetch("/sparks.json")
     </div>
 
     <div class="bb1">
-        <a v-for="spark in sparks" :key="spark.id" :href="'/sparks/' + spark.id + '/'" class="nodec">
+        <a
+            v-for="spark in sparks"
+            :key="spark.id"
+            :href="'/sparks/' + spark.id + '/'"
+            class="nodec"
+        >
             <div class="qpostBox">
                 <h1 class="fst-italic text-white">{{ spark.title }}</h1>
                 <h3 class="fst-italic text-white">

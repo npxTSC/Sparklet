@@ -1,8 +1,8 @@
 /*
-* RePlay, a free open-source sampler for Sparkwave
-* Made by DexieTheSheep for Sparklet
-* Licensed under GPLv3
-*/
+ * RePlay, a free open-source sampler for Sparkwave
+ * Made by DexieTheSheep for Sparklet
+ * Licensed under GPLv3
+ */
 
 "use strict";
 
@@ -10,9 +10,17 @@ import {
     noteHz,
     SYNTH_BORDERS,
     SYNTH_TITLEBAR_HEIGHT,
-    pointWithin
+    pointWithin,
 } from "../util";
-import { Synth, Sample, Vec2_i, Rectangle, Text, UIComponent, PianoWidget } from "../classes";
+import {
+    Synth,
+    Sample,
+    Vec2_i,
+    Rectangle,
+    Text,
+    UIComponent,
+    PianoWidget,
+} from "../classes";
 import { dman } from "libdx";
 
 export default class RePlay extends Synth {
@@ -26,11 +34,7 @@ export default class RePlay extends Synth {
         if (smp) this.sample = smp;
         else this.loadSample();
 
-        const bg = new Rectangle(
-            0, 0,
-            this.w,
-            this.h,
-        );
+        const bg = new Rectangle(0, 0, this.w, this.h);
 
         bg.color = "#87ceeb";
         bg.borderWidth = 4;
@@ -41,14 +45,7 @@ export default class RePlay extends Synth {
 
         this.ui.bg = bg;
 
-
-
-        this.piano = new PianoWidget(
-            4,
-            -1,
-            -1,
-            -1,
-        );
+        this.piano = new PianoWidget(4, -1, -1, -1);
 
         dman.ptr(this.piano, "w", () => this.w - 8);
         dman.ptr(this.piano, "h", () => this.h / 6);
@@ -60,13 +57,7 @@ export default class RePlay extends Synth {
 
         this.ui.piano = this.piano;
 
-
-
-        const titletext = new Text(
-            "RePlay Sampler",
-            15,
-            50
-        );
+        const titletext = new Text("RePlay Sampler", 15, 50);
 
         titletext.color = "black";
         titletext.z = 50;
@@ -75,7 +66,7 @@ export default class RePlay extends Synth {
     }
 
     async loadSample(buf?: AudioBuffer) {
-        this.sample = new Sample()
+        this.sample = new Sample();
         this.sample.buffer = buf ?? (await Sample.load());
     }
 
@@ -88,18 +79,15 @@ export default class RePlay extends Synth {
     }
 
     override draw(c: CanvasRenderingContext2D) {
-        const sorted = Object.values(this.ui)
-            .sort((a, b) => a.z - b.z);
+        const sorted = Object.values(this.ui).sort((a, b) => a.z - b.z);
 
         const offset = new Vec2_i(this.x, this.y);
-        sorted.forEach(cmp => cmp.draw(c, offset));
+        sorted.forEach((cmp) => cmp.draw(c, offset));
     }
 
-    override updateDisplay() { }
+    override updateDisplay() {}
 
-    override onMidiInput(command: number,
-        note: number,
-        velocity: number) {
+    override onMidiInput(command: number, note: number, velocity: number) {
         switch (command) {
             case 144: // Note ON
                 if (velocity > 0) this.noteOn(note, velocity);
@@ -112,21 +100,12 @@ export default class RePlay extends Synth {
         }
     }
 
-    override onClick(
-        x: number,
-        y: number,
-        rel: boolean,
-        mb: number,
-    ) {
+    override onClick(x: number, y: number, rel: boolean, mb: number) {
         const w = this;
-        const p = this.piano
+        const p = this.piano;
 
         // If clicked on piano, pass click to widget code
-        if (pointWithin(
-            x, y,
-            w.x + p.x, w.y + p.y,
-            p.w, p.h
-        )) {
+        if (pointWithin(x, y, w.x + p.x, w.y + p.y, p.w, p.h)) {
             p.onClick(x, y, new Vec2_i(this.x, this.y), rel, mb);
         }
     }
@@ -146,5 +125,5 @@ export default class RePlay extends Synth {
         source.start();
     }
 
-    override noteOff(note: number) { }
+    override noteOff(note: number) {}
 }

@@ -9,33 +9,63 @@ const account = accountStore.account;
 <template>
     <TopBar />
 
-    <div class="bb1" style="margin-bottom: 5%;">
+    <div class="bb1" style="margin-bottom: 5%">
         <h1 class="title center text-white">Sparklet Login</h1>
     </div>
 
     <div class="bb1 container">
-        <form ref="loginForm" action="/api/accounts/login" method="post" class="mb-6">
+        <form
+            ref="loginForm"
+            action="/api/accounts/login"
+            method="post"
+            class="mb-6"
+        >
             <div class="form-group mx-auto mb-4">
-                <input class="form-control" name="username" placeholder="Username" type="text">
+                <input
+                    class="form-control"
+                    name="username"
+                    placeholder="Username"
+                    type="text"
+                />
             </div>
 
             <div class="form-group mx-auto mb-4">
-                <input class="form-control" name="password" placeholder="Password" type="password">
+                <input
+                    class="form-control"
+                    name="password"
+                    placeholder="Password"
+                    type="password"
+                />
             </div>
 
-            <button type="submit" name="log in" class="btn btn-primary border-black mx-auto">
+            <button
+                type="submit"
+                name="log in"
+                class="btn btn-primary border-black mx-auto"
+            >
                 Log In
             </button>
-            <button type="submit" name="register" class="btn btn-primary border-black mx-auto">
+            <button
+                type="submit"
+                name="register"
+                class="btn btn-primary border-black mx-auto"
+            >
                 Register
             </button>
-            <button v-if="account" type="submit" name="log out" class="btn btn-primary border-black mx-auto">
+            <button
+                v-if="account"
+                type="submit"
+                name="log out"
+                class="btn btn-primary border-black mx-auto"
+            >
                 Log Out
             </button>
-
         </form>
 
-        <div class="container bg-primary rounded pt-1 invisible" ref="errorCodeBox">
+        <div
+            class="container bg-primary rounded pt-1 invisible"
+            ref="errorCodeBox"
+        >
             <p class="display-6 text-black" ref="errorCodeText">//</p>
         </div>
     </div>
@@ -63,7 +93,7 @@ export default {
             const response = await fetch(form.action, {
                 method: form.method,
                 body: JSON.stringify(formData),
-                headers: { "Content-Type": "application/json", },
+                headers: { "Content-Type": "application/json" },
             });
 
             const data = await response.json();

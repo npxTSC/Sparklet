@@ -3,20 +3,27 @@ import { ref } from "vue";
 import { uuid2Account } from "/components/accounts";
 
 const props = defineProps<{
-    uuid: string,
-    diameter: number,
-    glow: boolean,
+    uuid: string;
+    diameter: number;
+    glow: boolean;
 }>();
 
 let name = ref("");
 
-uuid2Account(props.uuid).then((acct) => { name.value = acct.name; });
+uuid2Account(props.uuid).then((acct) => {
+    name.value = acct.name;
+});
 </script>
 
 <template>
     <a :href="`/conductors/${name.toLowerCase()}`">
-        <img :src="`/api/profile/pfp?account=${name.toLowerCase()}`" :width="diameter" :height="diameter"
-            :class="`profile-picture${glow ? '-big' : ''} me-3`" :alt="name + `'s PFP`">
+        <img
+            :src="`/api/profile/pfp?account=${name.toLowerCase()}`"
+            :width="diameter"
+            :height="diameter"
+            :class="`profile-picture${glow ? '-big' : ''} me-3`"
+            :alt="name + `'s PFP`"
+        />
     </a>
 </template>
 

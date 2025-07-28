@@ -12,14 +12,10 @@ const { setInterval } = window;
 let interval: number;
 
 // Get elements as TypeScript casted values
-const frame = <HTMLDivElement>
-    document.getElementById("cellFrame");
-const gframe = <HTMLDivElement>
-    document.getElementById("gameFrame");
-const inputBox = <HTMLInputElement>
-    document.getElementById("inputBox");
-const timerE = <HTMLHeadingElement>
-    document.getElementById("timer");
+const frame = <HTMLDivElement>document.getElementById("cellFrame");
+const gframe = <HTMLDivElement>document.getElementById("gameFrame");
+const inputBox = <HTMLInputElement>document.getElementById("inputBox");
+const timerE = <HTMLHeadingElement>document.getElementById("timer");
 
 // Main function, as async to allow await
 (async () => {
@@ -31,7 +27,7 @@ const timerE = <HTMLHeadingElement>
     let lastCorrectTime: number = Date.now();
     let pastGuesses: string[] = [];
     let currentWord: string = pickWord();
-    let winstats: { word: string, time: number }[] = [];
+    let winstats: { word: string; time: number }[] = [];
     let startTime: number;
 
     const board: RowData[] = [];
@@ -92,19 +88,16 @@ const timerE = <HTMLHeadingElement>
         // Prevent spamming guesses
         if (Date.now() - lastGuessTime < GUESS_DELAY) return fail("aliceblue");
 
-
-
         inputBox.value = "";
 
         // Don't allow guesses with less letters
         if (guess.length !== COLUMNS) return fail("darkred");
 
         // Don't allow guesses from made-up words
-        if (!(WORDS_LIST.includes(guess))) return fail("darkred");
+        if (!WORDS_LIST.includes(guess)) return fail("darkred");
 
         // Don't allow previous guesses (They won't appear as answers)
         if (pastGuesses.includes(guess)) return fail("darkslategray");
-
 
         // If you made it here, your guess is possible. Let's try it!
         if (!gameRunning) {
@@ -142,13 +135,15 @@ const timerE = <HTMLHeadingElement>
 
     async function timerTick() {
         const elapsed = Date.now() - startTime;
-        const left = TIME_LIMIT - (elapsed / 1000);
+        const left = TIME_LIMIT - elapsed / 1000;
         const dispLeft = left < 0 ? 0 : Math.ceil(left);
 
         timerE.innerText = dispLeft + "s";
 
         if (left < 0) {
-            const easiestWord = winstats.sort((a, b) => (a.time > b.time ? 1 : -1))?.[0];
+            const easiestWord = winstats.sort((a, b) =>
+                a.time > b.time ? 1 : -1,
+            )?.[0];
 
             alert(
                 `GAME OVER! GG+WP
@@ -158,7 +153,8 @@ MISSES: ${pastGuesses.length - Object.keys(winstats).length}
 ATTEMPTS: ${pastGuesses.length}
 
 YOUR EASIEST WORD: ${easiestWord?.word ?? "None"}
-(Took you ${Math.ceil((easiestWord?.time ?? 0) / 1000)} seconds to solve!)`);
+(Took you ${Math.ceil((easiestWord?.time ?? 0) / 1000)} seconds to solve!)`,
+            );
 
             clearInterval(interval);
 
@@ -177,8 +173,7 @@ YOUR EASIEST WORD: ${easiestWord?.word ?? "None"}
         return w;
     }
 
-    function flashBox(col: string = "red",
-        time: number = 300): void {
+    function flashBox(col: string = "red", time: number = 300): void {
         inputBox.style.background = col;
 
         setTimeout(() => {
@@ -207,12 +202,11 @@ YOUR EASIEST WORD: ${easiestWord?.word ?? "None"}
         }
     }
 
-    function getLetterColor(guess: string,
-        slot: number) {
+    function getLetterColor(guess: string, slot: number) {
         const letter = guess[slot];
 
         if (!letter) return "darkslategray";
-        if ((currentWord[slot] === letter)) return "green";
+        if (currentWord[slot] === letter) return "green";
 
         // Yellow-box algorithm
         if (currentWord.includes(letter)) {
@@ -248,12 +242,12 @@ async function retrieveWords() {
     // Request data from server
     return {
         WORDS_LIST: await fetch("words.txt")
-            .then(data => data.text())
-            .then(str => str.toUpperCase().split(/\s+/)),
+            .then((data) => data.text())
+            .then((str) => str.toUpperCase().split(/\s+/)),
         ANSWERS_LIST: await fetch("answers.txt")
-            .then(data => data.text())
-            .then(str => str.toUpperCase().split(/\s+/)),
-    }
+            .then((data) => data.text())
+            .then((str) => str.toUpperCase().split(/\s+/)),
+    };
 }
 
 interface RowData {

@@ -11,7 +11,6 @@ $bg-dark: 0.7;
 @import url("https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@1,700&display=swap");
 
 @mixin selected {
-
     &:hover,
     &:focus,
     &:active {
@@ -21,8 +20,8 @@ $bg-dark: 0.7;
 
 body {
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, $bg-dark),
-            rgba(0, 0, 0, $bg-dark)),
+    background:
+        linear-gradient(rgba(0, 0, 0, $bg-dark), rgba(0, 0, 0, $bg-dark)),
         url("/img/city.webp");
     background-repeat: no-repeat;
     background-size: cover;
@@ -61,7 +60,7 @@ p.formal-text {
 }
 
 .nodec,
-.nodec>* {
+.nodec > * {
     color: inherit;
     text-decoration: inherit;
 }
@@ -101,14 +100,10 @@ h1.title:extend(h1.bigtitle) {
     text-shadow: 0.1vw 0.1vw 0.5vw #000;
 }
 
-article>p {
+article > p {
     //
     color: white;
 }
-
-
-
-
 
 // Containers
 div.backbar {
@@ -156,7 +151,7 @@ div.qpostBox {
         font-size: 7vh;
     }
 
-    article>p {
+    article > p {
         font-size: 4vh;
         margin-bottom: 2vh;
     }
@@ -181,7 +176,7 @@ div.qpostBox {
         font-size: 7vw;
     }
 
-    article>p {
+    article > p {
         font-size: 4vw;
         margin-bottom: 2vw;
     }

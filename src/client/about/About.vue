@@ -14,35 +14,39 @@ const account = accountStore.account;
         <h2 class="bigsubtitle center">WTF is this?</h2>
     </div>
 
-    <div class="container-fluid py-5 bg-primary vert-border-black border-bottom-0">
+    <div
+        class="container-fluid py-5 bg-primary vert-border-black border-bottom-0"
+    >
         <div class="container bg-carbon text-white rounded mt-4 py-2">
             <h5 class="display-5">What is this site?</h5>
-            <hr>
+            <hr />
             <p class="formal-text">
-                I post my TypeScript / JavaScript experiments and labs on here once
-                in a while. The site is constantly being edited, so the next time you
-                come here, it probably won't be the exact same as it is now.
+                I post my TypeScript / JavaScript experiments and labs on here
+                once in a while. The site is constantly being edited, so the
+                next time you come here, it probably won't be the exact same as
+                it is now.
             </p>
             <p class="formal-text">
                 If you're here out of curiosity, check out the
-                <a href="/sparks/">sparks</a> page. There's a little more
-                to this website, but it's currently a little stripped down for privacy.
+                <a href="/sparks/">sparks</a> page. There's a little more to
+                this website, but it's currently a little stripped down for
+                privacy.
                 <!-- If you're here from my resume or, to be quite honest, just want -->
                 <!-- something with a little more effort put into it, maybe take a look -->
                 <!-- at the <a href="/portfolio/">portfolio</a> page. -->
                 <!-- If you want some stuff to read, check out the -->
                 <!-- <a href="https://blog.sparklet.org/">Cafe</a>. -->
             </p>
-            <hr>
+            <hr />
             <p class="formal-text">
-                The site is built with Vue 3, Bootstrap, Sass, and TypeScript, and
-                the backend is built with Node.js and Express. The site is hosted
-                on my Vultr VPS via a docker container.
+                The site is built with Vue 3, Bootstrap, Sass, and TypeScript,
+                and the backend is built with Node.js and Express. The site is
+                hosted on my Vultr VPS via a docker container.
             </p>
             <p class="formal-text">
-                You can create an account if you want, but it's not required unless
-                you want to use the incomplete `Rooms` feature.
-                Remember to never reuse passwords!
+                You can create an account if you want, but it's not required
+                unless you want to use the incomplete `Rooms` feature. Remember
+                to never reuse passwords!
             </p>
         </div>
     </div>

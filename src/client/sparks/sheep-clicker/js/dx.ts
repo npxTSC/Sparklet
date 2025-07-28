@@ -46,7 +46,7 @@ export namespace rand {
     }
 
     export function r_num(min: number, max: number) {
-        return (Math.random() * (max - min)) + min;
+        return Math.random() * (max - min) + min;
     }
 
     export function r_choice(arr: any[]) {

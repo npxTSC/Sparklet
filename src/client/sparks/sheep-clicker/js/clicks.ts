@@ -7,12 +7,13 @@ import "../css/main.scss";
 import { qstr, rand } from "./dx";
 import Decimal from "./_decimal";
 import E from "./elements";
+import { $Unit, FPS, FPS_DELAY, dev } from "./staticConf";
 import {
-    $Unit, FPS, FPS_DELAY, dev
-} from "./staticConf";
-import {
-    units, formatDecimal, upgrades,
-    UnitData, ResearchDesignData,
+    units,
+    formatDecimal,
+    upgrades,
+    UnitData,
+    ResearchDesignData,
     UpgradeTable,
 } from "./classes";
 
@@ -31,7 +32,7 @@ units.forEach((v, i) => {
         count: 0,
         multi: 1,
         element: elem,
-    }
+    };
 
     elem.addEventListener("click", () => {
         let cost = getCostOfNext(i);
@@ -60,7 +61,7 @@ upgrades.forEach((v, i) => {
         upgrade: v,
         element: elem,
         purchased: false,
-    }
+    };
 
     elem.addEventListener("click", () => {
         if (c.gte(v.cost)) {
@@ -89,21 +90,19 @@ let last = $Unit.SHEPHERD; // Last unit purchased
 
 export let inventory = {
     sheepBomb: 0,
-}
-
+};
 
 setInterval(() => {
     wbps = calculateWBPS();
     wbpc = calculateWBPC();
 
-    E.woolBags.innerText
+    E.woolBags.innerText =
         //		= `You have ${c.toLocaleString()} bags of wool!`;
-        = `You have ${formatDecimal(c)} bags of wool!`;
+        `You have ${formatDecimal(c)} bags of wool!`;
 
     // Update cost displays
     uData.forEach((v, i) => {
-        v.element.innerText =
-            `[${units[i].name}] Hired: ${uData[i].count} Cost: ${getCostOfNext(i)}`;
+        v.element.innerText = `[${units[i].name}] Hired: ${uData[i].count} Cost: ${getCostOfNext(i)}`;
     });
 
     // Update income stats
@@ -134,7 +133,8 @@ document.addEventListener("keypress", (e) => {
                 fireSheepBomb();
             } else {
                 alert("You don't have a Sheep Bomb!");
-            } break;
+            }
+            break;
 
         case "b":
             let cost = getCostOfNext(last);
@@ -155,8 +155,7 @@ document.addEventListener("keypress", (e) => {
 
         case "-":
             if (dev)
-                window.open("/console.html", "_blank",
-                    "width=400,height=400");
+                window.open("/console.html", "_blank", "width=400,height=400");
             break;
 
         case "0":
@@ -174,13 +173,6 @@ document.addEventListener("keypress", (e) => {
     }
 });
 
-
-
-
-
-
-
-
 function applyUpgradeTable(u: UpgradeTable) {
     // Apply multipliers
     Object.entries(u.multiBoost).forEach((v) => {
@@ -194,23 +186,26 @@ function applyUpgradeTable(u: UpgradeTable) {
 
 function calculateWBPS(): number {
     // Algebraic function to find WBPS from unit amounts
-    const v = ((
-        (uData[$Unit.SHEARER].count * 2 * uData[$Unit.SHEARER].multi) +
-        (uData[$Unit.KNITTER].count * 100 * uData[$Unit.KNITTER].multi) +
-        (uData[$Unit.BABYSITTER].count * 1000000 * uData[$Unit.BABYSITTER].multi)
-    ) * getPizzaMulti());
+    const v =
+        (uData[$Unit.SHEARER].count * 2 * uData[$Unit.SHEARER].multi +
+            uData[$Unit.KNITTER].count * 100 * uData[$Unit.KNITTER].multi +
+            uData[$Unit.BABYSITTER].count *
+                1000000 *
+                uData[$Unit.BABYSITTER].multi) *
+        getPizzaMulti();
 
     return v;
 }
 
 function calculateWBPC(): number {
-    return (uData[$Unit.SHEPHERD].count * uData[$Unit.SHEPHERD].multi + 1)
-        * getPizzaMulti();
+    return (
+        (uData[$Unit.SHEPHERD].count * uData[$Unit.SHEPHERD].multi + 1) *
+        getPizzaMulti()
+    );
 }
 
 function getPizzaMulti(): number {
-    const multi = uData[$Unit.PIZZAGUY].count *
-        uData[$Unit.PIZZAGUY].multi;
+    const multi = uData[$Unit.PIZZAGUY].count * uData[$Unit.PIZZAGUY].multi;
 
     return multi > 0 ? multi : 1;
 }
@@ -235,4 +230,3 @@ function fireSheepBomb() {
 function getCostOfNext(unitId: number) {
     return units[unitId].cost(uData[unitId].count);
 }
-

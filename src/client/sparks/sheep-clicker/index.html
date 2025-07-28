@@ -1,69 +1,81 @@
 <!doctype html>
 <html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Sheep Clicker</title>
+        <script type="module" src="js/clicks.ts"></script>
+    </head>
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Sheep Clicker</title>
-    <script type="module" src="js/clicks.ts"></script>
-</head>
+    <body>
+        <!-- Header -->
+        <nav id="topbar" class="fixed bg-primary pt-4 pb-2">
+            <p id="tbt" class="ct">
+                Sheep Clicker version <span class="red" id="ver">b8</span> by
+                <a href="https://github.com/Lamby777" class="hidelink white">
+                    DexieTheSheep
+                </a>
+            </p>
+        </nav>
 
-<body>
-    <!-- Header -->
-    <nav id="topbar" class="fixed bg-primary pt-4 pb-2">
-        <p id="tbt" class="ct">
-            Sheep Clicker version <span class="red" id="ver">b8</span> by
-            <a href="https://github.com/Lamby777" class="hidelink white">
-                DexieTheSheep
-            </a>
-        </p>
-    </nav>
-
-    <div id="clickspace" class="containter bg-secondary col-6 pt-5 mt-7 mb-5 mx-auto" oncontextmenu="return false;">
-        <h3 id="pts" class="ct"></h3>
-        <!--h4 title="You can increase this with Dexie's Blessings"
+        <div
+            id="clickspace"
+            class="containter bg-secondary col-6 pt-5 mt-7 mb-5 mx-auto"
+            oncontextmenu="return false;"
+        >
+            <h3 id="pts" class="ct"></h3>
+            <!--h4 title="You can increase this with Dexie's Blessings"
 			id="max" class="ct">
 			//
 		</h4-->
 
-        <div id="clickarea" class="col-6 mx-auto">
-            <div id="sheep-shake-container" class="container-fluid">
-                <img src="public/sheep.jpeg" id="sheep" alt="A sheep who recently found your farm" />
+            <div id="clickarea" class="col-6 mx-auto">
+                <div id="sheep-shake-container" class="container-fluid">
+                    <img
+                        src="public/sheep.jpeg"
+                        id="sheep"
+                        alt="A sheep who recently found your farm"
+                    />
+                </div>
             </div>
-        </div>
 
-        <p id="wbpc" title="WBpC is how many bags of wool you get each time
+            <p
+                id="wbpc"
+                title="WBpC is how many bags of wool you get each time
 			you click the big sheep to shear him. You can increase your WBpC
 			by buying Shepherds or buying any upgrade that directly
 			(WBpC boost) or indirectly (Shepherd boost, and some other
-			stuff) helps you gain WBpC">
-            WBpC: 0
-        </p>
-        <p id="wbps" title="WBpS is how many bags of wool you get per second,
+			stuff) helps you gain WBpC"
+            >
+                WBpC: 0
+            </p>
+            <p
+                id="wbps"
+                title="WBpS is how many bags of wool you get per second,
 			automatically. You can increase your WBpS by buying certain
 			upgrades, or by buying any game asset except Shepherd.
-			(Shepherd increases WBpC)">
-            WBpS: 0
-        </p>
-    </div>
+			(Shepherd increases WBpC)"
+            >
+                WBpS: 0
+            </p>
+        </div>
 
-    <div id="store" class="ct">
-        <div id="hr-department" class="container"></div>
+        <div id="store" class="ct">
+            <div id="hr-department" class="container"></div>
 
-        <p id="bulkbuy">Key B = Bulk buy last bought item</p>
+            <p id="bulkbuy">Key B = Bulk buy last bought item</p>
 
-        <h2>Upgrades</h2>
-        <div id="rd-department" class="container"></div>
-    </div>
+            <h2>Upgrades</h2>
+            <div id="rd-department" class="container"></div>
+        </div>
 
-    <!-- Audio -->
-    <audio id="mus" loop>
-        <source src="public/soundscape.mp3" type="audio/mpeg" />
-    </audio>
-    <audio id="cs">
-        <!-- this isn't a mistake or me forgetting to fill in a placeholder. the original file was hosted somewhere else and got taken down, so i've replaced it with `example.com` :( -->
-        <source src="example.com" type="audio/mpeg" />
-    </audio>
-</body>
-
+        <!-- Audio -->
+        <audio id="mus" loop>
+            <source src="public/soundscape.mp3" type="audio/mpeg" />
+        </audio>
+        <audio id="cs">
+            <!-- this isn't a mistake or me forgetting to fill in a placeholder. the original file was hosted somewhere else and got taken down, so i've replaced it with `example.com` :( -->
+            <source src="example.com" type="audio/mpeg" />
+        </audio>
+    </body>
 </html>

@@ -3,6 +3,9 @@
     "private": true,
     "version": "0.0.0",
     "type": "module",
+    "prettier": {
+        "tabWidth": 4
+    },
     "scripts": {
         "dev": "nodemon -w src/server -x tsx src/server/main.ts",
         "start": "NODE_ENV=production tsx src/server/main.ts",

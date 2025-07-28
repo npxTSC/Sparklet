@@ -5,10 +5,15 @@ import Cloudy from "./synths/cloudy";
 import RePlay from "./synths/replay";
 import Mixer from "./synths/mixer";
 import {
-    Sample, Rhythm,
-    Synth, theme, SWPlugin,
-    MOUSEBUTTONS, Vec2_i, OrderedPair,
-    CURSOR_STYLES
+    Sample,
+    Rhythm,
+    Synth,
+    theme,
+    SWPlugin,
+    MOUSEBUTTONS,
+    Vec2_i,
+    OrderedPair,
+    CURSOR_STYLES,
 } from "./classes";
 import {
     noteHz,
@@ -33,36 +38,33 @@ let master = new Mixer(ctx);
 
 const activePlugins: SWPlugin[] = [];
 
-
 let mouse = new Vec2_i(0, 0);
 let mouseDown = false;
-
 
 window.addEventListener("resize", resizeHandler);
 resizeHandler();
 
-
 // Debug pre-initialized plugins
-activePlugins.push(
-    master,
-    new RePlay(ctx),
-);
+activePlugins.push(master, new RePlay(ctx));
 
 activePlugins[1].w = 1000;
 activePlugins[1].h = 600;
 (<RePlay>activePlugins[1]).refreshPiano();
 
 if (navigator.requestMIDIAccess) {
-    navigator.requestMIDIAccess().then((midi) => {
-        // Success
-        const { inputs, outputs } = midi;
+    navigator.requestMIDIAccess().then(
+        (midi) => {
+            // Success
+            const { inputs, outputs } = midi;
 
-        inputs.forEach((input) => {
-            input.onmidimessage = midiMessageHandler;
-        });
-    }, () => {
-        console.error("There was a problem loading a MIDI device.");
-    });
+            inputs.forEach((input) => {
+                input.onmidimessage = midiMessageHandler;
+            });
+        },
+        () => {
+            console.error("There was a problem loading a MIDI device.");
+        },
+    );
 }
 
 function midiMessageHandler(message: WebMidi.MIDIMessageEvent) {
@@ -74,7 +76,6 @@ function midiMessageHandler(message: WebMidi.MIDIMessageEvent) {
         instance.onMidiInput(command, note, velocity);
     }
 }
-
 
 function drawLoop() {
     // Clear canvas
@@ -97,7 +98,7 @@ function drawLoop() {
             instance.x - SYNTH_BORDERS,
             instance.y - SYNTH_BORDERS,
             instance.w + 2 * SYNTH_BORDERS,
-            instance.h + 2 * SYNTH_BORDERS
+            instance.h + 2 * SYNTH_BORDERS,
         );
 
         instance.draw(c);
@@ -114,8 +115,8 @@ canvas.addEventListener("mousemove", (e) => {
 
     for (const instance of [...activePlugins].reverse()) {
         if (!instance.isBeingDragged) continue;
-        instance.x += (mx - mouse.x);
-        instance.y += (my - mouse.y);
+        instance.x += mx - mouse.x;
+        instance.y += my - mouse.y;
         instance.updateDisplay();
     }
 
@@ -129,10 +130,15 @@ canvas.addEventListener("mousemove", (e) => {
             setCursorStyle(mouseStyleOverride);
         } else {
             // If point within titlebar, change cursor to drag icon
-            if (pointWithin(
-                mouse.x, mouse.y,
-                instance.x, instance.y,
-                instance.w, SYNTH_TITLEBAR_HEIGHT)
+            if (
+                pointWithin(
+                    mouse.x,
+                    mouse.y,
+                    instance.x,
+                    instance.y,
+                    instance.w,
+                    SYNTH_TITLEBAR_HEIGHT,
+                )
             ) {
                 setCursorStyle(CURSOR_STYLES.Drag);
             } else {
@@ -147,18 +153,21 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 canvas.addEventListener("mousedown", (e) => {
-
     mouseDown = true;
 
     const instance = instancesUnderCursor()[0];
     if (!instance) return;
 
-
     // If dragging titlebar
-    if (pointWithin(
-        mouse.x, mouse.y,
-        instance.x, instance.y,
-        instance.w, SYNTH_TITLEBAR_HEIGHT)
+    if (
+        pointWithin(
+            mouse.x,
+            mouse.y,
+            instance.x,
+            instance.y,
+            instance.w,
+            SYNTH_TITLEBAR_HEIGHT,
+        )
     ) {
         if (e.button === MOUSEBUTTONS.Left) {
             // Set dragging
@@ -180,12 +189,16 @@ canvas.addEventListener("mouseup", (e) => {
     const instance = instancesUnderCursor()[0];
     if (!instance) return;
 
-
     // If NOT dragging titlebar
-    if (!pointWithin(
-        mouse.x, mouse.y,
-        instance.x, instance.y,
-        instance.w, SYNTH_TITLEBAR_HEIGHT)
+    if (
+        !pointWithin(
+            mouse.x,
+            mouse.y,
+            instance.x,
+            instance.y,
+            instance.w,
+            SYNTH_TITLEBAR_HEIGHT,
+        )
     ) {
         // Pass control to the plugin
         instance.onClick(mouse.x, mouse.y, true, e.button);
@@ -198,9 +211,6 @@ document.addEventListener("contextmenu", (e) => {
 
 setInterval(drawLoop, FPS / 1000);
 
-
-
-
 // Set canvas dimensions
 function resizeHandler() {
     canvas.width = innerWidth;
@@ -210,13 +220,9 @@ function resizeHandler() {
 export function pointWithinV(
     pt: OrderedPair,
     rpos: OrderedPair,
-    rsize: OrderedPair
+    rsize: OrderedPair,
 ) {
-    return pointWithin(
-        pt.x, pt.y,
-        rpos.x, rpos.y,
-        rsize.x, rsize.y
-    );
+    return pointWithin(pt.x, pt.y, rpos.x, rpos.y, rsize.x, rsize.y);
 }
 
 // returns array of instances under cursor position
@@ -227,12 +233,16 @@ function instancesUnderCursor() {
     for (const instance of [...activePlugins].reverse()) {
         if (!instance.visible) continue;
 
-        if (pointWithin(
-            mouse.x, mouse.y,
-            instance.x, instance.y,
-            instance.w, instance.h
-        )) {
-
+        if (
+            pointWithin(
+                mouse.x,
+                mouse.y,
+                instance.x,
+                instance.y,
+                instance.w,
+                instance.h,
+            )
+        ) {
             res.push(instance);
         }
     }
