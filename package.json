@@ -14,7 +14,7 @@
         "dcr": "docker compose up --build"
     },
     "dependencies": {
-        "bcrypt": "^5.1.1",
+        "bcrypt": "^6.0.0",
         "better-sqlite3": "^11.8.1",
         "bootstrap": "^5.3.3",
         "cookie-parser": "^1.4.7",
