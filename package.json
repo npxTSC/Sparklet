@@ -19,7 +19,7 @@
         "bootstrap": "^5.3.3",
         "cookie-parser": "^1.4.7",
         "discord-emoji-converter": "^1.2.10",
-        "express": "^4.22.1",
+        "express": "^4.22.2",
         "libdx": "^1.10.3",
         "tsx": "^4.19.3",
         "typescript": "^5.7.3",
