@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <title>Cherry's Discord Pin Compressor v1.0.0</title>
+        <title>Cherry's Discord Pin Compressor v1.0.1</title>
         <meta charset="UTF-8" />
         <meta name="description" content="Cherry's Discord Pin Compressor" />
         <meta name="author" content="refcherry" />
@@ -138,15 +138,16 @@ For more information, please refer to <https://unlicense.org>
                     Title</label
                 ><br />
                 <label
-                    ><input type="checkbox" id="output-credit" /> Credit</label
+                    ><input type="checkbox" id="output-credit" checked />
+                    Credit</label
                 ><br />
                 <label
-                    ><input type="checkbox" id="output-author" /> Message
-                    Author</label
+                    ><input type="checkbox" id="output-author" checked />
+                    Message Author</label
                 ><br />
                 <label
-                    ><input type="checkbox" id="output-timestamp" /> Message
-                    Timestamp</label
+                    ><input type="checkbox" id="output-timestamp" checked />
+                    Message Timestamp</label
                 ><br />
                 <label
                     ><input type="checkbox" id="output-codeblock" checked />
@@ -295,7 +296,7 @@ For more information, please refer to <https://unlicense.org>
                     output += `**Pinned Messages**, comp @ <t:${Math.round(new Date().getTime() / 1000)}:f>\n`;
                 if (opts.credit)
                     output +=
-                        "*with <https://sparklet.org/discord-pin-compressor/>*\n";
+                        "*with <https://sparklet.org/sparks/discord-pin-compressor/>*\n";
                 if (output.length > 0) output += "\n";
 
                 let items = getPinItemsSorted();
@@ -305,7 +306,7 @@ For more information, please refer to <https://unlicense.org>
 
                     if (
                         output.length + formatted.length >=
-                        (nitrocheckbox.checked ? 3750 : 1950)
+                        (nitrocheckbox.checked ? 3900 : 1950)
                     ) {
                         addTextarea(output);
                         output = "";
