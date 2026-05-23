@@ -64,6 +64,10 @@ export default defineConfig({
                     __dirname,
                     "src/client/sparks/rainbow-l/index.html",
                 ),
+                "sparks/discord-pin-compressor": resolve(
+                    __dirname,
+                    "src/client/sparks/discord-pin-compressor/index.html",
+                ),
             },
         },
     },

@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <title>Cherry's Discord Pin Compressor v1.0.0</title>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Cherry's Discord Pin Compressor" />
+        <meta name="author" content="refcherry" />
+        <style>
+            /*
+This license applies to the entire page, not just the style block.
+    
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <https://unlicense.org>
+*/
+            html {
+                font-family: sans-serif;
+                background-color: #36393f;
+                text-align: center;
+                color: #fff;
+            }
+
+            .container {
+                max-width: 500px;
+                margin: auto;
+            }
+
+            textarea {
+                border-radius: 5px;
+                -webkit-user-select: all;
+                -moz-user-select: all;
+                -ms-user-select: all;
+                user-select: all;
+            }
+
+            .databox {
+                background-color: #40444b;
+                border: #40444b 1px solid;
+                color: #eee;
+            }
+
+            .out {
+                background-color: #2f3136;
+                color: #b9bbbe;
+                border: #202225 1px solid;
+            }
+
+            a,
+            a:visited {
+                color: #00aff4;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Cherry's Discord Pin Compressor</h1>
+        <h3>(Fork of Rebane's Discord Pin Compressor)</h3>
+        <div class="container">
+            <h3>About</h3>
+            <p>
+                This is a simple app that converts Discord pins to Discord
+                messages, which is useful for example when you've reached the
+                pin limit and wish to have more room for new pins. This is a
+                fork that fixes it to work in 2026, and adds more customization
+                options for the "compressed" output. Most of the stuff was
+                already done by rebane2001
+                <a
+                    href="https://gist.github.com/rebane2001/8d8e97bda4dd1c7134c08b0a9d74f57b"
+                    >here</a
+                >.
+            </p>
+            <h3>How to use?</h3>
+            <p style="text-align: left">
+                1. Restart your Discord client (important).<br />
+                2. Press ctrl+shift+i to open up the DevTools.<br />
+                3. Navigate to the "Network" tab.<br />
+                4. In Discord, click on the pins button in your desired chat.<br />
+                5. In DevTools, locate the entry that says "pins" in the Network
+                tab.<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;(type "pins" in the filter box at the
+                top to help find it)<br />
+                6. Right-click on the entry, then choose "Copy -> Copy
+                Response".<br />
+                7. Paste the data in the box down below.<br />
+                8. Copy the generated messages below and send them on
+                Discord.<br />
+            </p>
+            <h3>Privacy</h3>
+            <p>
+                This app does not send your pins to my server, everything
+                happens in your own browser locally. If you want to be extra
+                cautious however, you can download the source code from
+                <a
+                    href="https://github.com/Lamby777/discord-pin-compressor/blob/mane/discord-pin-compressor.html"
+                    >GitHub</a
+                >, look over it, and open the html file in your browser by
+                itself.
+            </p>
+        </div>
+        <h2>paste data here</h2>
+        <div id="databox-container"></div>
+        <p>
+            You can create more text boxes if you would like to compress
+            multiple batches of messages at once. Pins in all boxes will be
+            added together and sorted by pin date.
+        </p>
+        <button onclick="addNewDatabox()">pin more!!</button>
+        <br />
+        <br />
+        <br />
+        <div style="display: inline-block">
+            <hr />
+            <div>
+                The output will show:<br />
+                <label
+                    ><input type="checkbox" id="output-title" checked />
+                    Title</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-credit" /> Credit</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-author" /> Message
+                    Author</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-timestamp" /> Message
+                    Timestamp</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-codeblock" checked />
+                    Content inside a ``` block instead of `</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-attachments" checked />
+                    Attachment names and types</label
+                ><br />
+                <label
+                    ><input type="checkbox" id="output-link" checked /> Link to
+                    original message</label
+                ><br />
+            </div>
+            <br /><label
+                ><input type="checkbox" id="nitrocheckbox" />I have Nitro (4000
+                char messages)</label
+            >
+            <hr />
+        </div>
+        <h2>copy messages here <span id="msg-count"></span></h2>
+        <div id="outmsgs">(enter the data above to generate messages)</div>
+        <br />
+        <small
+            >This is an unofficial tool, it is not made or endorsed by
+            Discord.</small
+        >
+        <template id="databox-template">
+            <textarea class="databox" rows="9" cols="100"></textarea>
+        </template>
+
+        <script type="text/javascript">
+            const outmsgs = document.getElementById("outmsgs");
+            const nitrocheckbox = document.getElementById("nitrocheckbox");
+            const databoxContainer =
+                document.getElementById("databox-container");
+            const databoxTemplate = document.getElementById("databox-template");
+            const msgCountE = document.getElementById("msg-count");
+
+            addNewDatabox();
+
+            const optionBoxes = [
+                "title",
+                "credit",
+                "author",
+                "timestamp",
+                "codeblock",
+                "attachments",
+                "link",
+            ].reduce((acc, v) => {
+                acc[v] = document.getElementById("output-" + v);
+                return acc;
+            }, {});
+            const getOptions = () =>
+                Object.fromEntries(
+                    Object.entries(optionBoxes).map(([k, v]) => [k, v.checked]),
+                );
+
+            function contentTypeToEmoji(contentType, fileName) {
+                if (!contentType) {
+                    const ext = fileName.split(".").at(-1);
+                    if (["flac", "wav", "mp3", "m4a"].includes(ext))
+                        return "🎵";
+                    if (["png", "jpg", "jpeg", "webp", "gif"].includes(ext))
+                        return "🖼️";
+                    if (["mp4", "webm", "mkv", "mov", "avi"].includes(ext))
+                        return "🎞";
+                    return "📁";
+                }
+                if (contentType.startsWith("audio")) return "🎵";
+                if (contentType.startsWith("image")) return "🖼️";
+                if (contentType.startsWith("video")) return "🎞";
+                return "📁";
+            }
+
+            function addTextarea(text) {
+                const count = document.createElement("p");
+                count.innerText = `Message #${outmsgs.childNodes.length / 2 + 1}`;
+                const textarea = document.createElement("textarea");
+                textarea.classList.add("out");
+                textarea.cols = "100";
+                textarea.rows = "20";
+                textarea.readOnly = true;
+                textarea.value = text;
+                outmsgs.appendChild(count);
+                outmsgs.appendChild(textarea);
+            }
+
+            function fmtMessage(opts, msg) {
+                const author = opts.author ? `<@${msg.author.id}> ` : "";
+                const timestamp = opts.timestamp
+                    ? `<t:${Math.round(new Date(msg.timestamp).getTime() / 1000)}:f>\n`
+                    : opts.author
+                      ? "\n"
+                      : "";
+
+                const enclosure = opts.codeblock ? "```" : "`";
+                // TODO: shorter cutoffs?
+                const content = msg.content
+                    ? `${enclosure}${msg.content
+                          .replaceAll("`", "'")
+                          .replace(/[\n\r]/g, " ")
+                          .replace(
+                              /([\s\S]{128})[\s\S]+/,
+                              "$1...",
+                          )}${enclosure}\n`
+                    : "";
+                // const attachments =  msg.attachments.reduce((prev, f) => prev + `${contentTypeToEmoji(f?.content_type)} \`${f.filename}\` -> <${f.url}>\n`, "");
+                const attachments = opts.attachments
+                    ? msg.attachments.reduce(
+                          (prev, f) =>
+                              prev +
+                              `${contentTypeToEmoji(f?.content_type, f.filename)} \`${f.filename}\`\n`,
+                          "",
+                      )
+                    : "";
+                const msglink = opts.link
+                    ? `http://discord.com/channels/@me/${msg.channel_id}/${msg.id}`
+                    : "";
+                return `${author}${timestamp}${content}${attachments}${msglink}\n\n`;
+            }
+
+            function getPinItemsSorted() {
+                let items = [];
+
+                for (inputbox of databoxContainer.children) {
+                    if (inputbox.value.length === 0) continue;
+
+                    const parsed = JSON.parse(inputbox.value).items;
+                    items.push(...parsed);
+                }
+
+                items.sort(
+                    (a, b) => new Date(a.pinned_at) - new Date(b.pinned_at),
+                );
+
+                return items;
+            }
+
+            function generateOutput() {
+                const opts = getOptions();
+                outmsgs.innerHTML = "";
+
+                let output = "";
+                if (opts.title)
+                    output += `**Pinned Messages**, comp @ <t:${Math.round(new Date().getTime() / 1000)}:f>\n`;
+                if (opts.credit)
+                    output +=
+                        "*with <https://sparklet.org/discord-pin-compressor/>*\n";
+                if (output.length > 0) output += "\n";
+
+                let items = getPinItemsSorted();
+                for (const item of items) {
+                    const msg = item.message;
+                    const formatted = fmtMessage(opts, msg);
+
+                    if (
+                        output.length + formatted.length >=
+                        (nitrocheckbox.checked ? 3750 : 1950)
+                    ) {
+                        addTextarea(output);
+                        output = "";
+                    }
+                    output += formatted;
+                }
+                addTextarea(output);
+            }
+
+            function addNewDatabox() {
+                const clone = databoxTemplate.content.cloneNode(true);
+                clone.querySelector("textarea").oninput = generateOutput;
+                databoxContainer.appendChild(clone);
+            }
+
+            nitrocheckbox.oninput = generateOutput;
+            for (const box of Object.values(optionBoxes)) {
+                box.oninput = generateOutput;
+            }
+        </script>
+    </body>
+</html>

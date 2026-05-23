@@ -6,10 +6,10 @@
         "description": "Solve as many 6-letter wordles as you can in the given time limit!"
     },
     {
-        "title": "Discord Emojifier",
-        "id": "discord-emojifier",
+        "title": "Discord Pin Compressor",
+        "id": "discord-pin-compressor",
         "creatorName": "Cherry",
-        "description": "Web interface for interacting with Arkin Solomon's `discord-emoji-converter` npm package. Allows you to turn messages containing shortcodes (stuff like :smile:) into messages with actual emojis."
+        "description": "Reached the pin limit on Discord? Use this to combine multiple messages into one so you can replace many pins with a single one. This is a fork with a 2026 fix added on, and a few more customizations. The original is by rebane2001, link found on the page."
     },
     {
         "title": "Rainbow L",
@@ -18,15 +18,21 @@
         "description": "Editable rainbow text. This'll be sure to grab someone's attention. Go into fullscreen on a phone/laptop to use it as a neon sign thingy. I originally made this in middle school to communicate with my friend across the room during study hall since the teacher said we had to be silent. The greedy fucks over at Replit wiped my account and I lost the original, so I remade it here for nostalgia. (Can't believe I used to pay for their service only for this to happen)"
     },
     {
+        "title": "Sheep Clicker",
+        "id": "sheep-clicker",
+        "creatorName": "Cherry",
+        "description": "Probably my first HTML game, made in 6th grade. Click the sheep for wool. That's about all there is to it."
+    },
+    {
         "title": "Sparkwave",
         "id": "sparkwave",
         "creatorName": "Cherry",
         "description": "Little audio workstation. Doesn't really do anything useful, but it makes sound, I guess."
     },
     {
-        "title": "Sheep Clicker",
-        "id": "sheep-clicker",
+        "title": "Discord Emojifier",
+        "id": "discord-emojifier",
         "creatorName": "Cherry",
-        "description": "Probably my first HTML game, made in 6th grade. Click the sheep for wool. That's about all there is to it."
+        "description": "Web interface for interacting with Arkin Solomon's `discord-emoji-converter` npm package. Allows you to turn messages containing shortcodes (stuff like :smile:) into messages with actual emojis."
     }
 ]
