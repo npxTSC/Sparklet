@@ -161,6 +161,10 @@ For more information, please refer to <https://unlicense.org>
                     ><input type="checkbox" id="output-link" checked /> Link to
                     original message</label
                 ><br />
+                <label
+                    ><input type="checkbox" id="output-oldestFirst" /> Oldest
+                    messages first </label
+                ><br />
             </div>
             <br /><label
                 ><input type="checkbox" id="nitrocheckbox" />I have Nitro (4000
@@ -197,6 +201,7 @@ For more information, please refer to <https://unlicense.org>
                 "codeblock",
                 "attachments",
                 "link",
+                "oldestFirst",
             ].reduce((acc, v) => {
                 acc[v] = document.getElementById("output-" + v);
                 return acc;
@@ -270,7 +275,7 @@ For more information, please refer to <https://unlicense.org>
                 return `${author}${timestamp}${content}${attachments}${msglink}\n\n`;
             }
 
-            function getPinItemsSorted() {
+            function getPinItemsSorted(opts) {
                 let items = [];
 
                 for (inputbox of databoxContainer.children) {
@@ -280,9 +285,15 @@ For more information, please refer to <https://unlicense.org>
                     items.push(...parsed);
                 }
 
-                items.sort(
-                    (a, b) => new Date(a.pinned_at) - new Date(b.pinned_at),
-                );
+                if (opts.oldestFirst) {
+                    items.sort(
+                        (a, b) => new Date(a.pinned_at) - new Date(b.pinned_at),
+                    );
+                } else {
+                    items.sort(
+                        (a, b) => new Date(b.pinned_at) - new Date(a.pinned_at),
+                    );
+                }
 
                 return items;
             }
@@ -299,7 +310,7 @@ For more information, please refer to <https://unlicense.org>
                         "*with <https://sparklet.org/sparks/discord-pin-compressor/>*\n";
                 if (output.length > 0) output += "\n";
 
-                let items = getPinItemsSorted();
+                let items = getPinItemsSorted(opts);
                 for (const item of items) {
                     const msg = item.message;
                     const formatted = fmtMessage(opts, msg);
