@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <title>Cherry's Discord Pin Compressor v1.0.1</title>
+        <title>Cherry's Discord Pin Compressor v1.0.2</title>
         <meta charset="UTF-8" />
         <meta name="description" content="Cherry's Discord Pin Compressor" />
         <meta name="author" content="refcherry" />
@@ -311,6 +311,8 @@ For more information, please refer to <https://unlicense.org>
                 if (output.length > 0) output += "\n";
 
                 let items = getPinItemsSorted(opts);
+                msgCountE.innerText = `(${items.length} pins)`;
+
                 for (const item of items) {
                     const msg = item.message;
                     const formatted = fmtMessage(opts, msg);
