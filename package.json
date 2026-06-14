@@ -21,7 +21,7 @@
         "discord-emoji-converter": "^1.2.10",
         "express": "^4.22.2",
         "libdx": "^1.10.3",
-        "tsx": "^4.19.3",
+        "tsx": "^4.22.4",
         "typescript": "^5.7.3",
         "uuid": "^14.0.0",
         "vite-express": "*",
@@ -34,11 +34,11 @@
         "@types/cookie-parser": "^1.4.8",
         "@types/express": "^5.0.0",
         "@types/node": "^22.13.4",
-        "@vitejs/plugin-vue": "^5.2.1",
+        "@vitejs/plugin-vue": "^6.0.7",
         "nodemon": "^3.1.9",
         "playwright": "^1.56.1",
         "sass": "1.85.0",
-        "vite": "^6.4.2",
+        "vite": "^8.0.16",
         "vitest": "^4.1.0",
         "vue-tsc": "^2.2.2"
     }
